@@ -1,0 +1,16 @@
+server:
+  port: 8081
+
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/postgres
+    password:
+    username: postgres
+  jpa:
+    show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+
+jwt:
+  secret: 'Z6DiCRSaNfbwKoLOtIsotbD8UN2this-is-very-secure-Vv7sdq5wo0xmmmFpGaOATGdKQIn8RXh1r1bk19hOTqO'
