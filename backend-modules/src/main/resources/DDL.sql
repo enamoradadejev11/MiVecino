@@ -16,3 +16,16 @@ CREATE TABLE mi_vecino.user (
 	is_active boolean,
 	is_not_loked boolean,
 );
+
+create table mi_vecino.emprendimiento (
+	id serial primary key,
+	username VARCHAR(100) not null,
+	name VARCHAR(120) not null,
+	description VARCHAR(250) not null,
+	type VARCHAR(50) not null,
+	join_date TIMESTAMP not null,
+	image_url VARCHAR(250),
+	telephones jsonb,
+	categories jsonb,
+	active boolean not null
+)
