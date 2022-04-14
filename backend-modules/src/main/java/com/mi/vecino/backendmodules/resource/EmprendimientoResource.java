@@ -5,16 +5,20 @@ import static com.mi.vecino.backendmodules.constant.FileConstant.FORWARD_SLASH;
 import static org.springframework.http.MediaType.IMAGE_JPEG_VALUE;
 
 import com.mi.vecino.backendmodules.domain.Emprendimiento;
+import com.mi.vecino.backendmodules.domain.Schedule;
 import com.mi.vecino.backendmodules.domain.command.EmprendimientoCommand;
+import com.mi.vecino.backendmodules.domain.command.ScheduleCommand;
 import com.mi.vecino.backendmodules.service.EmprendimientoService;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
+import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -87,6 +91,18 @@ public class EmprendimientoResource {
       @PathVariable("filename") String filename) throws IOException {
     String path = EMPRENDIMIENTO_FOLDER + id + FORWARD_SLASH + filename;
     return Files.readAllBytes(Paths.get(path));
+  }
+
+
+  @PostMapping("{id}/schedule")
+  public List<Schedule> addSchedule(@PathVariable long id, @RequestBody List<ScheduleCommand> scheduleCommand) {
+    var username = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    return emprendimientoService.addSchedule(id, username, scheduleCommand);
+  }
+
+  @GetMapping("{id}/schedule")
+  public List<Schedule> retrieveSchedule(@PathVariable long id) {
+    return emprendimientoService.retrieveSchedule(id);
   }
 
 }
