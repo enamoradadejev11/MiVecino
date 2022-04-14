@@ -1,6 +1,5 @@
 package com.mi.vecino.backendmodules.service.impl;
 
-import static com.mi.vecino.backendmodules.constant.FileConstant.DEFAULT_USER_IMAGE_PATH;
 import static com.mi.vecino.backendmodules.constant.FileConstant.DIRECTORY_CREATED;
 import static com.mi.vecino.backendmodules.constant.FileConstant.DOT;
 import static com.mi.vecino.backendmodules.constant.FileConstant.FILE_SAVED_IN_FILE_SYSTEM;
@@ -8,7 +7,6 @@ import static com.mi.vecino.backendmodules.constant.FileConstant.FORWARD_SLASH;
 import static com.mi.vecino.backendmodules.constant.FileConstant.JPG_EXTENSION;
 import static com.mi.vecino.backendmodules.constant.FileConstant.USER_FOLDER;
 import static com.mi.vecino.backendmodules.constant.FileConstant.USER_IMAGE_PATH;
-import static com.mi.vecino.backendmodules.domain.enumeration.Role.ROLE_USER;
 import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 
 import com.mi.vecino.backendmodules.domain.User;
@@ -27,7 +25,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 import java.util.Objects;
 import javax.transaction.Transactional;
 import org.apache.commons.lang3.RandomStringUtils;
