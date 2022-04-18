@@ -5,7 +5,9 @@ import static com.mi.vecino.backendmodules.constant.FileConstant.FORWARD_SLASH;
 import static org.springframework.http.MediaType.IMAGE_JPEG_VALUE;
 
 import com.mi.vecino.backendmodules.domain.Emprendimiento;
+import com.mi.vecino.backendmodules.domain.Schedule;
 import com.mi.vecino.backendmodules.domain.command.EmprendimientoCommand;
+import com.mi.vecino.backendmodules.domain.command.ScheduleCommand;
 import com.mi.vecino.backendmodules.service.EmprendimientoService;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -87,6 +89,18 @@ public class EmprendimientoResource {
       @PathVariable("filename") String filename) throws IOException {
     String path = EMPRENDIMIENTO_FOLDER + id + FORWARD_SLASH + filename;
     return Files.readAllBytes(Paths.get(path));
+  }
+
+
+  @PostMapping("{id}/schedule")
+  public List<Schedule> addSchedule(@PathVariable long id, @RequestBody List<ScheduleCommand> scheduleCommand) {
+    var username = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    return emprendimientoService.addSchedule(id, username, scheduleCommand);
+  }
+
+  @GetMapping("{id}/schedule")
+  public List<Schedule> retrieveSchedule(@PathVariable long id) {
+    return emprendimientoService.retrieveSchedule(id);
   }
 
 }

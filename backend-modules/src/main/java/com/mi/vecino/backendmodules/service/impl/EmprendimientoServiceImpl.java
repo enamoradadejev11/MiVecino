@@ -10,15 +10,21 @@ import static com.mi.vecino.backendmodules.constant.FileConstant.JPG_EXTENSION;
 import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 
 import com.mi.vecino.backendmodules.domain.Emprendimiento;
+import com.mi.vecino.backendmodules.domain.Schedule;
 import com.mi.vecino.backendmodules.domain.command.EmprendimientoCommand;
+import com.mi.vecino.backendmodules.domain.command.ScheduleCommand;
 import com.mi.vecino.backendmodules.repository.EmprendimientoRepository;
+import com.mi.vecino.backendmodules.repository.ScheduleRepository;
 import com.mi.vecino.backendmodules.service.EmprendimientoService;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.text.ParseException;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 import javax.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,10 +39,13 @@ public class EmprendimientoServiceImpl implements EmprendimientoService {
 
   private final Logger logger = LoggerFactory.getLogger(getClass());
   private final EmprendimientoRepository emprendimientoRepository;
+  private final ScheduleRepository scheduleRepository;
 
   @Autowired
-  EmprendimientoServiceImpl(EmprendimientoRepository emprendimientoRepository) {
+  EmprendimientoServiceImpl(EmprendimientoRepository emprendimientoRepository,
+      ScheduleRepository scheduleRepository) {
     this.emprendimientoRepository = emprendimientoRepository;
+    this.scheduleRepository = scheduleRepository;
   }
 
   @Override
@@ -101,6 +110,33 @@ public class EmprendimientoServiceImpl implements EmprendimientoService {
       saveEmprendimientoImage(emprendimiento, multipartFile);
     }
     return emprendimiento;
+  }
+
+  @Override
+  public List<Schedule> addSchedule(long emprendimientoId, String username, List<ScheduleCommand> command) {
+    if (isValidUser(emprendimientoId, username)) {
+      return command.stream().map(scheduleCommand -> {
+        try {
+          Schedule schedule = new Schedule(emprendimientoId, scheduleCommand);
+          scheduleRepository.save(schedule);
+          return schedule;
+        } catch (ParseException parseException) {
+          parseException.printStackTrace();
+        }
+        return null;
+      }).collect(Collectors.toList());
+    }
+    return Collections.emptyList();
+  }
+
+  @Override
+  public List<Schedule> retrieveSchedule(long emprendimientoId) {
+    return scheduleRepository.findScheduleByEmprendimientoId(emprendimientoId);
+  }
+
+  private boolean isValidUser(long emprendimientoId, String username) {
+    var emprendimiento = findEmprendimientoById(emprendimientoId);
+    return username.equals(emprendimiento.getUsername());
   }
 
   private boolean isValidUser(String username, Emprendimiento dbEmprendimiento) {

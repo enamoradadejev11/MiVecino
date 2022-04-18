@@ -29,3 +29,22 @@ create table mi_vecino.emprendimiento (
 	categories jsonb,
 	active boolean not null
 )
+
+create table mi_vecino.day (
+	id int primary key,
+	name varchar(10) not null
+)
+
+create table mi_vecino.schedule (
+	id varchar(20) primary key,
+	emprendimiento_id int not null,
+	day_id int not null,
+	opening_hour TIME not null,
+	closing_hour TIME not null,
+	CONSTRAINT fk_emprendimiento
+      FOREIGN KEY(emprendimiento_id)
+	  REFERENCES mi_vecino.emprendimiento(id),
+	CONSTRAINT fk_day
+      FOREIGN KEY(day_id)
+	  REFERENCES mi_vecino.day(id)
+)
