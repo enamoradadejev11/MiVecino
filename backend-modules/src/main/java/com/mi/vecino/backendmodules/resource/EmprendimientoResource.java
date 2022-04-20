@@ -91,7 +91,6 @@ public class EmprendimientoResource {
     return Files.readAllBytes(Paths.get(path));
   }
 
-
   @PostMapping("{id}/schedule")
   public List<Schedule> addSchedule(@PathVariable long id, @RequestBody List<ScheduleCommand> scheduleCommand) {
     var username = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
