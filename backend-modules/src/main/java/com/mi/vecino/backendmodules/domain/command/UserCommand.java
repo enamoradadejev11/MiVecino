@@ -12,5 +12,6 @@ public class UserCommand {
   private String gender;
   private Date birthDate;
   private String password;
+  private String token;
 
 }

@@ -10,6 +10,7 @@ import com.mi.vecino.backendmodules.domain.HttpResponse;
 import com.mi.vecino.backendmodules.domain.User;
 import com.mi.vecino.backendmodules.domain.UserPrincipal;
 import com.mi.vecino.backendmodules.domain.command.UserCommand;
+import com.mi.vecino.backendmodules.domain.command.UserValidCommand;
 import com.mi.vecino.backendmodules.domain.exception.EmailExistException;
 import com.mi.vecino.backendmodules.domain.exception.EmailNotFoundException;
 import com.mi.vecino.backendmodules.domain.exception.ExceptionHandling;
@@ -71,14 +72,24 @@ public class UserResource extends ExceptionHandling {
     return new ResponseEntity<>(newUser, HttpStatus.OK);
   }
 
-  @PostMapping("/login")
-  public ResponseEntity<User> login(@RequestBody UserCommand userCommand)
+  @PostMapping("/login2")
+  public ResponseEntity<User> login2(@RequestBody UserCommand userCommand)
       throws UsernameNotFoundException {
     authenticate(userCommand.getUsername(), userCommand.getPassword());
     User loginUser = userService.findUserByUsername(userCommand.getUsername());
     UserPrincipal userPrincipal = new UserPrincipal(loginUser);
     HttpHeaders jwtHeader = getJwtHeader(userPrincipal);
     return new ResponseEntity<>(loginUser, jwtHeader, HttpStatus.OK);
+  }
+
+  @PostMapping("/login")
+  public ResponseEntity<UserValidCommand> login(@RequestBody UserCommand userCommand)
+      throws UsernameNotFoundException {
+    authenticate(userCommand.getUsername(), userCommand.getPassword());
+    User loginUser = userService.findUserByUsername(userCommand.getUsername());
+    UserPrincipal userPrincipal = new UserPrincipal(loginUser);
+    UserValidCommand userValidCommand = new UserValidCommand(userPrincipal.getUsername(), getJwtToken(userPrincipal));
+    return new ResponseEntity<>(userValidCommand, HttpStatus.OK);
   }
 
   @PutMapping("/update/{username}")
@@ -156,6 +167,10 @@ public class UserResource extends ExceptionHandling {
     HttpHeaders headers = new HttpHeaders();
     headers.add(JWT_TOKEN_HEADER, jwtTokenProvider.generateJwtToken(userPrincipal));
     return headers;
+  }
+
+  private String getJwtToken(UserPrincipal userPrincipal) {
+    return jwtTokenProvider.generateJwtToken(userPrincipal);
   }
 
   private void authenticate(String username, String password) {
