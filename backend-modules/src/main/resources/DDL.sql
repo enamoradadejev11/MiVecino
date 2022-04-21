@@ -48,3 +48,15 @@ create table mi_vecino.schedule (
       FOREIGN KEY(day_id)
 	  REFERENCES mi_vecino.day(id)
 )
+
+create table mi_vecino.review (
+	id serial primary key,
+	emprendimiento_id int not null,
+	username varchar(100) not null,
+	score int not null,
+	comment varchar(250),
+	images_url jsonb,
+	CONSTRAINT fk_emprendimiento
+      FOREIGN KEY(emprendimiento_id)
+	  REFERENCES mi_vecino.emprendimiento(id)
+)

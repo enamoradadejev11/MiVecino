@@ -5,10 +5,10 @@ import lombok.Getter;
 
 @AllArgsConstructor
 @Getter
-public class ScheduleCommand {
+public class ReviewCommand {
 
-  private final int dayId;
-  private final String openingHour;
-  private final String closingHour;
+  private final long emprendimientoId;
+  private final int score;
+  private final String comment;
 
 }
