@@ -3,10 +3,12 @@ import Button from "@material-ui/core/Button";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import TextField from "@material-ui/core/TextField";
 import Paper from "@material-ui/core/Paper";
-import Box from "@material-ui/core/Box";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
+import { DatePicker } from "@mui/x-date-pickers";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -24,24 +26,27 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
-    backgroundColor: "#ff9a27",
+    backgroundColor: "rgb(255, 34, 34, 0.60)",
     height: "100vh",
-  },
-  avatar: {
-    margin: theme.spacing(1),
-    backgroundColor: theme.palette.secondary.main,
   },
   boton: {
     background: "black",
     color: "white",
-    height: 48,
-    width: 250,
+    height: 40,
+    width: 300,
     margin: theme.spacing(8, 0, 0, 0),
+    borderRadius: 40,
+    "&:hover": {
+      background: "rgb(34, 34, 34, 0.80)",
+    },
   },
   title: {
     color: "white",
     fontFamily: "Secular One",
     marginBottom: 40,
+  },
+  text: {
+    padding: 8,
   },
 }));
 
@@ -61,78 +66,95 @@ const SignInSide = () => {
         elevation={6}
         square
       >
-        <div className={classes.form}>
+        <form className={classes.form} noValidate>
           <Typography variant='h3' className={classes.title}>
             Registro
           </Typography>
-          <Box component='form' onSubmit={() => {}}>
-            <TextField
-              margin='normal'
-              required
-              fullWidth
-              id='name'
-              label='Nombre Completo'
-              name='name'
-              autoComplete='name'
-              autoFocus
-            />
-            <TextField
-              margin='normal'
-              required
-              fullWidth
-              id='email'
-              label='Usuario'
-              name='user'
-              autoComplete='user'
-              autoFocus
-            />
-            <TextField
-              margin='normal'
-              required
-              fullWidth
-              id='email'
-              label='Correo Electronico'
-              name='email'
-              autoComplete='email'
-              autoFocus
-            />
-            <TextField
-              margin='normal'
-              required
-              fullWidth
-              id='password'
-              label='Contraseña'
-              name='password'
-              autoComplete='gender'
-              autoFocus
-            />
-            <TextField
-              margin='normal'
-              required
-              fullWidth
-              id='gender'
-              label='Genero'
-              name='gender'
-              autoComplete='gender'
-              autoFocus
-            />
-            <TextField
-              margin='normal'
-              required
-              fullWidth
-              id='birthday'
-              label='Cumpleaños'
-              name='birthday'
-              autoComplete='birthday'
-              autoFocus
-            />
-            <div>
+          <Grid container spacing={2}>
+            <Grid item xs={12}>
+              <TextField
+                margin='normal'
+                variant='outlined'
+                required
+                fullWidth
+                id='name'
+                label='Nombre Completo'
+                name='name'
+                autoComplete='name'
+                autoFocus
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                margin='normal'
+                variant='outlined'
+                required
+                fullWidth
+                id='user'
+                label='Usuario'
+                name='user'
+                autoComplete='user'
+                autoFocus
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                margin='normal'
+                variant='outlined'
+                required
+                fullWidth
+                id='email'
+                label='Correo Electronico'
+                name='email'
+                autoComplete='email'
+                autoFocus
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                margin='normal'
+                variant='outlined'
+                required
+                fullWidth
+                id='password'
+                label='Contraseña'
+                name='password'
+                type='password'
+                autoComplete='password'
+                autoFocus
+              />
+            </Grid>
+            <Grid xs={12} sm={6} className={classes.text}>
+              <TextField
+                margin='normal'
+                variant='outlined'
+                required
+                id='gender'
+                label='Gender'
+                name='gender'
+                autoComplete='gender'
+                autoFocus
+              />
+            </Grid>
+            <Grid xs={12} sm={6} className={classes.text}>
+              <LocalizationProvider dateAdapter={AdapterDateFns}>
+                <DatePicker
+                  label='Cumpleaños'
+                  value={null}
+                  onChange={() => {}}
+                  renderInput={(params) => (
+                    <TextField variant='outlined' margin='normal' {...params} />
+                  )}
+                />
+              </LocalizationProvider>
+            </Grid>
+            <Grid xs={12}>
               <Button variant='contained' className={classes.boton}>
                 Siguiente
               </Button>
-            </div>
-          </Box>
-        </div>
+            </Grid>
+          </Grid>
+        </form>
       </Grid>
     </Grid>
   );
