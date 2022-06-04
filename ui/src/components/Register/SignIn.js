@@ -50,7 +50,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const SignInSide = () => {
+const SignIn = () => {
   const classes = useStyles();
 
   return (
@@ -160,4 +160,4 @@ const SignInSide = () => {
   );
 };
 
-export default SignInSide;
+export default SignIn;
