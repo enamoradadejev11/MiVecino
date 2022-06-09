@@ -1,9 +1,9 @@
 import React from "react";
 import "./App.css";
 import { Route } from "wouter";
-import SignIn from "./components/Register/SignIn";
 import { ThemeProvider, createTheme } from "@material-ui/core/styles";
 import Login from "./components/Login/Login";
+import Register from "./components/Register/Register";
 
 function App() {
   const theme = createTheme({
@@ -22,7 +22,7 @@ function App() {
       <div className='App'>
         <ThemeProvider theme={theme}>
           <div className='App'>
-            <Route path='/registro' component={SignIn} />
+            <Route path='/registro' component={Register} />
             <Route path='/' component={Login} />
             <div></div>
           </div>
