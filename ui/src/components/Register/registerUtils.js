@@ -29,10 +29,10 @@ export const registerGeneralParams = (
   formHelperTextValues,
   name
 ) => ({
+  name,
+  autoComplete: name,
   margin: "normal",
   variant: "outlined",
-  autoComplete: name,
-  name,
   fullWidth: true,
   autoFocus: true,
   required: true,
