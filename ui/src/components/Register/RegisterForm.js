@@ -69,6 +69,7 @@ const RegisterForm = ({
               <TextField
                 label='Contraseña'
                 onChange={handleInputChange}
+                type='password'
                 {...registerGeneralParams(
                   formErrorVaues,
                   formHelperTextValues,
@@ -89,9 +90,7 @@ const RegisterForm = ({
                 >
                   <MenuItem value={"male"}>Hombre</MenuItem>
                   <MenuItem value={"female"}>Mujer</MenuItem>
-                  <MenuItem value={"transgender"}>Transgenero</MenuItem>
-                  <MenuItem value={"transexual"}>Transexual</MenuItem>
-                  <MenuItem value={"no-binary"}>No Binario</MenuItem>
+                  <MenuItem value={"other"}>Otro</MenuItem>
                 </Select>
               </FormControl>
             </Grid>
@@ -99,8 +98,8 @@ const RegisterForm = ({
               <LocalizationProvider dateAdapter={AdapterDateFns} fullWidth>
                 <DatePicker
                   label='Cumpleaños'
-                  name='birthDay'
-                  value={formValues.birthDay}
+                  name='birthDate'
+                  value={formValues.birthDate}
                   onChange={handleDatePickerChange}
                   renderInput={(params) => (
                     <TextField
@@ -109,8 +108,8 @@ const RegisterForm = ({
                       fullWidth
                       required
                       {...params}
-                      error={formErrorVaues.birthDay}
-                      helperText={formHelperTextValues.birthDay}
+                      error={formErrorVaues.birthDate}
+                      helperText={formHelperTextValues.birthDate}
                     />
                   )}
                 />
@@ -122,7 +121,7 @@ const RegisterForm = ({
                 type='submit'
                 className={classes.boton}
               >
-                Siguiente
+                Registrarse
               </Button>
             </Grid>
           </Grid>

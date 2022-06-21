@@ -1,12 +1,15 @@
 import React, { useState } from "react";
+import { useLocation } from "wouter";
 import {
   defaultFormErrorVaues,
   defaultFormHelperTextVaues,
   defaultValues,
 } from "./registerUtils";
 import RegisterForm from "./RegisterForm";
+import axios from "axios";
 
 const Register = () => {
+  const [, setLocation] = useLocation();
   const [formValues, setFormValues] = useState(defaultValues);
   const [formErrorValues, setFormErrorValues] = useState(defaultFormErrorVaues);
   const [formHelperTextValues, setFormHelperTextValues] = useState(
@@ -44,33 +47,42 @@ const Register = () => {
   const handleDatePickerChange = (value) => {
     setFormValues({
       ...formValues,
-      birthDay: value,
+      birthDate: value,
     });
 
     if (value === null) {
       setFormErrorValues({
         ...formErrorValues,
-        birthDay: true,
+        birthDate: true,
       });
       setFormHelperTextValues({
         ...formHelperTextValues,
-        birthDay: "Este campo es obligatorio",
+        birthDate: "Este campo es obligatorio",
       });
     } else {
       setFormErrorValues({
         ...formErrorValues,
-        birthDay: false,
+        birthDate: false,
       });
       setFormHelperTextValues({
         ...formHelperTextValues,
-        birthDay: "",
+        birthDate: "",
       });
     }
   };
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    console.log(formValues);
+    axios
+      .post("http://localhost:8081/user/register", formValues)
+      .then(function (response) {
+        // show successful message
+        setLocation("/");
+      })
+      .catch(function (error) {
+        // show error message
+        console.log(error);
+      });
   };
 
   return (

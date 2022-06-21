@@ -5,7 +5,7 @@ export const defaultValues = {
   username: "",
   email: "",
   gender: "",
-  birthDay: null,
+  birthDate: null,
 };
 
 export const defaultFormHelperTextVaues = {
@@ -13,7 +13,7 @@ export const defaultFormHelperTextVaues = {
   username: "",
   email: "",
   gender: "",
-  birthDay: null,
+  birthDate: null,
 };
 
 export const defaultFormErrorVaues = {
@@ -21,7 +21,7 @@ export const defaultFormErrorVaues = {
   username: false,
   email: false,
   gender: false,
-  birthDay: false,
+  birthDate: false,
 };
 
 export const registerGeneralParams = (
