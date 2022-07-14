@@ -60,3 +60,5 @@ create table mi_vecino.review (
       FOREIGN KEY(emprendimiento_id)
 	  REFERENCES mi_vecino.emprendimiento(id)
 )
+
+ALTER TABLE mi_vecino."user" ALTER COLUMN gender TYPE VARCHAR(10);
