@@ -30,14 +30,14 @@ const LoginForm = ({
                 margin='normal'
                 variant='outlined'
                 fullWidth
-                id='email'
-                label='Correo Electronico'
-                name='email'
-                autoComplete='email'
+                id='username'
+                label='Nombre de usuario'
+                name='username'
+                autoComplete='username'
                 autoFocus
                 onChange={handleInputChange}
-                error={formErrorValues.email}
-                helperText={formHelperTextValues.email}
+                error={formErrorValues.username}
+                helperText={formHelperTextValues.username}
               />
             </Grid>
             <Grid item xs={12}>

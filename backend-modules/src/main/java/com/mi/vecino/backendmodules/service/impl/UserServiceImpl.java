@@ -10,6 +10,7 @@ import static com.mi.vecino.backendmodules.constant.FileConstant.USER_IMAGE_PATH
 import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 
 import com.mi.vecino.backendmodules.domain.User;
+import com.mi.vecino.backendmodules.domain.UserInformation;
 import com.mi.vecino.backendmodules.domain.UserPrincipal;
 import com.mi.vecino.backendmodules.domain.command.UserCommand;
 import com.mi.vecino.backendmodules.domain.enumeration.Role;
@@ -26,6 +27,7 @@ import java.nio.file.Paths;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 import javax.transaction.Transactional;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -89,8 +91,9 @@ public class UserServiceImpl implements UserService, UserDetailsService {
   }
 
   @Override
-  public List<User> getUsers() {
-    return userRepository.findAll();
+  public List<UserInformation> getUsers() {
+    List<User> dbUsers = userRepository.findAll();
+    return dbUsers.stream().map(UserInformation::new).collect(Collectors.toList());
   }
 
   @Override

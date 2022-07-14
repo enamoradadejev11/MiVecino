@@ -8,6 +8,7 @@ import static org.springframework.http.MediaType.IMAGE_JPEG_VALUE;
 
 import com.mi.vecino.backendmodules.domain.HttpResponse;
 import com.mi.vecino.backendmodules.domain.User;
+import com.mi.vecino.backendmodules.domain.UserInformation;
 import com.mi.vecino.backendmodules.domain.UserPrincipal;
 import com.mi.vecino.backendmodules.domain.command.UserCommand;
 import com.mi.vecino.backendmodules.domain.command.UserValidCommand;
@@ -73,13 +74,13 @@ public class UserResource extends ExceptionHandling {
   }
 
   @PostMapping("/login2")
-  public ResponseEntity<User> login2(@RequestBody UserCommand userCommand)
+  public ResponseEntity<UserInformation> login2(@RequestBody UserCommand userCommand)
       throws UsernameNotFoundException {
     authenticate(userCommand.getUsername(), userCommand.getPassword());
     User loginUser = userService.findUserByUsername(userCommand.getUsername());
     UserPrincipal userPrincipal = new UserPrincipal(loginUser);
     HttpHeaders jwtHeader = getJwtHeader(userPrincipal);
-    return new ResponseEntity<>(loginUser, jwtHeader, HttpStatus.OK);
+    return new ResponseEntity<>(new UserInformation(loginUser), jwtHeader, HttpStatus.OK);
   }
 
   @PostMapping("/login")
@@ -109,8 +110,8 @@ public class UserResource extends ExceptionHandling {
   }
 
   @GetMapping("/list")
-  public ResponseEntity<List<User>> getAllUsers() throws UsernameNotFoundException {
-    List<User> users = userService.getUsers();
+  public ResponseEntity<List<UserInformation>> getAllUsers() throws UsernameNotFoundException {
+    List<UserInformation> users = userService.getUsers();
     return new ResponseEntity<>(users, HttpStatus.OK);
   }
 

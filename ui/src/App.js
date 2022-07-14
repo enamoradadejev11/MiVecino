@@ -4,6 +4,8 @@ import { Route } from "wouter";
 import { ThemeProvider, createTheme } from "@material-ui/core/styles";
 import Login from "./components/Login/Login";
 import Register from "./components/Register/Register";
+import HomePage from "./components/HomePage/HomePage";
+import StaticContext from "./context/StaticContext";
 
 function App() {
   const theme = createTheme({
@@ -18,17 +20,24 @@ function App() {
   });
 
   return (
-    <section>
-      <div className='App'>
-        <ThemeProvider theme={theme}>
-          <div className='App'>
-            <Route path='/registro' component={Register} />
-            <Route path='/' component={Login} />
-            <div></div>
-          </div>
-        </ThemeProvider>
-      </div>
-    </section>
+    <StaticContext.Provider
+      value={{
+        user: window.localStorage.getItem("user"),
+      }}
+    >
+      <section>
+        <div className='App'>
+          <ThemeProvider theme={theme}>
+            <div className='App'>
+              <Route path='/registro' component={Register} />
+              <Route path='/login' component={Login} />
+              <Route path='/' component={HomePage} />
+              <div></div>
+            </div>
+          </ThemeProvider>
+        </div>
+      </section>
+    </StaticContext.Provider>
   );
 }
 
