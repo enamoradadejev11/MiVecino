@@ -70,7 +70,7 @@ const Login = () => {
         setLocation("/");
       })
       .catch((e) => {
-        invalidCredentials(e.response.data.message);
+        invalidCredentials(e.response.data?.message);
       });
   };
 
