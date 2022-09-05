@@ -39,13 +39,13 @@ export const loginStyles = makeStyles((theme) => ({
 }));
 
 export const defaultLoginValues = {
-  email: "",
+  username: "",
   password: "",
 };
 
 export const defaultLoginErrorVaues = {
-  email: false,
+  username: false,
   password: false,
 };
 
-export const defaultLoginHelperTextVaues = { email: "", password: "" };
+export const defaultLoginHelperTextVaues = { username: "", password: "" };

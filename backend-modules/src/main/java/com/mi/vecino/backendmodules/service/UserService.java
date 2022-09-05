@@ -1,6 +1,7 @@
 package com.mi.vecino.backendmodules.service;
 
 import com.mi.vecino.backendmodules.domain.User;
+import com.mi.vecino.backendmodules.domain.UserInformation;
 import com.mi.vecino.backendmodules.domain.command.UserCommand;
 import com.mi.vecino.backendmodules.domain.exception.EmailExistException;
 import com.mi.vecino.backendmodules.domain.exception.EmailNotFoundException;
@@ -15,7 +16,7 @@ public interface UserService {
   User register(UserCommand userCommand)
       throws EmailExistException, UsernameExistException, UserNotFoundException, IOException;
 
-  List<User> getUsers();
+  List<UserInformation> getUsers();
 
   User findUserByUsername(String username);
 

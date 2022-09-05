@@ -1,13 +1,18 @@
-import React, { useState } from "react";
-import axios from "axios";
+import React, { useContext, useState } from "react";
+import { getUser } from "../../services/userServices";
 import LoginForm from "./LoginForm";
 import {
   defaultLoginErrorVaues,
   defaultLoginHelperTextVaues,
   defaultLoginValues,
 } from "./loginUtils";
+import StaticContext from "../../context/StaticContext";
+import { useLocation } from "wouter";
 
 const Login = () => {
+  const context = useContext(StaticContext);
+  console.log("context", context);
+  const [, setLocation] = useLocation();
   const [formValues, setFormValues] = useState(defaultLoginValues);
   const [formErrorValues, setFormErrorValues] = useState(
     defaultLoginErrorVaues
@@ -15,6 +20,7 @@ const Login = () => {
   const [formHelperTextValues, setFormHelperTextValues] = useState(
     defaultLoginHelperTextVaues
   );
+  const [, setUser] = useState({});
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -46,7 +52,7 @@ const Login = () => {
 
   const invalidCredentials = (message) => {
     setFormErrorValues({
-      email: true,
+      username: true,
       password: true,
     });
     setFormHelperTextValues({
@@ -56,15 +62,15 @@ const Login = () => {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    axios
-      .post("http://localhost:8081/user/login2", formValues)
-      .then(function (response) {
-        // show successful message
+    getUser(formValues)
+      .then((response) => {
         console.log("res", response);
+        setUser(response);
+        window.localStorage.setItem("user", JSON.stringify(response));
+        setLocation("/");
       })
-      .catch(function (error) {
-        const { response } = error;
-        invalidCredentials(response.data.message);
+      .catch((e) => {
+        invalidCredentials(e.response.data.message);
       });
   };
 
