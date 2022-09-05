@@ -30,7 +30,6 @@ const getStylesFromTitle = (title) => {
 };
 
 const SettingsSection = ({ title }) => {
-  console.log("tittle", title);
   const styles = settingsStyles();
   const stylesByTitle = getStylesFromTitle(title);
 
