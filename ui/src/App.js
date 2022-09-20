@@ -7,6 +7,7 @@ import Register from "./components/Register/Register";
 import HomePage from "./components/HomePage/HomePage";
 import StaticContext from "./context/StaticContext";
 import Settings from "./components/Settings/Settings";
+import Business from "./components/Business/Business";
 
 function App() {
   const theme = createTheme({
@@ -34,6 +35,7 @@ function App() {
               <Route path='/login' component={Login} />
               <Route path='/' component={HomePage} />
               <Route path='/settings' component={Settings} />
+              <Route path='/business' component={Business} />
               <div></div>
             </div>
           </ThemeProvider>
