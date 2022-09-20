@@ -7,6 +7,8 @@ import Register from "./components/Register/Register";
 import HomePage from "./components/HomePage/HomePage";
 import StaticContext from "./context/StaticContext";
 import Settings from "./components/Settings/Settings";
+import UserEmprendimientos from "./components/Emprendimientos/UserEmprendimientos";
+import UserProfile from "./components/UserProfile";
 
 function App() {
   const theme = createTheme({
@@ -34,6 +36,8 @@ function App() {
               <Route path='/login' component={Login} />
               <Route path='/' component={HomePage} />
               <Route path='/settings' component={Settings} />
+              <Route path='/emprendimientos' component={UserEmprendimientos} />
+              <Route path='/perfil' component={UserProfile} />
               <div></div>
             </div>
           </ThemeProvider>

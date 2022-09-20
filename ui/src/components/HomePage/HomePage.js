@@ -12,7 +12,7 @@ const HomePage = () => {
         .then((response) => {
           setUsers(response);
         })
-        .catch((e) => console.log("err", e));
+        .catch((e) => setLocation("/login"));
     } else {
       setLocation("/login");
     }

@@ -1,0 +1,91 @@
+import React, { useEffect, useState } from "react";
+import { Container, Grid } from "@mui/material";
+import { Box } from "@material-ui/core";
+import Typography from "@material-ui/core/Typography";
+import { typographyStyles } from "../../utils/stylesUtils";
+import EmprendimientoForm from "./EmprendimientoForm";
+import EmprendimientoSelector from "./EmprendimientoSelector";
+import EmprendimientoImageUploader from "./EmprendimientoImageUploader";
+import { defaultValues } from "./emprendimientosUtils";
+import { getUserEmprendimientos } from "./emprendimientosServices";
+
+const UserEmprendimientos = () => {
+  const typography = typographyStyles();
+
+  const [emprendimientoSelected, setEmprendimientoSelected] =
+    useState(defaultValues);
+  const [emprendimientos, setEmprendimientos] = useState([]);
+  const [isReadOnly, setIsReadOnly] = useState(false);
+  const [areUpdates, setAreUpdates] = useState(false);
+
+  useEffect(() => {
+    getUserEmprendimientos()
+      .then((response) => {
+        setEmprendimientos(response);
+      })
+      .catch((e) => {
+        setEmprendimientos([]);
+      });
+  }, []);
+
+  useEffect(() => {
+    if (areUpdates) {
+      getUserEmprendimientos()
+        .then((response) => {
+          setEmprendimientos(response);
+        })
+        .catch((e) => {
+          setEmprendimientos([]);
+        });
+      setAreUpdates(false);
+    }
+  }, [areUpdates]);
+
+  useEffect(() => {
+    if (emprendimientoSelected) {
+      if (emprendimientoSelected.id === "") {
+        setIsReadOnly(false);
+      } else {
+        setIsReadOnly(true);
+      }
+    }
+  }, [emprendimientoSelected]);
+
+  return (
+    <Box p={10}>
+      <Container>
+        <Grid container spacing={2}>
+          <Grid item xs={12}>
+            <Box pb={3}>
+              <Typography className={typography.dark_title}>
+                Mis emprendimientos
+              </Typography>
+            </Box>
+          </Grid>
+          <Grid item xs={12} md={6}>
+            <EmprendimientoSelector
+              emprendimientos={emprendimientos}
+              emprendimientoSelected={emprendimientoSelected}
+              setEmprendimientoSelected={setEmprendimientoSelected}
+            />
+            <EmprendimientoImageUploader
+              id={emprendimientoSelected.id}
+              url={emprendimientoSelected.imageUrl}
+              isReadOnly={isReadOnly}
+            />
+          </Grid>
+          <Grid item xs={12} md={6}>
+            <EmprendimientoForm
+              emprendimiento={emprendimientoSelected}
+              isReadOnly={isReadOnly}
+              setIsReadOnly={setIsReadOnly}
+              setAreUpdates={setAreUpdates}
+            />
+          </Grid>
+        </Grid>
+      </Container>
+    </Box>
+  );
+};
+
+export default UserEmprendimientos;

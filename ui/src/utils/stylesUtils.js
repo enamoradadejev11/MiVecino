@@ -12,3 +12,50 @@ export const typographyStyles = makeStyles((theme) => ({
     fontSize: 30,
   },
 }));
+
+export const generalFormProps = (
+  formErrorVaues,
+  formHelperTextValues,
+  name
+) => ({
+  id: name,
+  name,
+  variant: "filled",
+  autoComplete: name,
+  margin: "normal",
+  fullWidth: true,
+  required: true,
+  color: "secondary",
+  size: "small",
+  error: formErrorVaues[name],
+  helperText: formHelperTextValues[name],
+});
+
+export const handleMandatoryFields = (
+  input,
+  formErrorValues,
+  setFormErrorValues,
+  formHelperTextValues,
+  setFormHelperTextValues
+) => {
+  const { name, value } = input;
+  if (value === "") {
+    setFormErrorValues({
+      ...formErrorValues,
+      [name]: true,
+    });
+    setFormHelperTextValues({
+      ...formHelperTextValues,
+      [name]: "Este campo es obligatorio",
+    });
+  } else {
+    setFormErrorValues({
+      ...formErrorValues,
+      [name]: false,
+    });
+    setFormHelperTextValues({
+      ...formHelperTextValues,
+      [name]: "",
+    });
+  }
+};

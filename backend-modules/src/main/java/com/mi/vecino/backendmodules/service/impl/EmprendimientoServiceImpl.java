@@ -68,14 +68,14 @@ public class EmprendimientoServiceImpl implements EmprendimientoService {
   @Override
   public Emprendimiento updateEmprendimiento(long id, EmprendimientoCommand command) {
     Emprendimiento updatedEmprendimiento = new Emprendimiento(id, command);
-    Emprendimiento actualEmprendimiento = emprendimientoRepository.findById(id).orElse(null);
-    if (Objects.nonNull(actualEmprendimiento)) {
+    Emprendimiento currentEmprendimiento = emprendimientoRepository.findById(id).orElse(null);
+    if (Objects.nonNull(currentEmprendimiento)) {
       if (isValidUser(updatedEmprendimiento.getUsername(), updatedEmprendimiento)) {
-        emprendimientoRepository.save(updatedEmprendimiento);
-        return updatedEmprendimiento;
+        updatedEmprendimiento.setImageUrl(currentEmprendimiento.getImageUrl());
+        return emprendimientoRepository.save(updatedEmprendimiento);
       }
     }
-    return actualEmprendimiento;
+    return currentEmprendimiento;
   }
 
   @Override

@@ -8,7 +8,6 @@ import Typography from "@material-ui/core/Typography";
 import { loginStyles } from "./loginUtils";
 
 const LoginForm = ({
-  formValues,
   formErrorValues,
   formHelperTextValues,
   handleInputChange,
