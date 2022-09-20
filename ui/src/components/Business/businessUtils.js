@@ -4,7 +4,9 @@ import { makeStyles } from "@material-ui/core/styles";
 export const businessStyles = makeStyles((theme) => ({
   root: {
     minHeight: "100vh",
-    backgroundImage: `url(${"/assets/bande.png"})`
+    backgroundImage:"url(https://i.ytimg.com/vi/4KJlMeUvAYk/maxresdefault.jpg)",
+    backgroundRepeat: "no-repeat",
+    backgroundSize: "cover"
   },
   image: {
     backgroundImage:

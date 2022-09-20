@@ -1,19 +1,19 @@
 import React from 'react'
 import Typography from "@material-ui/core/Typography";
+import Box from '@mui/material/Box';
 
 import { businessStyles } from "./businessUtils";
+import { CssBaseline } from '@material-ui/core';
 
 
 const Business = () => {
 
   const classes = businessStyles();
   return (
-    <div >
-      <div className={classes.image}></div>
-       {/* <Typography variant='h3' className={classes.title}>
-            Business
-        </Typography> */}
-      </div>
+    <div className={classes.root}>
+      <CssBaseline/>
+    </div>
+   
   )
 }
 
