@@ -3,6 +3,7 @@ package com.mi.vecino.backendmodules.domain;
 import static com.mi.vecino.backendmodules.constant.FileConstant.DEFAULT_USER_IMAGE_PATH;
 import static com.mi.vecino.backendmodules.domain.enumeration.Role.ROLE_USER;
 
+import com.mi.vecino.backendmodules.domain.command.UpdateUserProfileCommand;
 import com.mi.vecino.backendmodules.domain.command.UserCommand;
 import java.io.Serializable;
 import java.util.Date;
@@ -67,12 +68,8 @@ public class User implements Serializable {
     this.isActive = true;
   }
 
-  public void updateUserInfo(UserCommand userCommand) {
-    this.fullName = userCommand.getFullName();
-    this.username = userCommand.getUsername();
-    this.email = userCommand.getEmail();
-    this.gender = userCommand.getGender();
-    this.birthDate = userCommand.getBirthDate();
+  public void updateUserInfo(UpdateUserProfileCommand updateUserProfileCommand) {
+    this.gender = updateUserProfileCommand.getGender();
   }
 
   private String getTemporaryProfileImageUrl(String username) {

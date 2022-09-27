@@ -10,7 +10,6 @@ const AddressForm = ({
   formErrorValues,
   formHelperTextValues,
 }) => {
-  const typography = typographyStyles();
   return (
     <>
       <Grid item xs={12}>

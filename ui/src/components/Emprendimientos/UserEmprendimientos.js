@@ -5,9 +5,12 @@ import Typography from "@material-ui/core/Typography";
 import { typographyStyles } from "../../utils/stylesUtils";
 import EmprendimientoForm from "./EmprendimientoForm";
 import EmprendimientoSelector from "./EmprendimientoSelector";
-import EmprendimientoImageUploader from "./EmprendimientoImageUploader";
 import { defaultValues } from "./emprendimientosUtils";
-import { getUserEmprendimientos } from "./emprendimientosServices";
+import {
+  getUserEmprendimientos,
+  updateEmprendimientoImage,
+} from "./emprendimientosServices";
+import SettingsImageUploader from "../Settings/SettingsImageUploader";
 
 const UserEmprendimientos = () => {
   const typography = typographyStyles();
@@ -17,6 +20,18 @@ const UserEmprendimientos = () => {
   const [emprendimientos, setEmprendimientos] = useState([]);
   const [isReadOnly, setIsReadOnly] = useState(false);
   const [areUpdates, setAreUpdates] = useState(false);
+
+  useEffect(() => {
+    if (areUpdates) {
+      getUserEmprendimientos()
+        .then((response) => {
+          setEmprendimientos(response);
+        })
+        .catch((e) => {
+          setEmprendimientos([]);
+        });
+    }
+  }, [areUpdates]);
 
   useEffect(() => {
     getUserEmprendimientos()
@@ -68,10 +83,13 @@ const UserEmprendimientos = () => {
               emprendimientoSelected={emprendimientoSelected}
               setEmprendimientoSelected={setEmprendimientoSelected}
             />
-            <EmprendimientoImageUploader
+            <SettingsImageUploader
               id={emprendimientoSelected.id}
               url={emprendimientoSelected.imageUrl}
+              callToUpload={updateEmprendimientoImage}
               isReadOnly={isReadOnly}
+              uploaderAlign='center'
+              setAreUpdates={setAreUpdates}
             />
           </Grid>
           <Grid item xs={12} md={6}>
@@ -80,6 +98,7 @@ const UserEmprendimientos = () => {
               isReadOnly={isReadOnly}
               setIsReadOnly={setIsReadOnly}
               setAreUpdates={setAreUpdates}
+              dataRefreshed={areUpdates}
             />
           </Grid>
         </Grid>

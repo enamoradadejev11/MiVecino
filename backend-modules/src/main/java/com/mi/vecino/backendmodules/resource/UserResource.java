@@ -4,12 +4,15 @@ import static com.mi.vecino.backendmodules.constant.FileConstant.FORWARD_SLASH;
 import static com.mi.vecino.backendmodules.constant.FileConstant.TEMP_PROFILE_IMAGE_BASE_URL;
 import static com.mi.vecino.backendmodules.constant.FileConstant.USER_FOLDER;
 import static com.mi.vecino.backendmodules.constant.SecurityConstant.JWT_TOKEN_HEADER;
+import static com.mi.vecino.backendmodules.constant.SecurityConstant.TOKEN_PREFIX;
 import static org.springframework.http.MediaType.IMAGE_JPEG_VALUE;
 
 import com.mi.vecino.backendmodules.domain.HttpResponse;
 import com.mi.vecino.backendmodules.domain.User;
 import com.mi.vecino.backendmodules.domain.UserInformation;
 import com.mi.vecino.backendmodules.domain.UserPrincipal;
+import com.mi.vecino.backendmodules.domain.UserProfile;
+import com.mi.vecino.backendmodules.domain.command.UpdateUserProfileCommand;
 import com.mi.vecino.backendmodules.domain.command.UserCommand;
 import com.mi.vecino.backendmodules.domain.command.UserValidCommand;
 import com.mi.vecino.backendmodules.domain.exception.EmailExistException;
@@ -26,6 +29,9 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.Map;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -41,6 +47,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -56,6 +63,7 @@ public class UserResource extends ExceptionHandling {
   private final UserService userService;
   private final AuthenticationManager authenticationManager;
   private final JWTTokenProvider jwtTokenProvider;
+  private final Logger logger = LoggerFactory.getLogger(getClass());
 
   @Autowired
   public UserResource(UserService userService,
@@ -89,24 +97,27 @@ public class UserResource extends ExceptionHandling {
     authenticate(userCommand.getUsername(), userCommand.getPassword());
     User loginUser = userService.findUserByUsername(userCommand.getUsername());
     UserPrincipal userPrincipal = new UserPrincipal(loginUser);
-    UserValidCommand userValidCommand = new UserValidCommand(userPrincipal.getUsername(), getJwtToken(userPrincipal));
+    UserValidCommand userValidCommand = new UserValidCommand(userPrincipal.getUsername(),
+        getJwtToken(userPrincipal));
     return new ResponseEntity<>(userValidCommand, HttpStatus.OK);
   }
 
-  @PutMapping("/update/{username}")
-  public ResponseEntity<User> updateUser(@PathVariable("username") String username,
-      @RequestBody UserCommand userCommand,
-      @RequestParam(value = "profileImage", required = false) MultipartFile profileImage)
-      throws UsernameNotFoundException, UserNotFoundException, EmailExistException, IOException, UsernameExistException {
-    User updatedUser = userService.updateUser(username, userCommand, profileImage);
+  @PutMapping
+  public ResponseEntity<UserProfile> updateUser(@RequestHeader Map<String, String> headers,
+      @RequestBody UpdateUserProfileCommand updateUserProfileCommand)
+      throws UsernameNotFoundException {
+    String currentUsername = getCurrentUsername(headers);
+    UserProfile updatedUser = userService.updateUser(currentUsername, updateUserProfileCommand);
     return new ResponseEntity<>(updatedUser, HttpStatus.OK);
   }
 
-  @GetMapping("/find/{username}")
-  public ResponseEntity<User> getUser(@PathVariable("username") String username)
-      throws UsernameNotFoundException {
-    User user = userService.findUserByUsername(username);
-    return new ResponseEntity<>(user, HttpStatus.OK);
+  @GetMapping
+  public ResponseEntity<UserProfile> getUser(@RequestHeader Map<String, String> headers)
+      throws UsernameNotFoundException, UserNotFoundException, EmailExistException, UsernameExistException {
+    String currentUsername = getCurrentUsername(headers);
+    User user = userService.getUserByUsername(currentUsername);
+    UserProfile userProfile = new UserProfile(user);
+    return new ResponseEntity<>(userProfile, HttpStatus.OK);
   }
 
   @GetMapping("/list")
@@ -122,18 +133,19 @@ public class UserResource extends ExceptionHandling {
     return response(HttpStatus.OK, NEW_PASSWORD_WAS_SENT_TO + email);
   }
 
-  @DeleteMapping("/delete/{id}")
+  @DeleteMapping("/{id}")
   @PreAuthorize("hasAnyAuthority('user:delete')")
   public ResponseEntity<HttpResponse> deleteUser(@PathVariable("id") long id) {
     userService.deleteUser(id);
     return response(HttpStatus.NO_CONTENT, USER_DELETED_SUCCESSFULLY);
   }
 
-  @PutMapping("/update/profileImage")
-  public ResponseEntity<User> updateProfileImage(@RequestParam("username") String username,
-      @RequestParam(value = "profileImage") MultipartFile profileImage)
+  @PutMapping("/image")
+  public ResponseEntity<User> updateProfileImage(
+      @RequestParam(value = "profileImage") MultipartFile profileImage,
+      @RequestHeader Map<String, String> headers)
       throws UserNotFoundException, EmailExistException, IOException, UsernameExistException {
-    User user = userService.updateProfileImage(username, profileImage);
+    User user = userService.updateProfileImage(getCurrentUsername(headers), profileImage);
     return new ResponseEntity<>(user, HttpStatus.OK);
   }
 
@@ -156,6 +168,11 @@ public class UserResource extends ExceptionHandling {
       }
     }
     return byteArrayOutputStream.toByteArray();
+  }
+
+  private String getCurrentUsername(Map<String, String> headers) {
+    var token = headers.get("authorization");
+    return jwtTokenProvider.getSubject(token.replace(TOKEN_PREFIX, ""));
   }
 
   private ResponseEntity<HttpResponse> response(HttpStatus httpStatus, String message) {

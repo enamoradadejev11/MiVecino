@@ -1,16 +1,24 @@
 import { Box, Button, Typography } from "@material-ui/core";
 import React, { useEffect, useState } from "react";
 import ImageUploader from "../ImageUploader/ImageUploader";
-import { updateEmprendimientoImage } from "./emprendimientosServices";
+import Stack from "@mui/material/Stack";
 
-const EmprendimientoImageUploader = ({ id, url, isReadOnly }) => {
+const SettingsImageUploader = ({
+  id,
+  url,
+  callToUpload,
+  isReadOnly,
+  uploaderAlign,
+  setAreUpdates,
+}) => {
   const [currentImage, setCurrentImage] = useState(null);
   const [currentUrl, setCurrentUrl] = useState(url);
   const [errorMessage, setErrorMessage] = useState(null);
   const [showSaveButton, setShowSaveButton] = useState();
 
   useEffect(() => {
-    if (url) {
+    console.log("url", url);
+    if (url && url !== "") {
       setCurrentUrl(url);
     } else {
       setCurrentUrl(null);
@@ -33,10 +41,11 @@ const EmprendimientoImageUploader = ({ id, url, isReadOnly }) => {
 
   const onSaveImage = () => {
     if (id && currentImage) {
-      updateEmprendimientoImage(id, currentImage)
+      callToUpload(id, currentImage)
         .then((response) => {
           setCurrentImage(null);
           setErrorMessage(null);
+          setAreUpdates(true);
         })
         .catch((e) => {
           const { message } = e.response.data;
@@ -45,23 +54,26 @@ const EmprendimientoImageUploader = ({ id, url, isReadOnly }) => {
           }
           setCurrentImage(null);
           setCurrentUrl("");
+          setAreUpdates(false);
         });
     }
   };
 
   return (
     <>
-      <Box pt={4}>
-        <ImageUploader
-          url={currentUrl}
-          handleImageUpload={handleImageUpload}
-          isReadOnly={isReadOnly}
-        />
-      </Box>
-      {showSaveButton && <Button onClick={onSaveImage}>SAVE</Button>}
-      {errorMessage && <Typography>{errorMessage}</Typography>}
+      <Stack direction='column' alignItems={uploaderAlign}>
+        <Box pt={4}>
+          <ImageUploader
+            url={currentUrl}
+            handleImageUpload={handleImageUpload}
+            isReadOnly={isReadOnly}
+          />
+        </Box>
+        {showSaveButton && <Button onClick={onSaveImage}>SAVE</Button>}
+        {errorMessage && <Typography>{errorMessage}</Typography>}
+      </Stack>
     </>
   );
 };
 
-export default EmprendimientoImageUploader;
+export default SettingsImageUploader;

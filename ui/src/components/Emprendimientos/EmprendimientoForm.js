@@ -16,7 +16,10 @@ import {
 import MenuItem from "@mui/material/MenuItem";
 import MultipleSelectCategory from "./emprendimientosCategories";
 import TextField from "@mui/material/TextField";
-import { updateEmprendimiento } from "./emprendimientosServices";
+import {
+  addEmprendimiento,
+  updateEmprendimiento,
+} from "./emprendimientosServices";
 
 const emprendimientosTypes = [
   {
@@ -46,6 +49,7 @@ const EmprendimientoForm = ({
   isReadOnly,
   setIsReadOnly,
   setAreUpdates,
+  dataRefreshed,
 }) => {
   const styles = emprendimientosFormStyles();
 
@@ -61,12 +65,19 @@ const EmprendimientoForm = ({
 
   const handleSubmit = (event) => {
     event.preventDefault();
-
     if (buttonType === "Editar") {
       setIsReadOnly(false);
       setButtonType("Guardar");
     } else if (buttonType === "Agregar") {
-      console.log("POST", formValues);
+      addEmprendimiento(formValues)
+        .then((response) => {
+          setButtonType("Editar");
+          setIsReadOnly(true);
+          setAreUpdates(true);
+        })
+        .catch((e) => {
+          console.log(e);
+        });
     } else if (buttonType === "Guardar") {
       updateEmprendimiento(formValues)
         .then((response) => {
@@ -79,6 +90,13 @@ const EmprendimientoForm = ({
         });
     }
   };
+
+  useEffect(() => {
+    if (dataRefreshed) {
+      setButtonType("Editar");
+      setIsReadOnly(true);
+    }
+  }, [dataRefreshed, setButtonType, setIsReadOnly]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -176,7 +194,6 @@ const EmprendimientoForm = ({
               ))}
             </TextField>
           </Grid>
-
           <Grid item xs={6}>
             <TextField
               label='Numero Telefonico'
@@ -213,18 +230,21 @@ const EmprendimientoForm = ({
               isReadOnly={isReadOnly}
             />
           </Grid>
-          <FormControlLabel
-            control={
-              <Switch
-                checked={formValues.active}
-                onChange={handleInputChange}
-                name='active'
-                disabled={isReadOnly}
-              />
-            }
-            label={formValues.active ? "Activo" : "Desactivo"}
-          />
+          <Grid item xs={12}>
+            <FormControlLabel
+              control={
+                <Switch
+                  checked={formValues.active}
+                  onChange={handleInputChange}
+                  name='active'
+                  disabled={isReadOnly}
+                />
+              }
+              label={formValues.active ? "Activo" : "Desactivo"}
+            />
+          </Grid>
         </Grid>
+
         <Box pt={5} display='flex' justifyContent='flex-end'>
           <Button variant='contained' type='submit' className={styles.boton}>
             {buttonType}

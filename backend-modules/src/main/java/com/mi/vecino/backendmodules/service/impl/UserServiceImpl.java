@@ -12,6 +12,8 @@ import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 import com.mi.vecino.backendmodules.domain.User;
 import com.mi.vecino.backendmodules.domain.UserInformation;
 import com.mi.vecino.backendmodules.domain.UserPrincipal;
+import com.mi.vecino.backendmodules.domain.UserProfile;
+import com.mi.vecino.backendmodules.domain.command.UpdateUserProfileCommand;
 import com.mi.vecino.backendmodules.domain.command.UserCommand;
 import com.mi.vecino.backendmodules.domain.enumeration.Role;
 import com.mi.vecino.backendmodules.domain.exception.EmailExistException;
@@ -102,22 +104,25 @@ public class UserServiceImpl implements UserService, UserDetailsService {
   }
 
   @Override
+  public User getUserByUsername(String username)
+      throws UserNotFoundException, EmailExistException, UsernameExistException {
+    User user = validateNewUsernameAndEmail(username, null, null);
+    return Objects.nonNull(user) ? userRepository.findUserByUsername(user.getUsername()) : new User();
+  }
+
+  @Override
   public User findUserByEmail(String email) {
     return userRepository.findUserByEmail(email);
   }
 
   @Override
-  public User updateUser(String currentUsername, UserCommand newUser, MultipartFile profileImage)
-      throws UserNotFoundException, EmailExistException, UsernameExistException, IOException {
-    User currentUser = validateNewUsernameAndEmail(currentUsername, newUser.getUsername(),
-        newUser.getEmail());
-
+  public UserProfile updateUser(String currentUsername, UpdateUserProfileCommand newUser) {
+    User currentUser = findUserByUsername(currentUsername);
     if (Objects.nonNull(currentUser)) {
       currentUser.updateUserInfo(newUser);
-      userRepository.save(currentUser);
-      saveProfileImage(currentUser, profileImage);
+      return new UserProfile(userRepository.save(currentUser));
     }
-    return currentUser;
+    return new UserProfile();
   }
 
   @Override

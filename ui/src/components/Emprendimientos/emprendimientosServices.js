@@ -1,12 +1,7 @@
 import axios from "axios";
+import { authHeader } from "../../utils/utils";
 
 const emprendimientosApi = "http://localhost:8081/api/v1/emprendimiento";
-
-const authHeader = () => {
-  const user = JSON.parse(window.localStorage.getItem("user"));
-  const token = `Bearer ${user.token}`;
-  return { headers: { Authorization: token } };
-};
 
 export const addNewEmprendimiento = async (emprendimiento) => {
   const response = await axios.post(
@@ -32,6 +27,15 @@ export const getUserEmprendimientos = async () => {
 
 export const getEmprendimientoImage = async (imageUrl) => {
   const response = await axios.get(`${imageUrl}`, authHeader());
+  return response.data;
+};
+
+export const addEmprendimiento = async (emprendimiento) => {
+  const response = await axios.post(
+    `${emprendimientosApi}/add`,
+    emprendimiento,
+    authHeader()
+  );
   return response.data;
 };
 

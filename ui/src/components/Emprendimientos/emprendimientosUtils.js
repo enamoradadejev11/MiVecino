@@ -53,6 +53,7 @@ export const defaultValues = {
     zipCode: null,
   },
   addresses: [],
+  imageUrl: "",
 };
 
 export const byteArrayToBase64 = (byteArray) => {

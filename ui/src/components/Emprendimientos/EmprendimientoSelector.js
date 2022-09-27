@@ -8,7 +8,6 @@ const EmprendimientoSelector = ({
   emprendimientoSelected,
   setEmprendimientoSelected,
 }) => {
-  console.log("emprendimientoSelected", emprendimientoSelected);
   return (
     <>
       <Grid container spacing={2} justifyContent='center'>
