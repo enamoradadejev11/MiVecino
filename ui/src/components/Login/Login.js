@@ -8,6 +8,7 @@ import {
 } from "./loginUtils";
 import StaticContext from "../../context/StaticContext";
 import { useLocation } from "wouter";
+import Navbar from "../Common/Navbar/Navbar";
 
 const Login = () => {
   const context = useContext(StaticContext);
@@ -75,6 +76,8 @@ const Login = () => {
   };
 
   return (
+    <>
+    <Navbar type={'registro'}/>
     <LoginForm
       formValues={formValues}
       formErrorValues={formErrorValues}
@@ -82,6 +85,8 @@ const Login = () => {
       handleSubmit={handleSubmit}
       handleInputChange={handleInputChange}
     />
+    </>
+    
   );
 };
 

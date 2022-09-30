@@ -7,6 +7,8 @@ import {
 } from "./registerUtils";
 import RegisterForm from "./RegisterForm";
 import axios from "axios";
+import Navbar from "../Common/Navbar/Navbar";
+
 
 const Register = () => {
   const [, setLocation] = useLocation();
@@ -87,6 +89,7 @@ const Register = () => {
 
   return (
     <>
+      <Navbar type={'login'}/>
       <RegisterForm
         formValues={formValues}
         formErrorVaues={formErrorValues}
