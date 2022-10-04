@@ -1,7 +1,7 @@
 import { makeStyles } from "@material-ui/core/styles";
+import { colors } from "./utils";
 
-const MINT = "#99C1BA";
-const DARK_PINK = "#F48686";
+const { MINT, DARK_PINK } = colors;
 
 export const typographyStyles = makeStyles((theme) => ({
   bright_title: {
@@ -27,6 +27,17 @@ export const typographyStyles = makeStyles((theme) => ({
   text_error: {
     color: "#FF2222",
     fontFamily: ['"Inconsolata"', "monospace"].join(","),
+    fontSize: 16,
+  },
+  dark_regular_text: {
+    color: "black",
+    fontFamily: ['"Karla"', "sans-serif"].join(","),
+    fontSize: 18,
+    fontWeight: "bold",
+  },
+  light_regular_text: {
+    color: "#556577",
+    fontFamily: ['"Karla"', "sans-serif"].join(","),
     fontSize: 16,
   },
 }));

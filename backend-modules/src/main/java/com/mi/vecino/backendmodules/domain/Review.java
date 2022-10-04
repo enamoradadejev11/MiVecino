@@ -31,7 +31,7 @@ public class Review {
   private long id;
   private long emprendimientoId;
   private String username;
-  private int score;
+  private float score;
   private String comment;
   @Column(columnDefinition = "jsonb")
   @Type(type = "jsonb")

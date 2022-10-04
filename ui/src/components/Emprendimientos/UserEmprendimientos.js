@@ -14,7 +14,6 @@ import SettingsImageUploader from "../Settings/SettingsImageUploader";
 
 const UserEmprendimientos = () => {
   const typography = typographyStyles();
-
   const [emprendimientoSelected, setEmprendimientoSelected] =
     useState(defaultValues);
   const [emprendimientos, setEmprendimientos] = useState([]);
