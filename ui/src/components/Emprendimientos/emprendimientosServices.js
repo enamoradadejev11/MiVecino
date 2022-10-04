@@ -2,6 +2,7 @@ import axios from "axios";
 import { authHeader } from "../../utils/utils";
 
 const emprendimientosApi = "http://localhost:8081/api/v1/emprendimiento";
+const reviewApi = "http://localhost:8081/api/v1/review";
 
 export const addNewEmprendimiento = async (emprendimiento) => {
   const response = await axios.post(
@@ -48,5 +49,20 @@ export const updateEmprendimientoImage = async (id, file) => {
     formData,
     authHeader()
   );
+  return response.data;
+};
+
+export const getReviewEmprendimientos = async (id) => {
+  const response = await axios.get(`${reviewApi}/${id}/all`, authHeader());
+  return response.data;
+};
+
+export const addReview = async (emprendimientoId, review) => {
+  var formData = new FormData();
+  formData.append("emprendimientoId", emprendimientoId);
+  formData.append("score", review.score);
+  formData.append("comment", review.comment);
+  formData.append("images", review.images);
+  const response = await axios.post(`${reviewApi}/add`, formData, authHeader());
   return response.data;
 };

@@ -8,7 +8,7 @@ import lombok.Getter;
 public class ReviewCommand {
 
   private final long emprendimientoId;
-  private final int score;
+  private final float score;
   private final String comment;
 
 }

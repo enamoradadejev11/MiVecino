@@ -9,6 +9,7 @@ import StaticContext from "./context/StaticContext";
 import Settings from "./components/Settings/Settings";
 import UserEmprendimientos from "./components/Emprendimientos/UserEmprendimientos";
 import UserProfile from "./components/UserProfile";
+import ReviewSection from "./components/Reviews";
 
 function App() {
   const theme = createTheme({
@@ -38,6 +39,7 @@ function App() {
               <Route path='/settings' component={Settings} />
               <Route path='/emprendimientos' component={UserEmprendimientos} />
               <Route path='/perfil' component={UserProfile} />
+              <Route path='/emprendimiento/:id' component={ReviewSection} />
               <div></div>
             </div>
           </ThemeProvider>

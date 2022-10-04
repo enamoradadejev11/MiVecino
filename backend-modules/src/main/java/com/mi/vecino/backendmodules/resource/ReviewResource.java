@@ -15,6 +15,7 @@ import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -26,6 +27,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 @RestController
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 @RequestMapping(value = "api/v1/review")
 public class ReviewResource {
 
@@ -49,11 +51,11 @@ public class ReviewResource {
   @PostMapping("/add")
   public Review reviewWithImages(
       @RequestParam(value = "emprendimientoId") long emprendimientoId,
-      @RequestParam(value = "score") int score,
-      @RequestParam(value = "comment") String comment,
-      @RequestParam(value = "images") MultipartFile[] images) throws IOException {
+      @RequestParam(value = "score") String score,
+      @RequestParam(value = "comment", required = false) String comment,
+      @RequestParam(value = "images", required = false) MultipartFile[] images) throws IOException {
     var username = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-    var reviewCommand = new ReviewCommand(emprendimientoId, score, comment);
+    var reviewCommand = new ReviewCommand(emprendimientoId, Float.parseFloat(score), comment);
     return reviewService.addReviewWithImages(username, reviewCommand, images);
   }
 
