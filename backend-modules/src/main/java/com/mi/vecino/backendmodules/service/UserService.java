@@ -2,6 +2,8 @@ package com.mi.vecino.backendmodules.service;
 
 import com.mi.vecino.backendmodules.domain.User;
 import com.mi.vecino.backendmodules.domain.UserInformation;
+import com.mi.vecino.backendmodules.domain.UserProfile;
+import com.mi.vecino.backendmodules.domain.command.UpdateUserProfileCommand;
 import com.mi.vecino.backendmodules.domain.command.UserCommand;
 import com.mi.vecino.backendmodules.domain.exception.EmailExistException;
 import com.mi.vecino.backendmodules.domain.exception.EmailNotFoundException;
@@ -20,10 +22,12 @@ public interface UserService {
 
   User findUserByUsername(String username);
 
+  User getUserByUsername(String username)
+      throws UserNotFoundException, EmailExistException, UsernameExistException;
+
   User findUserByEmail(String email);
 
-  User updateUser(String currentUsername, UserCommand newUser, MultipartFile profileImage)
-      throws UserNotFoundException, EmailExistException, UsernameExistException, IOException;
+  UserProfile updateUser(String currentUsername, UpdateUserProfileCommand newUser);
 
   void deleteUser(long id);
 

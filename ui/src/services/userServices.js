@@ -1,13 +1,7 @@
 import axios from "axios";
+import { authHeader } from "../utils/utils";
 
 const userApi = "http://localhost:8081/user";
-
-const authHeader = () => {
-  const user = JSON.parse(window.localStorage.getItem("user"));
-  const token = `Bearer ${user.token}`;
-  console.log("token", token);
-  return { headers: { Authorization: token } };
-};
 
 export const getUser = async (formValues) => {
   const response = await axios.post(`${userApi}/login`, formValues);
@@ -16,5 +10,22 @@ export const getUser = async (formValues) => {
 
 export const getUsers = async () => {
   const response = await axios.get(`${userApi}/list`, authHeader());
+  return response.data;
+};
+
+export const findUser = async () => {
+  const response = await axios.get(`${userApi}`, authHeader());
+  return response.data;
+};
+
+export const updateUser = async (formValues) => {
+  const response = await axios.put(`${userApi}`, formValues, authHeader());
+  return response.data;
+};
+
+export const updateUserImage = async (id, file) => {
+  var formData = new FormData();
+  formData.append("profileImage", file);
+  const response = await axios.put(`${userApi}/image`, formData, authHeader());
   return response.data;
 };

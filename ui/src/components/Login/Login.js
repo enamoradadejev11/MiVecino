@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useState } from "react";
 import { getUser } from "../../services/userServices";
 import LoginForm from "./LoginForm";
 import {
@@ -6,12 +6,9 @@ import {
   defaultLoginHelperTextVaues,
   defaultLoginValues,
 } from "./loginUtils";
-import StaticContext from "../../context/StaticContext";
 import { useLocation } from "wouter";
 
 const Login = () => {
-  const context = useContext(StaticContext);
-  console.log("context", context);
   const [, setLocation] = useLocation();
   const [formValues, setFormValues] = useState(defaultLoginValues);
   const [formErrorValues, setFormErrorValues] = useState(
@@ -64,7 +61,6 @@ const Login = () => {
     event.preventDefault();
     getUser(formValues)
       .then((response) => {
-        console.log("res", response);
         setUser(response);
         window.localStorage.setItem("user", JSON.stringify(response));
         setLocation("/");
