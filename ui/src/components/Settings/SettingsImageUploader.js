@@ -17,7 +17,6 @@ const SettingsImageUploader = ({
   const [showSaveButton, setShowSaveButton] = useState();
 
   useEffect(() => {
-    console.log("url", url);
     if (url && url !== "") {
       setCurrentUrl(url);
     } else {

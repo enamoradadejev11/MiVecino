@@ -2,12 +2,18 @@ import React, { useEffect, useState } from "react";
 import EmprendimientoReviews from "./EmprendimientoReviews";
 import Review from "./Review";
 import { Grid } from "@mui/material";
-import { getReviewEmprendimientos } from "../Emprendimientos/emprendimientosServices";
+import {
+  getEmprendimiento,
+  getReviewEmprendimientos,
+} from "../Emprendimientos/emprendimientosServices";
 import { useLocation } from "wouter";
 import { getUser } from "../../utils/utils";
+import Business from "../Business/Business";
+import { Footer } from "../Common/Footer/Footer";
 
 const ReviewSection = ({ params }) => {
   const { id } = params;
+  const [emprendimiento, setEmprendimiento] = useState();
   const [reviews, setReviews] = useState([]);
   const [userReview, setUserReview] = useState({ score: 0, comment: "" });
   const [, setErrorMessage] = useState("");
@@ -27,22 +33,23 @@ const ReviewSection = ({ params }) => {
       .catch((e) => {
         setErrorMessage(e.message);
       });
+    getEmprendimiento(id)
+      .then((response) => setEmprendimiento(response))
+      .catch((e) => setErrorMessage(e.message));
   }, [id, setReviews, setErrorMessage]);
 
   useEffect(() => {
     if (reviews) {
       const user = getUser();
-      console.log("user", user);
       setUserReview(
         reviews.find((review) => review.username === user.username)
       );
     }
   }, [reviews]);
 
-  console.log("reviews", reviews);
-
   return (
     <>
+      <Business data={emprendimiento} />
       <Grid
         container
         spacing={0}
@@ -54,6 +61,7 @@ const ReviewSection = ({ params }) => {
         <EmprendimientoReviews reviews={reviews} />
         <Review emprendimientoId={id} userReview={userReview} />
       </Grid>
+      <Footer />
     </>
   );
 };

@@ -39,18 +39,13 @@ const Review = ({ emprendimientoId, userReview }) => {
     }
   }, [review]);
 
-  console.log("review", review);
-  console.log("isvalid", isValidReview);
-
   const handleSubmit = (e) => {
-    console.log("e", e);
     addReview(emprendimientoId, review)
       .then((response) => {
         setIsReadOnly(true);
+        setReview(response);
       })
-      .catch((e) => {
-        console.log("e", e);
-      });
+      .catch((e) => {});
   };
 
   return (

@@ -7,6 +7,7 @@ import {
   defaultLoginValues,
 } from "./loginUtils";
 import { useLocation } from "wouter";
+import Navbar from "../Common/Navbar/Navbar";
 
 const Login = () => {
   const [, setLocation] = useLocation();
@@ -71,6 +72,8 @@ const Login = () => {
   };
 
   return (
+    <>
+    <Navbar type={'registro'}/>
     <LoginForm
       formValues={formValues}
       formErrorValues={formErrorValues}
@@ -78,6 +81,8 @@ const Login = () => {
       handleSubmit={handleSubmit}
       handleInputChange={handleInputChange}
     />
+    </>
+    
   );
 };
 

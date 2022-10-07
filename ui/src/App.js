@@ -10,6 +10,7 @@ import Settings from "./components/Settings/Settings";
 import UserEmprendimientos from "./components/Emprendimientos/UserEmprendimientos";
 import UserProfile from "./components/UserProfile";
 import ReviewSection from "./components/Reviews";
+import Business from "./components/Business/Business";
 
 function App() {
   const theme = createTheme({
@@ -40,6 +41,7 @@ function App() {
               <Route path='/emprendimientos' component={UserEmprendimientos} />
               <Route path='/perfil' component={UserProfile} />
               <Route path='/emprendimiento/:id' component={ReviewSection} />
+              <Route path='/business' component={Business} />
               <div></div>
             </div>
           </ThemeProvider>

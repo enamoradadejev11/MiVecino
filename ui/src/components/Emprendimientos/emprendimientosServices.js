@@ -26,6 +26,11 @@ export const getUserEmprendimientos = async () => {
   return response.data;
 };
 
+export const getEmprendimiento = async (id) => {
+  const response = await axios.get(`${emprendimientosApi}/${id}`, authHeader());
+  return response.data;
+};
+
 export const getEmprendimientoImage = async (imageUrl) => {
   const response = await axios.get(`${imageUrl}`, authHeader());
   return response.data;
