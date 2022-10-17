@@ -29,9 +29,24 @@ export const businessStyles = makeStyles((theme) => ({
   },
   title: {
     color: "white",
-    fontFamily: "Secular One",
     paddingLeft: "60px",
-    marginTop: 400,
+    marginTop: 50,
+    textAlign: "left",
+    fontFamily: ['"Inconsolata"', "monospace"].join(","),
+    fontSize: 70,
+  },
+  description: {
+    color: "white",
+    fontSize: 20,
+    paddingLeft: "60px",
+    textAlign: "left",
+    fontFamily: ['"Karla"', "sans-serif"].join(","),
+  },
+  iconTittle: {
+    color: "white",
+    fontFamily: ['"Inconsolata"', "monospace"].join(","),
+    fontSize: 20,
+    paddingLeft: "10px",
     textAlign: "left",
   },
   information: {

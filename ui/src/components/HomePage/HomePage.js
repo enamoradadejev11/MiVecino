@@ -1,35 +1,28 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect } from "react";
 import { useLocation } from "wouter";
-import { getUsers } from "../../services/userServices";
-import { Footer } from "../Common/Footer/Footer";
-import Navbar from "../Common/Navbar/Navbar";
+import PlacesContext from "../../context/places/PlacesContext";
+import BtnMyLocation from "../Map/BtnMyLocation";
+import MainMap from "../Map/MainMap";
 
 const HomePage = () => {
-  const [users, setUsers] = useState([]);
   const [, setLocation] = useLocation();
+  const { userLocation } = useContext(PlacesContext);
+
+  if (!navigator.geolocation) {
+    alert("error tu navegador no tiene geolocation");
+  }
 
   useEffect(() => {
-    if (window.localStorage.getItem("user")) {
-      getUsers()
-        .then((response) => {
-          setUsers(response);
-        })
-        .catch((e) => setLocation("/login"));
-    } else {
+    if (!window.localStorage.getItem("user")) {
       setLocation("/login");
     }
   }, [setLocation]);
 
   return (
-
-    <div>
-      <Navbar/>
-      <h1>HOME PAGE</h1>
-      {users.map((user) => (
-        <h2>{user.username}</h2>
-      ))}
-      <Footer/>
-    </div>
+    <>
+      <MainMap />
+      <BtnMyLocation location={userLocation} />
+    </>
   );
 };
 

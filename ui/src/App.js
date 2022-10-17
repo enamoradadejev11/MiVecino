@@ -9,8 +9,10 @@ import StaticContext from "./context/StaticContext";
 import Settings from "./components/Settings/Settings";
 import UserEmprendimientos from "./components/Emprendimientos/UserEmprendimientos";
 import UserProfile from "./components/UserProfile";
-import ReviewSection from "./components/Reviews";
 import Business from "./components/Business/Business";
+import { PlacesProvider } from "./context/places/PlacesProvider";
+import { MapProvider } from "./context/map/MapProvider";
+import EmprendimientoDetail from "./components/Business";
 
 function App() {
   const theme = createTheme({
@@ -25,29 +27,39 @@ function App() {
   });
 
   return (
-    <StaticContext.Provider
-      value={{
-        user: window.localStorage.getItem("user"),
-      }}
-    >
-      <section>
-        <div className='App'>
-          <ThemeProvider theme={theme}>
+    <PlacesProvider>
+      <MapProvider>
+        <StaticContext.Provider
+          value={{
+            user: window.localStorage.getItem("user"),
+          }}
+        >
+          <section>
             <div className='App'>
-              <Route path='/registro' component={Register} />
-              <Route path='/login' component={Login} />
-              <Route path='/' component={HomePage} />
-              <Route path='/settings' component={Settings} />
-              <Route path='/emprendimientos' component={UserEmprendimientos} />
-              <Route path='/perfil' component={UserProfile} />
-              <Route path='/emprendimiento/:id' component={ReviewSection} />
-              <Route path='/business' component={Business} />
-              <div></div>
+              <ThemeProvider theme={theme}>
+                <div className='App'>
+                  <Route path='/registro' component={Register} />
+                  <Route path='/login' component={Login} />
+                  <Route path='/' component={HomePage} />
+                  <Route path='/settings' component={Settings} />
+                  <Route
+                    path='/emprendimientos'
+                    component={UserEmprendimientos}
+                  />
+                  <Route path='/perfil' component={UserProfile} />
+                  <Route
+                    path='/emprendimiento/:id'
+                    component={EmprendimientoDetail}
+                  />
+                  <Route path='/business' component={Business} />
+                  <div></div>
+                </div>
+              </ThemeProvider>
             </div>
-          </ThemeProvider>
-        </div>
-      </section>
-    </StaticContext.Provider>
+          </section>
+        </StaticContext.Provider>
+      </MapProvider>
+    </PlacesProvider>
   );
 }
 

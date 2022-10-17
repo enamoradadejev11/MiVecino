@@ -16,6 +16,7 @@ const Calification = ({ calification }) => {
         value={calification}
         readOnly
         className={classes.gridContainerCalification}
+        size='large'
       />
     </Box>
   );

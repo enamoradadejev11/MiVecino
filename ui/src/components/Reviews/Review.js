@@ -51,7 +51,7 @@ const Review = ({ emprendimientoId, userReview }) => {
   return (
     <>
       <Box p={5} sx={{ width: "50%" }}>
-        <Box p={2}>
+        <Box p={2} id='review'>
           <Typography className={typography.dark_title}>
             {isReadOnly ? "Gracias por tu reseña!" : "Dejanos tu reseña"}
           </Typography>

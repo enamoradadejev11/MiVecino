@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
-import EmprendimientoReviews from "./EmprendimientoReviews";
-import Review from "./Review";
-import { Grid } from "@mui/material";
+import { Box, Grid } from "@mui/material";
+import { Typography } from "@material-ui/core";
 import {
   getEmprendimiento,
   getReviewEmprendimientos,
@@ -11,14 +10,19 @@ import { getUser } from "../../utils/utils";
 import Business from "../Business/Business";
 import { Footer } from "../Common/Footer/Footer";
 import EmprendimientoMap from "../Map/EmprendimientoMap";
+import More from "./Images/More";
+import EmprendimientoReviews from "../Reviews/EmprendimientoReviews";
+import Review from "../Reviews/Review";
+import { typographyStyles } from "../../utils/stylesUtils";
 
-const ReviewSection = ({ params }) => {
+const EmprendimientoDetail = ({ params }) => {
   const { id } = params;
   const [emprendimiento, setEmprendimiento] = useState();
   const [reviews, setReviews] = useState([]);
   const [userReview, setUserReview] = useState({ score: 0, comment: "" });
   const [, setErrorMessage] = useState("");
   const [, setLocation] = useLocation();
+  const typography = typographyStyles();
 
   useEffect(() => {
     if (!window.localStorage.getItem("user")) {
@@ -51,6 +55,7 @@ const ReviewSection = ({ params }) => {
   return (
     <>
       <Business data={emprendimiento} />
+      <More />
       <Grid
         container
         spacing={0}
@@ -63,9 +68,15 @@ const ReviewSection = ({ params }) => {
         <Review emprendimientoId={id} userReview={userReview} />
       </Grid>
       <EmprendimientoMap location={[-103.3907956, 20.6414121]} />
+      <Box p={2} id='similarPlaces'>
+        <Typography className={typography.dark_title}>
+          Recomendaciones similares
+        </Typography>
+      </Box>
+      <More />
       <Footer />
     </>
   );
 };
 
-export default ReviewSection;
+export default EmprendimientoDetail;

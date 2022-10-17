@@ -12,3 +12,18 @@ export const colors = {
   MINT: "#99C1BA",
   DARK_PINK: "#F48686",
 };
+
+export const getUserLocation = async () => {
+  return new Promise((resolve, reject) => {
+    navigator.geolocation.getCurrentPosition(
+      ({ coords }) => {
+        resolve([coords.longitude, coords.latitude]);
+      },
+      (err) => {
+        alert("no se pudo obtener la geolocation");
+        console.log(err);
+        reject();
+      }
+    );
+  });
+};

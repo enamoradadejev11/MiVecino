@@ -1,4 +1,5 @@
 import { makeStyles } from "@material-ui/core";
+import { colors } from "../../utils/utils";
 
 export const emprendimientosFormStyles = makeStyles((theme) => ({
   root: {},
@@ -13,7 +14,7 @@ export const emprendimientosFormStyles = makeStyles((theme) => ({
     marginLeft: 20,
     boxShadow: "initial",
     "&:hover": {
-      background: "#99C1BA",
+      background: colors.MINT,
       boxShadow: "initial",
     },
   },

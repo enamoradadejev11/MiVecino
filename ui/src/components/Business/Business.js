@@ -1,19 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { Typography, Grid } from "@mui/material";
+import { Grid } from "@mui/material";
 import { businessStyles } from "./businessUtils";
-import IconButton from "@mui/material/IconButton";
-import StarIcon from "@mui/icons-material/Star";
-import AddLocationAltIcon from "@mui/icons-material/AddLocationAlt";
-import ViewCarouselIcon from "@mui/icons-material/ViewCarousel";
-import AddIcon from "@mui/icons-material/Add";
+import { Typography } from "@material-ui/core";
 import Calification from "./Calification/Calification";
-import { HashLink } from "react-router-hash-link";
-import Information from "./Information/Information";
+import BusinessLinks from "./BusinessLinks";
 
 const Business = ({ data }) => {
   const classes = businessStyles();
-
-  console.log("data", data);
 
   const [emprendimiento, setEmprendimiento] = useState({
     id: "",
@@ -53,8 +46,8 @@ const Business = ({ data }) => {
             spacing={2}
             className={classes.gridContainer}
           >
-            <Grid item xs={12} sm={6} className={classes.gridContainerTitle}>
-              <Typography variant='h3' className={classes.title}>
+            <Grid item xs={12} sm={6}>
+              <Typography className={classes.title}>
                 {emprendimiento.name}
               </Typography>
             </Grid>
@@ -62,91 +55,13 @@ const Business = ({ data }) => {
               <Grid item className={classes.gridContainerCal}>
                 <Calification calification={emprendimiento.score} />
               </Grid>
-              <Grid item>
-                <Typography className={classes.information}>
-                  Horario: 9:00am - 10:00pm
-                </Typography>
-              </Grid>
             </Grid>
-            <Grid container direction='row'>
-              <Grid item xs={5} sm={6}>
-                <div className={classes.information}>
-                  {emprendimiento.description}
-                </div>
-              </Grid>
-              <Grid item xs={5} sm={6}></Grid>
+            <Grid item xs={5} sm={6}>
+              <Typography className={classes.description}>
+                {emprendimiento.description}
+              </Typography>
             </Grid>
-
-            <Grid
-              item
-              xs={12}
-              sm={6}
-              sx={{ textAlign: "left", marginLeft: "40px", marginTop: "80px" }}
-            >
-              <HashLink to='#more' smooth style={{ textDecoration: "none" }}>
-                <Typography sx={{ fontSize: "20px", color: "white" }}>
-                  <StarIcon
-                    fontSize='20'
-                    sx={{ color: "white", margin: "-4px" }}
-                  />{" "}
-                  Calificar este lugar
-                </Typography>
-              </HashLink>
-            </Grid>
-            <Grid
-              item
-              xs={12}
-              sm={6}
-              sx={{ textAlign: "left", marginLeft: "40px" }}
-            >
-              <HashLink to='#more' smooth style={{ textDecoration: "none" }}>
-                <Typography sx={{ fontSize: "20px", color: "white" }}>
-                  <AddLocationAltIcon
-                    fontSize='20'
-                    sx={{ color: "white", margin: "-4px" }}
-                  />{" "}
-                  Como llegar
-                </Typography>
-              </HashLink>
-            </Grid>
-            <Grid
-              item
-              xs={12}
-              sm={6}
-              sx={{ textAlign: "left", marginLeft: "40px" }}
-            >
-              <HashLink to='#more' smooth style={{ textDecoration: "none" }}>
-                <Typography sx={{ fontSize: "20px", color: "white" }}>
-                  <ViewCarouselIcon
-                    fontSize='20'
-                    sx={{ color: "white", margin: "-4px" }}
-                  />{" "}
-                  Mas lugares similares
-                </Typography>
-              </HashLink>
-            </Grid>
-            <Grid
-              item
-              xs={12}
-              sm={6}
-              sx={{ textAlign: "left", marginLeft: "25px", marginTop: "-4px" }}
-            >
-              <IconButton
-                aria-label='delete'
-                sx={{ fontSize: 20, color: "white", borderRadius: 1 }}
-              >
-                <AddIcon fontSize='20' sx={{ marginRight: "0px" }} />
-                Agregar a mi lista
-              </IconButton>
-            </Grid>
-            <Grid
-              item
-              xs={12}
-              sm={6}
-              sx={{ textAlign: "left", marginLeft: "28px", marginTop: "-8px" }}
-            >
-              <Information />
-            </Grid>
+            <BusinessLinks />
           </Grid>
         </Grid>
       </Grid>
