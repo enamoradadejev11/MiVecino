@@ -11,7 +11,9 @@ public interface ReviewService {
 
   Review addReviewToEmprendimiento(ReviewCommand reviewCommand, String username);
 
-  List<Review> getReviewsByEmprendimientoId(long id);
+  Map<String,List<Review>> getReviewsByEmprendimientoId(long id);
+
+  Review getUserReview(long emprendimientoId, String username);
 
   Map<String, String> deleteReview(long id, String username);
 

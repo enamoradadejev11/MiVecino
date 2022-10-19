@@ -4,8 +4,8 @@ import { Typography } from "@material-ui/core";
 import {
   getEmprendimiento,
   getReviewEmprendimientos,
+  getUserReview,
 } from "../Emprendimientos/emprendimientosServices";
-import { getUser } from "../../utils/utils";
 import Business from "../Business/Business";
 import { Footer } from "../Common/Footer/Footer";
 import EmprendimientoMap from "../Map/EmprendimientoMap";
@@ -33,16 +33,11 @@ const EmprendimientoDetail = ({ params }) => {
     getEmprendimiento(id)
       .then((response) => setEmprendimiento(response))
       .catch((e) => setErrorMessage(e.message));
-  }, [id, setReviews, setErrorMessage]);
 
-  useEffect(() => {
-    if (reviews) {
-      const user = getUser();
-      setUserReview(
-        reviews.find((review) => review.username === user.username)
-      );
-    }
-  }, [reviews]);
+    getUserReview(id)
+      .then((response) => setUserReview(response))
+      .catch((e) => setErrorMessage(e.message));
+  }, [id, setReviews, setErrorMessage]);
 
   return (
     <>

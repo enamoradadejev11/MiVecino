@@ -62,6 +62,11 @@ export const getReviewEmprendimientos = async (id) => {
   return response.data;
 };
 
+export const getUserReview = async (id) => {
+  const response = await axios.get(`${reviewApi}/${id}`, authHeader());
+  return response.data;
+};
+
 export const addReview = async (emprendimientoId, review) => {
   var formData = new FormData();
   formData.append("emprendimientoId", emprendimientoId);

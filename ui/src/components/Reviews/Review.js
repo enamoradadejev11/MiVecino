@@ -70,7 +70,7 @@ const Review = ({ emprendimientoId, userReview }) => {
           >
             <Avatar
               sx={{ bgcolor: "red", width: 56, height: 56 }}
-              alt={"karen"}
+              alt={review.username}
               src='/broken-image.jpg'
             />
             <Rating
