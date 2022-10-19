@@ -1,0 +1,20 @@
+.home-page-map-section {
+  display: "flex";
+  justify-content: "center";
+  align-items: "center";
+  height: "400px";
+}
+
+.home-page-recomendation-section {
+  padding-bottom: 3rem;
+}
+
+.slider-section {
+  padding-top: 1rem;
+  padding-bottom: 1.5rem;
+}
+
+.slider-section-tittle {
+  display: flex;
+  padding: 15px;
+}

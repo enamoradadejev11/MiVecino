@@ -5,7 +5,6 @@ import {
   getEmprendimiento,
   getReviewEmprendimientos,
 } from "../Emprendimientos/emprendimientosServices";
-import { useLocation } from "wouter";
 import { getUser } from "../../utils/utils";
 import Business from "../Business/Business";
 import { Footer } from "../Common/Footer/Footer";
@@ -21,14 +20,7 @@ const EmprendimientoDetail = ({ params }) => {
   const [reviews, setReviews] = useState([]);
   const [userReview, setUserReview] = useState({ score: 0, comment: "" });
   const [, setErrorMessage] = useState("");
-  const [, setLocation] = useLocation();
   const typography = typographyStyles();
-
-  useEffect(() => {
-    if (!window.localStorage.getItem("user")) {
-      setLocation("/login");
-    }
-  }, [setLocation]);
 
   useEffect(() => {
     getReviewEmprendimientos(id)

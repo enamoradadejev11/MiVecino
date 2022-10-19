@@ -47,6 +47,7 @@ const SingleReview = ({ review, isGood }) => {
             </Typography>
             {imagesUrl.map((url) => (
               <img
+                key={url}
                 src={url}
                 alt='avatar'
                 style={{

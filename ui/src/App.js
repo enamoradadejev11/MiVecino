@@ -1,6 +1,8 @@
-import React from "react";
+import React, { useEffect } from "react";
 import "./App.css";
-import { Route } from "wouter";
+import "./components/ImagesSlider/ImagesSlider.css";
+import "./components/HomePage/HomePage.css";
+import { Route, useLocation } from "wouter";
 import { ThemeProvider, createTheme } from "@material-ui/core/styles";
 import Login from "./components/Login/Login";
 import Register from "./components/Register/Register";
@@ -13,6 +15,7 @@ import Business from "./components/Business/Business";
 import { PlacesProvider } from "./context/places/PlacesProvider";
 import { MapProvider } from "./context/map/MapProvider";
 import EmprendimientoDetail from "./components/Business";
+import { isSessionExpired } from "./utils/utils";
 
 function App() {
   const theme = createTheme({
@@ -25,6 +28,14 @@ function App() {
       fontFamily: "Karla",
     },
   });
+
+  const [, setLocation] = useLocation();
+
+  useEffect(() => {
+    if (isSessionExpired()) {
+      setLocation("/login");
+    }
+  }, [setLocation]);
 
   return (
     <PlacesProvider>

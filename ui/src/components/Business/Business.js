@@ -27,7 +27,7 @@ const Business = ({ data }) => {
     },
     addresses: [],
     imageUrl: "",
-    score: 3,
+    score: undefined,
   });
 
   useEffect(() => {
@@ -53,7 +53,7 @@ const Business = ({ data }) => {
             </Grid>
             <Grid container direction='row'>
               <Grid item className={classes.gridContainerCal}>
-                <Calification calification={emprendimiento.score} />
+                <Calification calification={emprendimiento.rating} />
               </Grid>
             </Grid>
             <Grid item xs={5} sm={6}>

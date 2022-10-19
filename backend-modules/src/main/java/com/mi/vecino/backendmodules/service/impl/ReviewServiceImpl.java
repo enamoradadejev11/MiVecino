@@ -85,6 +85,11 @@ public class ReviewServiceImpl implements ReviewService {
     return review;
   }
 
+  @Override
+  public float getEmprendimientoRating(long id) {
+    return reviewRepository.getEmprendimientoRating(id);
+  }
+
   private void saveImages(Review review, MultipartFile[] multipartFiles)
       throws IOException {
 

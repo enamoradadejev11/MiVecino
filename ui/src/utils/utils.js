@@ -2,6 +2,8 @@ export const getUser = () => {
   return JSON.parse(window.localStorage.getItem("user"));
 };
 
+export const isSessionExpired = () => !window.localStorage.getItem("user");
+
 export const authHeader = () => {
   const user = getUser();
   const token = `Bearer ${user.token}`;

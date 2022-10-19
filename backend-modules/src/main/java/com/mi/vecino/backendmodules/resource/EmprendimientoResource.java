@@ -5,6 +5,7 @@ import static com.mi.vecino.backendmodules.constant.FileConstant.FORWARD_SLASH;
 import static org.springframework.http.MediaType.IMAGE_JPEG_VALUE;
 
 import com.mi.vecino.backendmodules.domain.Emprendimiento;
+import com.mi.vecino.backendmodules.domain.EmprendimientoData;
 import com.mi.vecino.backendmodules.domain.Schedule;
 import com.mi.vecino.backendmodules.domain.command.EmprendimientoCommand;
 import com.mi.vecino.backendmodules.domain.command.ScheduleCommand;
@@ -54,9 +55,8 @@ public class EmprendimientoResource {
   }
 
   @GetMapping("/{id}")
-  public Emprendimiento getEmprendimientoById(@PathVariable long id) {
-    var username = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-    return emprendimientoService.findEmprendimientoById(id);
+  public EmprendimientoData getEmprendimientoById(@PathVariable long id) {
+    return emprendimientoService.findEmprendimientoDataById(id);
   }
 
   @PutMapping("/{id}/update")

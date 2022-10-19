@@ -10,12 +10,14 @@ import static com.mi.vecino.backendmodules.constant.FileConstant.JPG_EXTENSION;
 import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 
 import com.mi.vecino.backendmodules.domain.Emprendimiento;
+import com.mi.vecino.backendmodules.domain.EmprendimientoData;
 import com.mi.vecino.backendmodules.domain.Schedule;
 import com.mi.vecino.backendmodules.domain.command.EmprendimientoCommand;
 import com.mi.vecino.backendmodules.domain.command.ScheduleCommand;
 import com.mi.vecino.backendmodules.repository.EmprendimientoRepository;
 import com.mi.vecino.backendmodules.repository.ScheduleRepository;
 import com.mi.vecino.backendmodules.service.EmprendimientoService;
+import com.mi.vecino.backendmodules.service.ReviewService;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -40,12 +42,14 @@ public class EmprendimientoServiceImpl implements EmprendimientoService {
   private final Logger logger = LoggerFactory.getLogger(getClass());
   private final EmprendimientoRepository emprendimientoRepository;
   private final ScheduleRepository scheduleRepository;
+  private final ReviewService reviewService;
 
   @Autowired
   EmprendimientoServiceImpl(EmprendimientoRepository emprendimientoRepository,
-      ScheduleRepository scheduleRepository) {
+      ScheduleRepository scheduleRepository, ReviewService reviewService) {
     this.emprendimientoRepository = emprendimientoRepository;
     this.scheduleRepository = scheduleRepository;
+    this.reviewService = reviewService;
   }
 
   @Override
@@ -63,6 +67,12 @@ public class EmprendimientoServiceImpl implements EmprendimientoService {
   @Override
   public Emprendimiento findEmprendimientoById(long id) {
     return emprendimientoRepository.findById(id).get();
+  }
+
+  @Override
+  public EmprendimientoData findEmprendimientoDataById(long id) {
+    Emprendimiento emprendimiento = emprendimientoRepository.findById(id).get();
+    return new EmprendimientoData(emprendimiento, reviewService.getEmprendimientoRating(id));
   }
 
   @Override

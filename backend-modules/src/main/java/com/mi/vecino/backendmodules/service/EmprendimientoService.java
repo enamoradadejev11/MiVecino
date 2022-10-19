@@ -1,6 +1,7 @@
 package com.mi.vecino.backendmodules.service;
 
 import com.mi.vecino.backendmodules.domain.Emprendimiento;
+import com.mi.vecino.backendmodules.domain.EmprendimientoData;
 import com.mi.vecino.backendmodules.domain.Schedule;
 import com.mi.vecino.backendmodules.domain.command.EmprendimientoCommand;
 import com.mi.vecino.backendmodules.domain.command.ScheduleCommand;
@@ -15,6 +16,8 @@ public interface EmprendimientoService {
   List<Emprendimiento> getEmprendimientosByUsername(String username);
 
   Emprendimiento findEmprendimientoById(long id);
+
+  EmprendimientoData findEmprendimientoDataById(long id);
 
   Emprendimiento updateEmprendimiento(long id, EmprendimientoCommand command);
 

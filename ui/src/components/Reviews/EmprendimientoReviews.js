@@ -9,6 +9,7 @@ import { typographyStyles } from "../../utils/stylesUtils";
 const reviews = {
   good: [
     {
+      id: 1,
       username: "Pulpo",
       score: 5,
       comment: "Muy rico y el lugar super bonito.",
@@ -18,6 +19,7 @@ const reviews = {
       ],
     },
     {
+      id: 2,
       username: "Bellota",
       score: 3,
       comment: "El flaming hot esta decente, pero habia ratasss!",
@@ -26,6 +28,7 @@ const reviews = {
   ],
   bad: [
     {
+      id: 3,
       username: "Bellota",
       score: 1.5,
       comment: "El flaming hot esta decente, pero habia ratasss!",
@@ -34,6 +37,7 @@ const reviews = {
       ],
     },
     {
+      id: 4,
       username: "Camaron Tostado",
       score: 2,
       comment: "Muy mal servicio, algo caro para la calidad.",
@@ -57,7 +61,7 @@ const EmprendimientoReviews = () => {
           <Grid container spacing={2}>
             <Grid item xs={12} md={5}>
               {reviews.good.map((review) => (
-                <SingleReview review={review} isGood />
+                <SingleReview key={review.id} review={review} isGood />
               ))}
             </Grid>
             <Grid item xs={2}>
@@ -65,7 +69,7 @@ const EmprendimientoReviews = () => {
             </Grid>
             <Grid item xs={12} md={5}>
               {reviews.bad.map((review) => (
-                <SingleReview review={review} />
+                <SingleReview key={review.id} review={review} />
               ))}
             </Grid>
           </Grid>

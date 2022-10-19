@@ -18,4 +18,6 @@ public interface ReviewService {
   Review addReviewWithImages(String username, ReviewCommand reviewCommand, MultipartFile[] multipartFiles)
       throws IOException;
 
+  float getEmprendimientoRating(long id);
+
 }

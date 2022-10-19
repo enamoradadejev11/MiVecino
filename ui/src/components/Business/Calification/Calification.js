@@ -1,10 +1,20 @@
-import * as React from "react";
+import React from "react";
 import Box from "@mui/material/Box";
-import Rating from "@mui/material/Rating";
 import { calificationStyles } from "./calificationUtils";
+import { useState } from "react";
+import { useEffect } from "react";
+import { Rating } from "@mui/material";
 
 const Calification = ({ calification }) => {
   const classes = calificationStyles();
+  const [score, setScore] = useState(0);
+
+  useEffect(() => {
+    if (calification) {
+      setScore(calification);
+    }
+  }, [calification]);
+
   return (
     <Box
       sx={{
@@ -13,7 +23,7 @@ const Calification = ({ calification }) => {
     >
       <Rating
         name='read-only'
-        value={calification}
+        value={score}
         readOnly
         className={classes.gridContainerCalification}
         size='large'

@@ -37,14 +37,14 @@ const MainMap = () => {
 
   if (isLoading) {
     return (
-      <Box className={styles.loading_map}>
+      <Box className={styles.home_page_map}>
         <CircularProgress />
       </Box>
     );
   }
 
   return (
-    <div ref={mapDiv} className={styles.loading_map}>
+    <div ref={mapDiv} className={styles.home_page_map}>
       {userLocation?.join(",")}
     </div>
   );

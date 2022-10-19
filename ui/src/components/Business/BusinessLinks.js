@@ -16,17 +16,17 @@ const links = [
   {
     name: "Calificar este lugar",
     icon: <StarIcon sx={iconStyle} />,
-    link: "#review",
+    id: "#review",
   },
   {
     name: "Como llegar",
     icon: <AddLocationAltIcon sx={iconStyle} />,
-    link: "#location",
+    id: "#location",
   },
   {
     name: "Mas lugares similares",
     icon: <ViewCarouselIcon sx={iconStyle} />,
-    link: "#similarPlaces",
+    id: "#similarPlaces",
   },
 ];
 
@@ -41,8 +41,8 @@ const BusinessLinks = () => {
         sx={{ textAlign: "left", marginLeft: "40px", marginTop: "80px" }}
       >
         {links.map((link) => (
-          <Box p={2}>
-            <HashLink to={link.link} smooth style={{ textDecoration: "none" }}>
+          <Box key={link.id} p={2}>
+            <HashLink to={link.id} smooth style={{ textDecoration: "none" }}>
               <Stack
                 direction='row'
                 justifyContent='flex-start'
