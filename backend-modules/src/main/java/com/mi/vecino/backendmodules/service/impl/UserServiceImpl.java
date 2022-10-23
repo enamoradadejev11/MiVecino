@@ -9,6 +9,9 @@ import static com.mi.vecino.backendmodules.constant.FileConstant.USER_FOLDER;
 import static com.mi.vecino.backendmodules.constant.FileConstant.USER_IMAGE_PATH;
 import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 
+import com.mi.vecino.backendmodules.domain.Category;
+import com.mi.vecino.backendmodules.domain.Emprendimiento;
+import com.mi.vecino.backendmodules.domain.Favorite;
 import com.mi.vecino.backendmodules.domain.User;
 import com.mi.vecino.backendmodules.domain.UserInformation;
 import com.mi.vecino.backendmodules.domain.UserPrincipal;
@@ -20,12 +23,16 @@ import com.mi.vecino.backendmodules.domain.exception.EmailExistException;
 import com.mi.vecino.backendmodules.domain.exception.EmailNotFoundException;
 import com.mi.vecino.backendmodules.domain.exception.UserNotFoundException;
 import com.mi.vecino.backendmodules.domain.exception.UsernameExistException;
+import com.mi.vecino.backendmodules.repository.EmprendimientoRepository;
 import com.mi.vecino.backendmodules.repository.UserRepository;
 import com.mi.vecino.backendmodules.service.UserService;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -56,11 +63,14 @@ public class UserServiceImpl implements UserService, UserDetailsService {
   public static final String USER_NOT_FOUND_BY_EMAIL = "User not found by email: ";
   private final Logger logger = LoggerFactory.getLogger(getClass());
   private final UserRepository userRepository;
+  private final EmprendimientoRepository emprendimientoRepository;
   private final BCryptPasswordEncoder passwordEncoder;
 
   @Autowired
-  public UserServiceImpl(UserRepository userRepository, BCryptPasswordEncoder passwordEncoder) {
+  public UserServiceImpl(UserRepository userRepository,
+      EmprendimientoRepository emprendimientoRepository, BCryptPasswordEncoder passwordEncoder) {
     this.userRepository = userRepository;
+    this.emprendimientoRepository = emprendimientoRepository;
     this.passwordEncoder = passwordEncoder;
   }
 
@@ -107,7 +117,8 @@ public class UserServiceImpl implements UserService, UserDetailsService {
   public User getUserByUsername(String username)
       throws UserNotFoundException, EmailExistException, UsernameExistException {
     User user = validateNewUsernameAndEmail(username, null, null);
-    return Objects.nonNull(user) ? userRepository.findUserByUsername(user.getUsername()) : new User();
+    return Objects.nonNull(user) ? userRepository.findUserByUsername(user.getUsername())
+        : new User();
   }
 
   @Override
@@ -149,6 +160,76 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     User user = validateNewUsernameAndEmail(username, null, null);
     saveProfileImage(user, profileImage);
     return user;
+  }
+
+  @Override
+  public boolean isEmprendimientoFavorite(String username, long emprendimientoId)
+      throws UserNotFoundException, EmailExistException, UsernameExistException {
+    User user = validateNewUsernameAndEmail(username, null, null);
+    if (Objects.nonNull(user)) {
+      var favorite = user.getFavoriteEmprendimientos().stream()
+          .filter(fav -> emprendimientoId == fav.getId()).findAny().orElse(null);
+      return Objects.nonNull(favorite);
+    }
+    return false;
+  }
+
+  @Override
+  public List<Favorite> addFavorite(long emprendimientoId, String username)
+      throws UserNotFoundException, EmailExistException, UsernameExistException {
+    User user = validateNewUsernameAndEmail(username, null, null);
+    if (Objects.nonNull(user)) {
+      List<Favorite> currentFavorites = user.getFavoriteEmprendimientos();
+      List<Favorite> newFavorites =
+          Objects.nonNull(currentFavorites) ? currentFavorites : new ArrayList<>();
+      Emprendimiento emprendimiento = emprendimientoRepository.findById(emprendimientoId).get();
+      var favorite = currentFavorites.stream()
+          .filter(fav -> fav.getId() == emprendimientoId).findAny().orElse(null);
+      if (Objects.isNull(favorite)) {
+        Favorite newFavorite = new Favorite(emprendimiento);
+        newFavorites.add(newFavorite);
+        user.setFavoriteEmprendimientos(newFavorites);
+        user.setEmprendimientosCategories(
+            calculateCategoriesFromFavorites(emprendimiento, user.getEmprendimientosCategories()));
+        return userRepository.save(user).getFavoriteEmprendimientos();
+      }
+      return user.getFavoriteEmprendimientos();
+    }
+    return Collections.emptyList();
+  }
+
+  @Override
+  public List<Favorite> removeFavorite(long emprendimientoId, String username)
+      throws UserNotFoundException, EmailExistException, UsernameExistException {
+    User user = validateNewUsernameAndEmail(username, null, null);
+    if (Objects.nonNull(user)) {
+      List<Favorite> currentFavorites = user.getFavoriteEmprendimientos();
+      if (Objects.isNull(currentFavorites) || currentFavorites.isEmpty()) {
+        return Collections.emptyList();
+      }
+      Emprendimiento emprendimiento = emprendimientoRepository.findById(emprendimientoId).get();
+      currentFavorites.removeIf(favorite -> favorite.getId() == emprendimiento.getId());
+      user.setFavoriteEmprendimientos(currentFavorites);
+      user.setEmprendimientosCategories(
+          removeCategoriesFromFavorites(user.getFavoriteEmprendimientos()));
+      return userRepository.save(user).getFavoriteEmprendimientos();
+    }
+    return Collections.emptyList();
+  }
+
+  private List<Category> calculateCategoriesFromFavorites(Emprendimiento emprendimiento,
+      List<Category> currentCategories) {
+    List<Category> newCategories =
+        Objects.nonNull(currentCategories) ? currentCategories : new ArrayList<>();
+    newCategories.addAll(emprendimiento.getCategories());
+    return newCategories;
+  }
+
+  private List<Category> removeCategoriesFromFavorites(List<Favorite> favorites) {
+    var emprendimientosIds = favorites.stream().map(Favorite::getId).collect(Collectors.toList());
+    var emprendimientos = emprendimientoRepository.findAllById(emprendimientosIds);
+    return emprendimientos.stream().map(Emprendimiento::getCategories).flatMap(List::stream)
+        .collect(Collectors.toList());
   }
 
   private void saveProfileImage(User user, MultipartFile profileImage) throws IOException {

@@ -1,5 +1,6 @@
 package com.mi.vecino.backendmodules.service;
 
+import com.mi.vecino.backendmodules.domain.Favorite;
 import com.mi.vecino.backendmodules.domain.User;
 import com.mi.vecino.backendmodules.domain.UserInformation;
 import com.mi.vecino.backendmodules.domain.UserProfile;
@@ -35,5 +36,13 @@ public interface UserService {
 
   User updateProfileImage(String username, MultipartFile profileImage)
       throws UserNotFoundException, EmailExistException, UsernameExistException, IOException;
+
+  boolean isEmprendimientoFavorite(String username, long emprendimientoId)
+      throws UserNotFoundException, EmailExistException, UsernameExistException;
+
+  List<Favorite> addFavorite(long emprendimientoId, String username)
+      throws UserNotFoundException, EmailExistException, UsernameExistException;
+  List<Favorite> removeFavorite(long emprendimientoId, String usernam)
+      throws UserNotFoundException, EmailExistException, UsernameExistException;
 
 }

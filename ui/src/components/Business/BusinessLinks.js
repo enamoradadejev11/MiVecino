@@ -7,10 +7,13 @@ import StarIcon from "@mui/icons-material/Star";
 import AddLocationAltIcon from "@mui/icons-material/AddLocationAlt";
 import ViewCarouselIcon from "@mui/icons-material/ViewCarousel";
 import AddIcon from "@mui/icons-material/Add";
+import FavoriteIcon from "@mui/icons-material/Favorite";
 import { businessStyles } from "./businessUtils";
 import Stack from "@mui/material/Stack";
+import { pink } from "@mui/material/colors";
 
 const iconStyle = { color: "white", margin: "-4px", fontSize: "2.5rem" };
+const heartIconStyle = { color: pink[500], fontSize: "2rem" };
 
 const links = [
   {
@@ -30,8 +33,9 @@ const links = [
   },
 ];
 
-const BusinessLinks = () => {
+const BusinessLinks = ({ isFavorite, addFavorite, removeFavorite }) => {
   const classes = businessStyles();
+
   return (
     <>
       <Grid
@@ -61,19 +65,31 @@ const BusinessLinks = () => {
           </Box>
         ))}
         <Box p={2}>
-          <IconButton aria-label='delete' sx={{ padding: "initial" }}>
+          <IconButton
+            aria-label='delete'
+            sx={{ padding: "initial" }}
+            onClick={() => {
+              isFavorite ? removeFavorite() : addFavorite();
+            }}
+          >
             <Stack
               direction='row'
               justifyContent='flex-start'
               alignItems='center'
               spacing={2}
             >
-              <AddIcon sx={iconStyle} />
+              {isFavorite ? (
+                <FavoriteIcon sx={heartIconStyle} />
+              ) : (
+                <AddIcon sx={iconStyle} />
+              )}
               <Typography
                 className={classes.iconTittle}
                 sx={{ fontSize: "50px", color: "white" }}
               >
-                Agregar a mi lista
+                {isFavorite
+                  ? "Remover de favoritos"
+                  : "Agregar a mis favoritos"}
               </Typography>
             </Stack>
           </IconButton>

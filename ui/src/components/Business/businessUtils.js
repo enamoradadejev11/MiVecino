@@ -4,8 +4,6 @@ export const defaultValues = {
   1: "Calificar este lugar",
   2: "Como llegar",
   3: "Mas lugares similares",
-  4: "Agregar a mi lista",
-  5: "Info y mas",
 };
 
 export const businessStyles = makeStyles((theme) => ({

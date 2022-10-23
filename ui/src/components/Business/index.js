@@ -13,12 +13,18 @@ import More from "./Images/More";
 import EmprendimientoReviews from "../Reviews/EmprendimientoReviews";
 import Review from "../Reviews/Review";
 import { typographyStyles } from "../../utils/stylesUtils";
+import {
+  deleteFavorite,
+  getIsFavorite,
+  saveFavorite,
+} from "../../services/userServices";
 
 const EmprendimientoDetail = ({ params }) => {
   const { id } = params;
   const [emprendimiento, setEmprendimiento] = useState();
   const [reviews, setReviews] = useState([]);
   const [userReview, setUserReview] = useState({ score: 0, comment: "" });
+  const [isFavorite, setIsFavorite] = useState(false);
   const [, setErrorMessage] = useState("");
   const typography = typographyStyles();
 
@@ -37,11 +43,32 @@ const EmprendimientoDetail = ({ params }) => {
     getUserReview(id)
       .then((response) => setUserReview(response))
       .catch((e) => setErrorMessage(e.message));
+
+    getIsFavorite(id)
+      .then((response) => setIsFavorite(response))
+      .catch((e) => setErrorMessage(e.message));
   }, [id, setReviews, setErrorMessage]);
+
+  const addFavorite = () => {
+    saveFavorite(id)
+      .then(() => setIsFavorite(true))
+      .catch(() => setIsFavorite(false));
+  };
+
+  const removeFavorite = () => {
+    deleteFavorite(id)
+      .then(() => setIsFavorite(false))
+      .catch(() => setIsFavorite(true));
+  };
 
   return (
     <>
-      <Business data={emprendimiento} />
+      <Business
+        data={emprendimiento}
+        isFavorite={isFavorite}
+        addFavorite={addFavorite}
+        removeFavorite={removeFavorite}
+      />
       <More />
       <Grid
         container

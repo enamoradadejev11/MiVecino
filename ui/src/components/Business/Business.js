@@ -5,7 +5,7 @@ import { Typography } from "@material-ui/core";
 import Calification from "./Calification/Calification";
 import BusinessLinks from "./BusinessLinks";
 
-const Business = ({ data }) => {
+const Business = ({ data, isFavorite, addFavorite, removeFavorite }) => {
   const classes = businessStyles();
 
   const [emprendimiento, setEmprendimiento] = useState({
@@ -61,7 +61,11 @@ const Business = ({ data }) => {
                 {emprendimiento.description}
               </Typography>
             </Grid>
-            <BusinessLinks />
+            <BusinessLinks
+              isFavorite={isFavorite}
+              addFavorite={addFavorite}
+              removeFavorite={removeFavorite}
+            />
           </Grid>
         </Grid>
       </Grid>

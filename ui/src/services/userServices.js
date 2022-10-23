@@ -29,3 +29,28 @@ export const updateUserImage = async (id, file) => {
   const response = await axios.put(`${userApi}/image`, formData, authHeader());
   return response.data;
 };
+
+export const getIsFavorite = async (emprendimientoId) => {
+  const response = await axios.get(
+    `${userApi}/${emprendimientoId}/isFavorite`,
+    authHeader()
+  );
+  return response.data;
+};
+
+export const saveFavorite = async (emprendimientoId) => {
+  const response = await axios.post(
+    `${userApi}/${emprendimientoId}/favorite`,
+    {},
+    authHeader()
+  );
+  return response.data;
+};
+
+export const deleteFavorite = async (emprendimientoId) => {
+  const response = await axios.delete(
+    `${userApi}/${emprendimientoId}/favorite`,
+    authHeader()
+  );
+  return response.data;
+};

@@ -20,6 +20,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.apache.commons.lang3.RandomStringUtils;
+import org.hibernate.annotations.Type;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 @Getter
@@ -51,6 +52,14 @@ public class User implements Serializable {
   private Date lastLoginDateDisplay;
   private boolean isActive;
   private boolean isNotLocked;
+
+  @Column(columnDefinition = "jsonb")
+  @Type(type = "jsonb")
+  private List<Favorite> favoriteEmprendimientos;
+
+  @Column(columnDefinition = "jsonb")
+  @Type(type = "jsonb")
+  private List<Category> emprendimientosCategories;
 
   public User(UserCommand userCommand, String password) {
     this.userId = generateUserId();

@@ -7,6 +7,7 @@ import static com.mi.vecino.backendmodules.constant.SecurityConstant.JWT_TOKEN_H
 import static com.mi.vecino.backendmodules.constant.SecurityConstant.TOKEN_PREFIX;
 import static org.springframework.http.MediaType.IMAGE_JPEG_VALUE;
 
+import com.mi.vecino.backendmodules.domain.Favorite;
 import com.mi.vecino.backendmodules.domain.HttpResponse;
 import com.mi.vecino.backendmodules.domain.User;
 import com.mi.vecino.backendmodules.domain.UserInformation;
@@ -39,6 +40,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -168,6 +170,28 @@ public class UserResource extends ExceptionHandling {
       }
     }
     return byteArrayOutputStream.toByteArray();
+  }
+
+  @GetMapping("/{emprendimientoId}/isFavorite")
+  public boolean isEmprendimientoFavorite(@PathVariable("emprendimientoId") long emprendimientoId)
+      throws UsernameNotFoundException, UserNotFoundException, EmailExistException, UsernameExistException {
+    List<UserInformation> users = userService.getUsers();
+    var username = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    return userService.isEmprendimientoFavorite(username, emprendimientoId);
+  }
+
+  @PostMapping("/{emprendimientoId}/favorite")
+  public List<Favorite> addFavorite(@PathVariable("emprendimientoId") long emprendimientoId)
+      throws UserNotFoundException, EmailExistException, UsernameExistException {
+    var username = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    return userService.addFavorite(emprendimientoId, username);
+  }
+
+  @DeleteMapping("/{emprendimientoId}/favorite")
+  public List<Favorite> removeFavorite(@PathVariable("emprendimientoId") long emprendimientoId)
+      throws UserNotFoundException, EmailExistException, UsernameExistException {
+    var username = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    return userService.removeFavorite(emprendimientoId, username);
   }
 
   private String getCurrentUsername(Map<String, String> headers) {

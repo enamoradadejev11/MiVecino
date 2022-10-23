@@ -12,7 +12,6 @@ const SingleReview = ({ review, isGood }) => {
   const calculateAvatarColor = () => (isGood ? MINT : DARK_PINK);
 
   const { username, imagesUrl, score } = review;
-  console.log("review", review);
 
   return (
     <>
