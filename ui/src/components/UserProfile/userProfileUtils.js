@@ -19,7 +19,12 @@ export const modalStyle = {
   p: 4,
 };
 
-export const userProfileDefaultValues = { username: "", email: "", gender: "" };
+export const userProfileDefaultValues = {
+  username: "",
+  email: "",
+  gender: "",
+  favorites: [],
+};
 
 export const addressDefaultValues = {
   alias: "",

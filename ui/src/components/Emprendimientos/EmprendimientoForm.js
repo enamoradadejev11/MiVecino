@@ -243,6 +243,7 @@ const EmprendimientoForm = ({
               label={formValues.active ? "Activo" : "Desactivo"}
             />
           </Grid>
+          <Grid item xs={12}></Grid>
         </Grid>
 
         <Box pt={5} display='flex' justifyContent='flex-end'>

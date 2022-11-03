@@ -4,7 +4,7 @@ import Typography from "@material-ui/core/Typography";
 import React, { useEffect, useState } from "react";
 import { typographyStyles } from "../../utils/stylesUtils";
 import SettingsImageUploader from "../Settings/SettingsImageUploader";
-import { createTheme, ThemeProvider } from "@mui/material/styles";
+import { ThemeProvider } from "@mui/material/styles";
 import Modal from "@mui/material/Modal";
 import UserProfileButton from "./userProfileButton";
 import ProfileForm from "./ProfileForm";
@@ -15,17 +15,11 @@ import {
   userProfileDefaultValues,
 } from "./userProfileUtils";
 import { findUser, updateUserImage } from "../../services/userServices";
-
-const theme = createTheme({
-  palette: {
-    primary: {
-      main: "#85BAB2",
-    },
-    secondary: {
-      main: "#11cb5f",
-    },
-  },
-});
+import ImagesSlider from "../ImagesSlider/ImagesSlider";
+import Navbar from "../Common/Navbar/Navbar";
+import Footer from "../Common/Footer/Footer";
+import { getUserWithExpiry, headerAccess, theme } from "../../utils/utils";
+import { useLocation } from "wouter";
 
 const UserProfile = () => {
   const typography = typographyStyles();
@@ -37,6 +31,11 @@ const UserProfile = () => {
     setOpen(true);
   };
   const handleClose = () => setOpen(false);
+  const [, setLocation] = useLocation();
+
+  if (!getUserWithExpiry()) {
+    setLocation("/login");
+  }
 
   const [user, setUser] = useState(userProfileDefaultValues);
   const [addresses] = useState(mockAddress);
@@ -52,7 +51,6 @@ const UserProfile = () => {
       form: <AddressForm addresses={addresses} />,
       additionalText: `${addresses[0].street}, ${addresses[0].colony}, ${addresses[0].city}, ${addresses[0].state}`,
     },
-    favorites: { label: "Mis favoritos", additionalText: "", form: null },
   };
 
   useEffect(() => {
@@ -66,6 +64,7 @@ const UserProfile = () => {
   return (
     <>
       <ThemeProvider theme={theme}>
+        <Navbar types={[headerAccess.HOME, headerAccess.SETTINGS]} />
         <Box p={10}>
           <Container>
             <Grid container spacing={2}>
@@ -97,10 +96,12 @@ const UserProfile = () => {
                   option={options["account"]}
                   handleOpen={handleOpen}
                 />
-                <UserProfileButton
-                  id='favorites'
-                  option={options["favorites"]}
-                  handleOpen={handleOpen}
+              </Grid>
+              <Grid item xs={12} style={{ textAlign: "center" }}>
+                <ImagesSlider
+                  items={user.favorites}
+                  sectionTittle='Mis favoritos'
+                  type='userProfile'
                 />
               </Grid>
             </Grid>
@@ -116,6 +117,7 @@ const UserProfile = () => {
           <Box sx={modalStyle}>{options[optionSelected]?.form}</Box>
         </Modal>
       </ThemeProvider>
+      <Footer fixed />
     </>
   );
 };

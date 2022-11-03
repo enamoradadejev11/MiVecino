@@ -8,6 +8,7 @@ import {
 } from "./loginUtils";
 import { useLocation } from "wouter";
 import Navbar from "../Common/Navbar/Navbar";
+import { headerAccess, setUserWithExpiry } from "../../utils/utils";
 
 const Login = () => {
   const [, setLocation] = useLocation();
@@ -63,7 +64,7 @@ const Login = () => {
     getUser(formValues)
       .then((response) => {
         setUser(response);
-        window.localStorage.setItem("user", JSON.stringify(response));
+        setUserWithExpiry("user", response, 432000000);
         setLocation("/");
       })
       .catch((e) => {
@@ -73,16 +74,15 @@ const Login = () => {
 
   return (
     <>
-    <Navbar type={'registro'}/>
-    <LoginForm
-      formValues={formValues}
-      formErrorValues={formErrorValues}
-      formHelperTextValues={formHelperTextValues}
-      handleSubmit={handleSubmit}
-      handleInputChange={handleInputChange}
-    />
+      <Navbar types={[headerAccess.REGISTRO]} />
+      <LoginForm
+        formValues={formValues}
+        formErrorValues={formErrorValues}
+        formHelperTextValues={formHelperTextValues}
+        handleSubmit={handleSubmit}
+        handleInputChange={handleInputChange}
+      />
     </>
-    
   );
 };
 

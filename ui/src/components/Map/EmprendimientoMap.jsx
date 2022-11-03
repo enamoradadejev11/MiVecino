@@ -22,7 +22,7 @@ const EmprendimientoMap = ({ location }) => {
       container: mapDiv.current,
       style: "mapbox://styles/mapbox/dark-v10",
       center: location,
-      zoom: 14,
+      zoom: 16,
       projection: "globe",
     });
     new Marker({ color: colors.MINT })

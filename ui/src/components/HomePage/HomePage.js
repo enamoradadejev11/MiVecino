@@ -5,7 +5,10 @@ import "slick-carousel/slick/slick-theme.css";
 import ImagesSlider from "../ImagesSlider/ImagesSlider";
 import MainMap from "../Map/MainMap";
 import BtnMyLocation from "../Map/BtnMyLocation";
-import { Footer } from "../Common/Footer/Footer";
+import Footer from "../Common/Footer/Footer";
+import SearchBar from "../SearchBar/SearchBar";
+import { getUserWithExpiry, HOME_PAGE_TYPE } from "../../utils/utils";
+import { useLocation } from "wouter";
 
 const recomendations = [
   {
@@ -60,6 +63,11 @@ const recomendations = [
 
 const HomePage = () => {
   const { userLocation } = useContext(PlacesContext);
+  const [, setLocation] = useLocation();
+
+  if (!getUserWithExpiry()) {
+    setLocation("/login");
+  }
 
   if (!navigator.geolocation) {
     alert("error tu navegador no tiene geolocation");
@@ -67,6 +75,7 @@ const HomePage = () => {
 
   return (
     <>
+      <SearchBar />
       <div className='home-page-map-section'>
         <MainMap />
         <BtnMyLocation location={userLocation} />
@@ -77,6 +86,7 @@ const HomePage = () => {
             <ImagesSlider
               items={recomendation.items}
               sectionTittle={recomendation.tittle}
+              type={HOME_PAGE_TYPE}
             />
           </div>
         ))}

@@ -9,7 +9,7 @@ const BtnMyLocation = ({ location }) => {
 
   const onClick = () => {
     if (isMapReady) {
-      map.flyTo({ zoom: 14, center: location });
+      map.flyTo({ zoom: 16, center: location });
     }
   };
 

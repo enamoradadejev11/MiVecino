@@ -5,7 +5,7 @@ export const homePageStyles = makeStyles((theme) => ({
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
-    height: "500px",
+    height: "700px",
   },
   location_map: {
     display: "flex",

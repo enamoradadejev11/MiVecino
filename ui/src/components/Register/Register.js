@@ -8,7 +8,7 @@ import {
 import RegisterForm from "./RegisterForm";
 import axios from "axios";
 import Navbar from "../Common/Navbar/Navbar";
-
+import { headerAccess, host } from "../../utils/utils";
 
 const Register = () => {
   const [, setLocation] = useLocation();
@@ -76,7 +76,7 @@ const Register = () => {
   const handleSubmit = (event) => {
     event.preventDefault();
     axios
-      .post("http://localhost:8081/user/register", formValues)
+      .post(`${host}/user/register`, formValues)
       .then(function (response) {
         // show successful message
         setLocation("/");
@@ -89,7 +89,7 @@ const Register = () => {
 
   return (
     <>
-      <Navbar type={'login'}/>
+      <Navbar types={[headerAccess.LOGIN]} />
       <RegisterForm
         formValues={formValues}
         formErrorVaues={formErrorValues}

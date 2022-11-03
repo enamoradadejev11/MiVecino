@@ -33,7 +33,7 @@ const ReviewSection = ({ params }) => {
 
   useEffect(() => {
     if (reviews) {
-      const user = getUser();
+      const user = getUser().value;
       setUserReview(
         reviews.find((review) => review.username === user.username)
       );

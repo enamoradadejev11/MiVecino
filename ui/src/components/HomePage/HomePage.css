@@ -18,3 +18,10 @@
   display: flex;
   padding: 15px;
 }
+
+.slider-section-center-tittle {
+  display: flex;
+  padding: 15px;
+  justify-content: center;
+  text-align: center;
+}

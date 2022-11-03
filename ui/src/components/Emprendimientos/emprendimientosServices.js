@@ -1,8 +1,8 @@
 import axios from "axios";
-import { authHeader } from "../../utils/utils";
+import { authHeader, host } from "../../utils/utils";
 
-const emprendimientosApi = "http://localhost:8081/api/v1/emprendimiento";
-const reviewApi = "http://localhost:8081/api/v1/review";
+const emprendimientosApi = `${host}/api/v1/emprendimiento`;
+const reviewApi = `${host}/api/v1/review`;
 
 export const addNewEmprendimiento = async (emprendimiento) => {
   const response = await axios.post(

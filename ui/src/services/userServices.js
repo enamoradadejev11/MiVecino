@@ -1,7 +1,7 @@
 import axios from "axios";
-import { authHeader } from "../utils/utils";
+import { authHeader, host } from "../utils/utils";
 
-const userApi = "http://localhost:8081/user";
+const userApi = `${host}/user`;
 
 export const getUser = async (formValues) => {
   const response = await axios.post(`${userApi}/login`, formValues);

@@ -18,6 +18,8 @@ public class EmprendimientoData {
   private List<Telephone> telephones;
   private boolean active;
   private float rating;
+  private float longitude;
+  private float latitude;
 
   public EmprendimientoData(Emprendimiento emprendimiento, float rating) {
     this.id = emprendimiento.getId();
@@ -28,6 +30,9 @@ public class EmprendimientoData {
     this.telephones = emprendimiento.getTelephones();
     this.active = emprendimiento.isActive();
     this.rating = rating;
+    this.longitude = emprendimiento.getLongitude();
+    this.latitude = emprendimiento.getLatitude();
+
   }
 
 }

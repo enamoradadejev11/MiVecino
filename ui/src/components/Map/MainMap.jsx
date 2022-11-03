@@ -28,7 +28,7 @@ const MainMap = () => {
         container: mapDiv.current, // container ID
         style: "mapbox://styles/mapbox/dark-v10", // style URL
         center: userLocation, // starting position [lng, lat]
-        zoom: 14, // starting zoom
+        zoom: 16, // starting zoom
         projection: "globe", // display the map as a 3D globe
       });
       setCurrentMap(map);

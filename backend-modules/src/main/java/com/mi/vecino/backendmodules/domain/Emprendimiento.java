@@ -44,6 +44,8 @@ public class Emprendimiento implements Serializable {
   @Type(type = "jsonb")
   private List<Category> categories; // carpinteria, muebles, decoracion
   private boolean active;
+  private float longitude;
+  private float latitude;
 
 
   public Emprendimiento(EmprendimientoCommand emprendimientoCommand) {
@@ -65,6 +67,8 @@ public class Emprendimiento implements Serializable {
     this.imageUrl = "";
     this.categories = emprendimientoCommand.getCategories();
     this.active = true;
+    this.longitude = emprendimientoCommand.getLongitude();
+    this.latitude = emprendimientoCommand.getLatitude();
   }
 
 }

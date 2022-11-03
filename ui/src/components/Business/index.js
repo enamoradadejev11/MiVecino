@@ -7,7 +7,6 @@ import {
   getUserReview,
 } from "../Emprendimientos/emprendimientosServices";
 import Business from "../Business/Business";
-import { Footer } from "../Common/Footer/Footer";
 import EmprendimientoMap from "../Map/EmprendimientoMap";
 import More from "./Images/More";
 import EmprendimientoReviews from "../Reviews/EmprendimientoReviews";
@@ -18,6 +17,9 @@ import {
   getIsFavorite,
   saveFavorite,
 } from "../../services/userServices";
+import Footer from "../Common/Footer/Footer";
+import { useLocation } from "wouter";
+import { getUserWithExpiry } from "../../utils/utils";
 
 const EmprendimientoDetail = ({ params }) => {
   const { id } = params;
@@ -27,6 +29,11 @@ const EmprendimientoDetail = ({ params }) => {
   const [isFavorite, setIsFavorite] = useState(false);
   const [, setErrorMessage] = useState("");
   const typography = typographyStyles();
+  const [, setLocation] = useLocation();
+
+  if (!getUserWithExpiry()) {
+    setLocation("/login");
+  }
 
   useEffect(() => {
     getReviewEmprendimientos(id)

@@ -89,6 +89,10 @@ body {
   opacity: 1;
 }
 
+.content:active .content-overlay {
+  opacity: 1;
+}
+
 .content-image {
   width: 100%;
 }

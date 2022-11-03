@@ -11,6 +11,10 @@ import {
   updateEmprendimientoImage,
 } from "./emprendimientosServices";
 import SettingsImageUploader from "../Settings/SettingsImageUploader";
+import Navbar from "../Common/Navbar/Navbar";
+import { getUserWithExpiry, headerAccess } from "../../utils/utils";
+import Footer from "../Common/Footer/Footer";
+import { useLocation } from "wouter";
 
 const UserEmprendimientos = () => {
   const typography = typographyStyles();
@@ -19,6 +23,11 @@ const UserEmprendimientos = () => {
   const [emprendimientos, setEmprendimientos] = useState([]);
   const [isReadOnly, setIsReadOnly] = useState(false);
   const [areUpdates, setAreUpdates] = useState(false);
+  const [, setLocation] = useLocation();
+
+  if (!getUserWithExpiry()) {
+    setLocation("/login");
+  }
 
   useEffect(() => {
     if (areUpdates) {
@@ -66,43 +75,47 @@ const UserEmprendimientos = () => {
   }, [emprendimientoSelected]);
 
   return (
-    <Box p={10}>
-      <Container>
-        <Grid container spacing={2}>
-          <Grid item xs={12}>
-            <Box pb={3}>
-              <Typography className={typography.dark_title}>
-                Mis emprendimientos
-              </Typography>
-            </Box>
+    <>
+      <Navbar types={[headerAccess.HOME, headerAccess.SETTINGS]} />
+      <Box p={10}>
+        <Container>
+          <Grid container spacing={2}>
+            <Grid item xs={12}>
+              <Box pb={3}>
+                <Typography className={typography.dark_title}>
+                  Mis emprendimientos
+                </Typography>
+              </Box>
+            </Grid>
+            <Grid item xs={12} md={6}>
+              <EmprendimientoSelector
+                emprendimientos={emprendimientos}
+                emprendimientoSelected={emprendimientoSelected}
+                setEmprendimientoSelected={setEmprendimientoSelected}
+              />
+              <SettingsImageUploader
+                id={emprendimientoSelected.id}
+                url={emprendimientoSelected.imageUrl}
+                callToUpload={updateEmprendimientoImage}
+                isReadOnly={isReadOnly}
+                uploaderAlign='center'
+                setAreUpdates={setAreUpdates}
+              />
+            </Grid>
+            <Grid item xs={12} md={6}>
+              <EmprendimientoForm
+                emprendimiento={emprendimientoSelected}
+                isReadOnly={isReadOnly}
+                setIsReadOnly={setIsReadOnly}
+                setAreUpdates={setAreUpdates}
+                dataRefreshed={areUpdates}
+              />
+            </Grid>
           </Grid>
-          <Grid item xs={12} md={6}>
-            <EmprendimientoSelector
-              emprendimientos={emprendimientos}
-              emprendimientoSelected={emprendimientoSelected}
-              setEmprendimientoSelected={setEmprendimientoSelected}
-            />
-            <SettingsImageUploader
-              id={emprendimientoSelected.id}
-              url={emprendimientoSelected.imageUrl}
-              callToUpload={updateEmprendimientoImage}
-              isReadOnly={isReadOnly}
-              uploaderAlign='center'
-              setAreUpdates={setAreUpdates}
-            />
-          </Grid>
-          <Grid item xs={12} md={6}>
-            <EmprendimientoForm
-              emprendimiento={emprendimientoSelected}
-              isReadOnly={isReadOnly}
-              setIsReadOnly={setIsReadOnly}
-              setAreUpdates={setAreUpdates}
-              dataRefreshed={areUpdates}
-            />
-          </Grid>
-        </Grid>
-      </Container>
-    </Box>
+        </Container>
+      </Box>
+      <Footer fixed />
+    </>
   );
 };
 

@@ -6,7 +6,7 @@ const BtnLocationRestore = ({ location, map }) => {
 
   const onClick = () => {
     if (map) {
-      map.flyTo({ zoom: 14, center: location });
+      map.flyTo({ zoom: 16, center: location });
     }
   };
 

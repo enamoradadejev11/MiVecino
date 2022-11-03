@@ -4,9 +4,16 @@ import { businessStyles } from "./businessUtils";
 import { Typography } from "@material-ui/core";
 import Calification from "./Calification/Calification";
 import BusinessLinks from "./BusinessLinks";
+import { useLocation } from "wouter";
+import { getUserWithExpiry } from "../../utils/utils";
 
 const Business = ({ data, isFavorite, addFavorite, removeFavorite }) => {
   const classes = businessStyles();
+  const [, setLocation] = useLocation();
+
+  if (!getUserWithExpiry()) {
+    setLocation("/login");
+  }
 
   const [emprendimiento, setEmprendimiento] = useState({
     id: "",

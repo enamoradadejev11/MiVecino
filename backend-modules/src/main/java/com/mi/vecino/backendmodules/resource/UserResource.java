@@ -76,6 +76,11 @@ public class UserResource extends ExceptionHandling {
     this.jwtTokenProvider = jwtTokenProvider;
   }
 
+  @GetMapping("/greeting")
+  public String userGreeting() {
+    return "Bienvenido a mi vecino";
+  }
+
   @PostMapping("/register")
   public ResponseEntity<User> register(@RequestBody UserCommand userCommand)
       throws UsernameNotFoundException, UserNotFoundException, EmailExistException, UsernameExistException, IOException {
