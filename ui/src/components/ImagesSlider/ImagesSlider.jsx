@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
@@ -45,9 +45,30 @@ const settings = {
   ],
 };
 
-const ImagesSlider = ({ items, sectionTittle, type }) => {
+const ImagesSlider = ({
+  items,
+  sectionTittle,
+  type,
+  selected,
+  setSelected,
+}) => {
   const typography = typographyStyles();
-  const [isActive, setIsActive] = useState(false);
+
+  const calculateClassname = (selectionId) => {
+    const { isActive, id } = selected;
+    return isActive && selectionId === id ? "content-active" : "content";
+  };
+
+  const onSelection = (id) => {
+    if (selected.id !== id) {
+      setSelected({ isActive: true, id });
+    } else {
+      setSelected({
+        ...selected,
+        isActive: !selected.isActive,
+      });
+    }
+  };
 
   return (
     <>
@@ -69,12 +90,8 @@ const ImagesSlider = ({ items, sectionTittle, type }) => {
           <Slider {...settings}>
             {items.map((emprendimiento) => (
               <div className='container' key={emprendimiento.id}>
-                <div className='content'>
-                  <div
-                    onClick={() => {
-                      setIsActive(!isActive);
-                    }}
-                  >
+                <div className={calculateClassname(emprendimiento.id)}>
+                  <div onClick={() => onSelection(emprendimiento.id)}>
                     <div className='content-overlay' />
                     <img
                       className='content-image'
@@ -90,10 +107,11 @@ const ImagesSlider = ({ items, sectionTittle, type }) => {
                       {type === HOME_PAGE_TYPE && (
                         <Button
                           component={Link}
-                          variant='contained'
+                          variant='outlined'
+                          style={{ width: "75%" }}
                           to={`/emprendimiento/${emprendimiento.id}`}
                         >
-                          Ver
+                          Ver mas ...
                         </Button>
                       )}
                     </div>

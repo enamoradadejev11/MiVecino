@@ -4,6 +4,7 @@ const PlacesContext = React.createContext({
   isLoading: true,
   userLocation: undefined,
   places: [],
+  placeSelected: {},
   isLoadingPlaces: false,
 
   // methods

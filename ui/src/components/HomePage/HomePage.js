@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import PlacesContext from "../../context/places/PlacesContext";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
@@ -14,13 +14,55 @@ const recomendations = [
   {
     tittle: "Algo cerca de ti...",
     items: [
-      { id: 16, name: "Banderillas Coreanas", imageUrl: "/rosticeria.jpeg" },
-      { id: 17, name: "Papeleria", imageUrl: "/rosticeria.jpeg" },
-      { id: 18, name: "Carpinteria", imageUrl: "/rosticeria.jpeg" },
-      { id: 19, name: "Plomeria Roman", imageUrl: "/rosticeria.jpeg" },
-      { id: 20, name: "Taquitos sureños", imageUrl: "/rosticeria.jpeg" },
-      { id: 21, name: "Cocina: Sabor a mama", imageUrl: "/rosticeria.jpeg" },
-      { id: 22, name: "Cafe Le Amour", imageUrl: "/rosticeria.jpeg" },
+      {
+        id: 16,
+        name: "Banderillas Coreanas",
+        imageUrl: "/rosticeria.jpeg",
+        latitude: 20.64146512389774,
+        longitude: -103.39109344032457,
+      },
+      {
+        id: 17,
+        name: "Papeleria",
+        imageUrl: "/rosticeria.jpeg",
+        latitude: 20.64146512389774,
+        longitude: -103.39109344032457,
+      },
+      {
+        id: 18,
+        name: "Carpinteria",
+        imageUrl: "/rosticeria.jpeg",
+        latitude: 20.64146512389774,
+        longitude: -103.39109344032457,
+      },
+      {
+        id: 19,
+        name: "Plomeria Roman",
+        imageUrl: "/rosticeria.jpeg",
+        latitude: 20.64146512389774,
+        longitude: -103.39109344032457,
+      },
+      {
+        id: 20,
+        name: "Taquitos sureños",
+        imageUrl: "/rosticeria.jpeg",
+        latitude: 20.64146512389774,
+        longitude: -103.39109344032457,
+      },
+      {
+        id: 21,
+        name: "Cocina: Sabor a mama",
+        imageUrl: "/rosticeria.jpeg",
+        latitude: 20.64146512389774,
+        longitude: -103.39109344032457,
+      },
+      {
+        id: 22,
+        name: "Cafe Le Amour",
+        imageUrl: "/rosticeria.jpeg",
+        latitude: 20.64146512389774,
+        longitude: -103.39109344032457,
+      },
     ],
   },
   {
@@ -64,6 +106,7 @@ const recomendations = [
 const HomePage = () => {
   const { userLocation } = useContext(PlacesContext);
   const [, setLocation] = useLocation();
+  const [selected, setSelected] = useState({ isActive: false, id: "" });
 
   if (!getUserWithExpiry()) {
     setLocation("/login");
@@ -87,6 +130,8 @@ const HomePage = () => {
               items={recomendation.items}
               sectionTittle={recomendation.tittle}
               type={HOME_PAGE_TYPE}
+              selected={selected}
+              setSelected={setSelected}
             />
           </div>
         ))}

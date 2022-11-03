@@ -70,7 +70,30 @@ body {
   overflow: hidden;
 }
 
+.content-active {
+  position: relative;
+  width: 90%;
+  max-width: 400px;
+  margin: auto;
+  overflow: hidden;
+}
+
 .content .content-overlay {
+  background: rgba(34, 34, 34, 0.8);
+  position: absolute;
+  height: 99%;
+  width: 100%;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  opacity: 0;
+  -webkit-transition: all 0.4s ease-in-out 0s;
+  -moz-transition: all 0.4s ease-in-out 0s;
+  transition: all 0.4s ease-in-out 0s;
+}
+
+.content-active .content-overlay {
   background: rgba(34, 34, 34, 0.8);
   position: absolute;
   height: 99%;
@@ -89,7 +112,7 @@ body {
   opacity: 1;
 }
 
-.content:active .content-overlay {
+.content-active .content-overlay {
   opacity: 1;
 }
 
@@ -120,6 +143,12 @@ body {
   opacity: 1;
 }
 
+.content-active .content-details {
+  top: 50%;
+  left: 50%;
+  opacity: 1;
+}
+
 .content-details h3 {
   color: #fff;
   font-weight: 500;
@@ -130,7 +159,7 @@ body {
 
 .content-details p {
   color: #fff;
-  font-size: 1.5rem;
+  font-size: 1.2rem;
 }
 
 .fadeIn-bottom {
