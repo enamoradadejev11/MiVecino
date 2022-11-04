@@ -18,7 +18,7 @@ const ROUTE_ID = "RouteString";
 
 export const MapProvider = ({ children }) => {
   const [state, dispatch] = useReducer(mapReducer, INITIAL_STATE);
-  const { places } = useContext(PlacesContext);
+  const { places, placeSelected } = useContext(PlacesContext);
 
   useEffect(() => {
     state.markers.forEach((marker) => marker.remove());
@@ -29,12 +29,10 @@ export const MapProvider = ({ children }) => {
       const popup = new Popup().setHTML(
         `<h3>${place.text_es}</h3><p>${place.place_name_es}</p>`
       );
-
       const newMarker = new Marker({ color: colors.ORANGE })
         .setPopup(popup)
         .setLngLat([lng, lat])
         .addTo(state?.map);
-
       newMarkers.push(newMarker);
     }
 
@@ -43,9 +41,42 @@ export const MapProvider = ({ children }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [places]);
 
+  useEffect(() => {
+    state.markers.forEach((marker) => marker.remove());
+    const newMarkers = [];
+    if (placeSelected) {
+      const { latitude, longitude } = placeSelected;
+      const popup = new Popup().setHTML(`<h3>${placeSelected.name}</h3>`);
+      const newMarker = new Marker({ color: colors.ORANGE })
+        .setPopup(popup)
+        .setLngLat([longitude, latitude])
+        .addTo(state?.map);
+      newMarkers.push(newMarker);
+    }
+    dispatch(mapActions.setMarkers(newMarkers));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [placeSelected]);
+
   const setMap = (map) => {
     new Marker({ color: colors.MINT }).setLngLat(map.getCenter()).addTo(map);
     dispatch(mapActions.setMap(map));
+  };
+
+  const cleanPolyline = () => {
+    if (Object.keys(state.map).length && state.map.getLayer(ROUTE_ID)) {
+      state.map.removeLayer(ROUTE_ID);
+      state.map.removeSource(ROUTE_ID);
+    }
+  };
+
+  const cleanMarkers = () => {
+    state.markers.forEach((marker) => marker.remove());
+    dispatch(mapActions.setMarkers([]));
+  };
+
+  const cleanMap = () => {
+    cleanPolyline();
+    cleanMarkers();
   };
 
   const getRouteBetweenPoints = async (start, end) => {
@@ -64,11 +95,9 @@ export const MapProvider = ({ children }) => {
     console.log({ kms, minutes });
 
     const bounds = new LngLatBounds(start, start);
-
     for (const coord of coords) {
       bounds.extend(coord);
     }
-
     state.map.fitBounds(bounds, {
       padding: 200,
     });
@@ -91,11 +120,7 @@ export const MapProvider = ({ children }) => {
       },
     };
 
-    if (state.map.getLayer(ROUTE_ID)) {
-      state.map.removeLayer(ROUTE_ID);
-      state.map.removeSource(ROUTE_ID);
-    }
-
+    cleanPolyline();
     state.map.addSource(ROUTE_ID, sourceData);
     state.map.addLayer({
       id: ROUTE_ID,
@@ -110,7 +135,9 @@ export const MapProvider = ({ children }) => {
   };
 
   return (
-    <MapContext.Provider value={{ ...state, setMap, getRouteBetweenPoints }}>
+    <MapContext.Provider
+      value={{ ...state, setMap, getRouteBetweenPoints, cleanMap }}
+    >
       {children}
     </MapContext.Provider>
   );

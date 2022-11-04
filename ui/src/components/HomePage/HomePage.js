@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import PlacesContext from "../../context/places/PlacesContext";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
@@ -9,6 +9,7 @@ import Footer from "../Common/Footer/Footer";
 import SearchBar from "../SearchBar/SearchBar";
 import { getUserWithExpiry, HOME_PAGE_TYPE } from "../../utils/utils";
 import { useLocation } from "wouter";
+import MapContext from "../../context/map/MapContext";
 
 const recomendations = [
   {
@@ -25,8 +26,8 @@ const recomendations = [
         id: 17,
         name: "Papeleria",
         imageUrl: "/rosticeria.jpeg",
-        latitude: 20.64146512389774,
-        longitude: -103.39109344032457,
+        latitude: 20.6473465261303,
+        longitude: -103.3903892274224,
       },
       {
         id: 18,
@@ -104,9 +105,24 @@ const recomendations = [
 ];
 
 const HomePage = () => {
-  const { userLocation } = useContext(PlacesContext);
+  const { userLocation, showPlaceSelected } = useContext(PlacesContext);
+  const { getRouteBetweenPoints, cleanMap } = useContext(MapContext);
   const [, setLocation] = useLocation();
   const [selected, setSelected] = useState({ isActive: false, id: "" });
+
+  useEffect(() => {
+    if (selected.isActive) {
+      const { emprendimiento } = selected;
+      showPlaceSelected(emprendimiento);
+      getRouteBetweenPoints(userLocation, [
+        emprendimiento.longitude,
+        emprendimiento.latitude,
+      ]);
+    } else {
+      cleanMap();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selected]);
 
   if (!getUserWithExpiry()) {
     setLocation("/login");

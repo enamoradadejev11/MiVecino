@@ -9,6 +9,7 @@ const INITIAL_STATE = {
   userLocation: undefined,
   isLoadingPlaces: false,
   places: [],
+  placeSelected: null,
 };
 
 export const PlacesProvider = ({ children }) => {
@@ -41,8 +42,14 @@ export const PlacesProvider = ({ children }) => {
     return resp.data.features;
   };
 
+  const showPlaceSelected = (place) => {
+    dispatch(placesActions.setPlaceSelected(place));
+  };
+
   return (
-    <PlacesContext.Provider value={{ ...state, searchPlacesByTerm }}>
+    <PlacesContext.Provider
+      value={{ ...state, searchPlacesByTerm, showPlaceSelected }}
+    >
       {children}
     </PlacesContext.Provider>
   );

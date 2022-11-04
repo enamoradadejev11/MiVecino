@@ -59,9 +59,9 @@ const ImagesSlider = ({
     return isActive && selectionId === id ? "content-active" : "content";
   };
 
-  const onSelection = (id) => {
-    if (selected.id !== id) {
-      setSelected({ isActive: true, id });
+  const onSelection = (emprendimiento) => {
+    if (selected.id !== emprendimiento.id) {
+      setSelected({ isActive: true, id: emprendimiento.id, emprendimiento });
     } else {
       setSelected({
         ...selected,
@@ -91,7 +91,7 @@ const ImagesSlider = ({
             {items.map((emprendimiento) => (
               <div className='container' key={emprendimiento.id}>
                 <div className={calculateClassname(emprendimiento.id)}>
-                  <div onClick={() => onSelection(emprendimiento.id)}>
+                  <div onClick={() => onSelection(emprendimiento)}>
                     <div className='content-overlay' />
                     <img
                       className='content-image'
