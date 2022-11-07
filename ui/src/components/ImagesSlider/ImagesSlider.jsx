@@ -55,8 +55,11 @@ const ImagesSlider = ({
   const typography = typographyStyles();
 
   const calculateClassname = (selectionId) => {
-    const { isActive, id } = selected;
-    return isActive && selectionId === id ? "content-active" : "content";
+    if (selected) {
+      const { isActive, id } = selected;
+      return isActive && selectionId === id ? "content-active" : "content";
+    }
+    return "content";
   };
 
   const onSelection = (emprendimiento) => {
@@ -129,10 +132,16 @@ const ImagesSlider = ({
 ImagesSlider.propTypes = {
   items: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
   sectionTittle: PropTypes.string,
+  type: PropTypes.string,
+  selected: PropTypes.shape({}),
+  setSelected: PropTypes.func,
 };
 
 ImagesSlider.defaultProps = {
   sectionTittle: "",
+  type: "",
+  selected: null,
+  setSelected: () => {},
 };
 
 export default ImagesSlider;

@@ -10,15 +10,19 @@ const INITIAL_STATE = {
   isMapReady: false,
   map: {},
   markers: [],
+  isAddressMapReady: false,
+  addressMap: {},
+  addressMarkers: [],
   // methods
   setMap: () => {},
+  setAddressMap: () => {},
 };
 
 const ROUTE_ID = "RouteString";
 
 export const MapProvider = ({ children }) => {
   const [state, dispatch] = useReducer(mapReducer, INITIAL_STATE);
-  const { places, placeSelected } = useContext(PlacesContext);
+  const { places, placeSelected, addresses } = useContext(PlacesContext);
 
   useEffect(() => {
     state.markers.forEach((marker) => marker.remove());
@@ -36,10 +40,27 @@ export const MapProvider = ({ children }) => {
       newMarkers.push(newMarker);
     }
 
-    //Todo: limpiar polyline
     dispatch(mapActions.setMarkers(newMarkers));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [places]);
+
+  useEffect(() => {
+    state.addressMarkers.forEach((marker) => marker.remove());
+    const newMarkers = [];
+
+    for (const address of addresses) {
+      const [lng, lat] = address.center;
+      const popup = new Popup().setHTML(`<h3>${address.text_es}</h3>`);
+      const newMarker = new Marker({ color: colors.ORANGE })
+        .setPopup(popup)
+        .setLngLat([lng, lat])
+        .addTo(state?.addressMap);
+      newMarkers.push(newMarker);
+    }
+
+    dispatch(mapActions.setAddressMarkers(newMarkers));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [addresses]);
 
   useEffect(() => {
     state.markers.forEach((marker) => marker.remove());
@@ -60,6 +81,11 @@ export const MapProvider = ({ children }) => {
   const setMap = (map) => {
     new Marker({ color: colors.MINT }).setLngLat(map.getCenter()).addTo(map);
     dispatch(mapActions.setMap(map));
+  };
+
+  const setAddressMap = (map) => {
+    new Marker({ color: colors.MINT }).setLngLat(map.getCenter()).addTo(map);
+    dispatch(mapActions.setAddressMap(map));
   };
 
   const cleanPolyline = () => {
@@ -136,7 +162,13 @@ export const MapProvider = ({ children }) => {
 
   return (
     <MapContext.Provider
-      value={{ ...state, setMap, getRouteBetweenPoints, cleanMap }}
+      value={{
+        ...state,
+        setMap,
+        setAddressMap,
+        getRouteBetweenPoints,
+        cleanMap,
+      }}
     >
       {children}
     </MapContext.Provider>

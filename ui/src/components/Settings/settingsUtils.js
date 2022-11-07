@@ -3,7 +3,7 @@ import { makeStyles } from "@material-ui/core/styles";
 export const sections = {
   PROFILE: "Mi perfil",
   EMPRENDIMIENTOS: "Mis emprendimientos",
-  FAVORITES: "Mis favoritos",
+  FAVORITES: "Mis direcciones",
 };
 
 export const settingsStyles = makeStyles((theme) => ({

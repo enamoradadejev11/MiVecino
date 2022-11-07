@@ -1,21 +1,24 @@
+import { createTheme, ThemeProvider } from "@material-ui/core/styles";
 import React, { useEffect } from "react";
-import "./App.css";
-import "./components/ImagesSlider/ImagesSlider.css";
-import "./components/HomePage/HomePage.css";
-import "./components/SearchBar/SearchBar.css";
 import { Route, useLocation } from "wouter";
-import { ThemeProvider, createTheme } from "@material-ui/core/styles";
+import "./App.css";
+import "./components/Addresses/AddressSearchBar/addressSearchBar.css";
+import Addresses from "./components/Addresses/Adresses";
+import EmprendimientoDetail from "./components/Business";
+import Business from "./components/Business/Business";
+import "./components/Emprendimientos/selector.css";
+import UserEmprendimientos from "./components/Emprendimientos/UserEmprendimientos";
+import HomePage from "./components/HomePage/HomePage";
+import "./components/HomePage/HomePage.css";
+import "./components/ImagesSlider/ImagesSlider.css";
 import Login from "./components/Login/Login";
 import Register from "./components/Register/Register";
-import HomePage from "./components/HomePage/HomePage";
-import StaticContext from "./context/StaticContext";
+import "./components/SearchBar/SearchBar.css";
 import Settings from "./components/Settings/Settings";
-import UserEmprendimientos from "./components/Emprendimientos/UserEmprendimientos";
 import UserProfile from "./components/UserProfile";
-import Business from "./components/Business/Business";
-import { PlacesProvider } from "./context/places/PlacesProvider";
 import { MapProvider } from "./context/map/MapProvider";
-import EmprendimientoDetail from "./components/Business";
+import { PlacesProvider } from "./context/places/PlacesProvider";
+import StaticContext from "./context/StaticContext";
 import { getUserWithExpiry } from "./utils/utils";
 
 function App() {
@@ -64,6 +67,7 @@ function App() {
                     component={EmprendimientoDetail}
                   />
                   <Route path='/business' component={Business} />
+                  <Route path='/direcciones' component={Addresses} />
                   <div></div>
                 </div>
               </ThemeProvider>

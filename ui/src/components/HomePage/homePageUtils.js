@@ -13,4 +13,10 @@ export const homePageStyles = makeStyles((theme) => ({
     alignItems: "center",
     height: "400px",
   },
+  addresses_map: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    height: "400px",
+  },
 }));

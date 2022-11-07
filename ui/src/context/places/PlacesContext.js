@@ -6,6 +6,11 @@ const PlacesContext = React.createContext({
   places: [],
   placeSelected: null,
   isLoadingPlaces: false,
+  address: undefined,
+  isLoadingAddress: true,
+  addresses: [],
+  addressSelected: null,
+  isLoadingAddresses: false,
 
   // methods
   searchPlacesByTerm: null,

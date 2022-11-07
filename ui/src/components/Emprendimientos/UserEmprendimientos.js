@@ -92,6 +92,7 @@ const UserEmprendimientos = () => {
                 emprendimientos={emprendimientos}
                 emprendimientoSelected={emprendimientoSelected}
                 setEmprendimientoSelected={setEmprendimientoSelected}
+                defaultValues={defaultValues}
               />
               <SettingsImageUploader
                 id={emprendimientoSelected.id}

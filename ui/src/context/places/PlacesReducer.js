@@ -3,6 +3,10 @@ const actionTypes = {
   SET_PLACES: "SET_PLACES",
   SET_LOADING_PLACES: "SET_LOADING_PLACES",
   SET_PLACE_SELECTED: "SET_PLACE_SELECTED",
+  SET_ADDRESS: "SET_ADDRESS",
+  SET_ADDRESSES: "SET_ADDRESSES",
+  SET_LOADING_ADDRESSES: "SET_LOADING_ADDRESSES",
+  SET_ADDRESS_SELECTED: "SET_ADDRESS_SELECTED",
 };
 
 export const placesActions = {
@@ -17,6 +21,18 @@ export const placesActions = {
   },
   setLoadingPlaces() {
     return { type: actionTypes.SET_LOADING_PLACES };
+  },
+  setAddress(payload) {
+    return { type: actionTypes.SET_ADDRESS, payload };
+  },
+  setAddresses(payload) {
+    return { type: actionTypes.SET_ADDRESSES, payload };
+  },
+  setLoadingAddresses() {
+    return { type: actionTypes.SET_LOADING_ADDRESSES };
+  },
+  setAddressSelected(payload) {
+    return { type: actionTypes.SET_ADDRESS_SELECTED, payload };
   },
 };
 
@@ -48,6 +64,33 @@ export const placesReducer = (state, action = {}) => {
         ...state,
         isLoadingPlaces: true,
         places: [],
+      };
+    }
+    case actionTypes.SET_ADDRESS: {
+      return {
+        ...state,
+        isLoadingAddress: false,
+        userLocation: payload,
+      };
+    }
+    case actionTypes.SET_ADDRESSES: {
+      return {
+        ...state,
+        isLoadingAddresses: false,
+        addresses: payload,
+      };
+    }
+    case actionTypes.SET_LOADING_ADDRESSES: {
+      return {
+        ...state,
+        isLoadingAddresses: true,
+        places: [],
+      };
+    }
+    case actionTypes.SET_ADDRESS_SELECTED: {
+      return {
+        ...state,
+        addressSelected: payload,
       };
     }
     default:

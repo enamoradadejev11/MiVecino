@@ -54,3 +54,31 @@ export const deleteFavorite = async (emprendimientoId) => {
   );
   return response.data;
 };
+
+export const getAddresses = async () => {
+  const response = await axios.get(`${userApi}/addresses`, authHeader());
+  return response.data;
+};
+
+export const saveAddress = async (address) => {
+  const response = await axios.post(
+    `${userApi}/address`,
+    address,
+    authHeader()
+  );
+  return response.data;
+};
+
+export const deleteAddress = async (id) => {
+  const response = await axios.delete(`${userApi}/${id}/address`, authHeader());
+  return response.data;
+};
+
+export const updateAddress = async (address) => {
+  const response = await axios.put(
+    `${userApi}/${address.id}/address`,
+    address,
+    authHeader()
+  );
+  return response.data;
+};

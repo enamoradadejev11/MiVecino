@@ -10,6 +10,11 @@ const INITIAL_STATE = {
   isLoadingPlaces: false,
   places: [],
   placeSelected: null,
+  address: undefined,
+  isLoadingAddress: true,
+  addresses: [],
+  addressSelected: null,
+  isLoadingAddresses: false,
 };
 
 export const PlacesProvider = ({ children }) => {
@@ -42,13 +47,40 @@ export const PlacesProvider = ({ children }) => {
     return resp.data.features;
   };
 
+  const searchAddressesByTerm = async (query) => {
+    if (query.length === 0) {
+      dispatch(placesActions.setAddresses([]));
+      return [];
+    }
+
+    dispatch(placesActions.setLoadingAddresses());
+    const resp = await searchApi.get(`/${query}.json`, {
+      params: {
+        proximity: state.userLocation.join(","),
+      },
+    });
+
+    dispatch(placesActions.setAddresses(resp.data.features));
+    return resp.data.features;
+  };
+
   const showPlaceSelected = (place) => {
     dispatch(placesActions.setPlaceSelected(place));
   };
 
+  const setAddressSelected = (place) => {
+    dispatch(placesActions.setAddressSelected(place));
+  };
+
   return (
     <PlacesContext.Provider
-      value={{ ...state, searchPlacesByTerm, showPlaceSelected }}
+      value={{
+        ...state,
+        searchPlacesByTerm,
+        searchAddressesByTerm,
+        showPlaceSelected,
+        setAddressSelected,
+      }}
     >
       {children}
     </PlacesContext.Provider>

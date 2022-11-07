@@ -1,6 +1,8 @@
 const actionTypes = {
   SET_MAP: "SET_MAP",
   SET_MARKERS: "SET_MARKERS",
+  SET_ADDRESS_MAP: "SET_ADDRESS_MAP",
+  SET_ADDRESS_MARKERS: "SET_ADDRESS_MARKERS",
 };
 
 export const mapActions = {
@@ -9,6 +11,12 @@ export const mapActions = {
   },
   setMarkers(payload) {
     return { type: actionTypes.SET_MARKERS, payload };
+  },
+  setAddressMap(payload) {
+    return { type: actionTypes.SET_ADDRESS_MAP, payload };
+  },
+  setAddressMarkers(payload) {
+    return { type: actionTypes.SET_ADDRESS_MARKERS, payload };
   },
 };
 
@@ -26,6 +34,19 @@ export const mapReducer = (state, action = {}) => {
       return {
         ...state,
         markers: payload,
+      };
+    }
+    case actionTypes.SET_ADDRESS_MAP: {
+      return {
+        ...state,
+        isAddressMapReady: true,
+        addressMap: payload,
+      };
+    }
+    case actionTypes.SET_ADDRESS_MARKERS: {
+      return {
+        ...state,
+        addressMarkers: payload,
       };
     }
     default:

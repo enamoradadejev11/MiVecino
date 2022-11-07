@@ -136,7 +136,7 @@ const HomePage = () => {
     <>
       <SearchBar />
       <div className='home-page-map-section'>
-        <MainMap />
+        <MainMap isHomepage />
         <BtnMyLocation location={userLocation} />
       </div>
       <div className='home-page-recomendation-section'>

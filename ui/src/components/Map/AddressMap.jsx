@@ -1,47 +1,46 @@
-import React, { useContext, useEffect, useLayoutEffect, useState } from "react";
-import PlacesContext from "../../context/places/PlacesContext";
-import CircularProgress from "@mui/material/CircularProgress";
-import Box from "@mui/material/Box";
-import { homePageStyles } from "../HomePage/homePageUtils";
-import mapboxgl from "mapbox-gl";
-import { useRef } from "react";
-import MapContext from "../../context/map/MapContext";
-import PropTypes from "prop-types";
-import { Marker, Popup } from "mapbox-gl";
 import { colors } from "@material-ui/core";
+import Box from "@mui/material/Box";
+import CircularProgress from "@mui/material/CircularProgress";
+import mapboxgl, { Marker, Popup } from "mapbox-gl";
+import PropTypes from "prop-types";
+import React, {
+  useContext,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from "react";
+import MapContext from "../../context/map/MapContext";
+import PlacesContext from "../../context/places/PlacesContext";
+import { homePageStyles } from "../HomePage/homePageUtils";
 
 mapboxgl.accessToken =
   "pk.eyJ1IjoiZW5hbW9yYWRhZGVqZXYiLCJhIjoiY2wzdjF0eGtzMHBwYTNqcDR1a2V3cHc5MiJ9.B908wvKiF6shWfLEyGI_lg";
 
-const MainMap = ({ isHomepage, location, markers }) => {
+const AddressMap = ({ location, markers }) => {
   const { isLoading, userLocation } = useContext(PlacesContext);
-  const { isMapReady, setMap } = useContext(MapContext);
+  const { isAddressMapReady, setAddressMap } = useContext(MapContext);
   const [currentMap, setCurrentMap] = useState(null);
   const [center, setCenter] = useState();
   const mapDiv = useRef(null);
   const styles = homePageStyles();
 
-  const calculateStyle = () => {
-    return isHomepage ? styles.home_page_map : styles.addresses_map;
-  };
-
   useEffect(() => {
-    if (currentMap && !isMapReady) {
-      setMap(currentMap);
+    if (currentMap && !isAddressMapReady) {
+      setAddressMap(currentMap);
     }
-  }, [currentMap, setMap, isMapReady, isHomepage]);
+  }, [currentMap, setAddressMap, isAddressMapReady]);
 
   useEffect(() => {
     if (location) {
       setCenter(location);
-    }
-    if (isHomepage && userLocation) {
+    } else if (userLocation) {
       setCenter(userLocation);
     }
-  }, [isHomepage, location, userLocation]);
+  }, [location, userLocation]);
 
   useEffect(() => {
-    if (currentMap && markers && !isHomepage) {
+    if (currentMap && markers) {
       markers.map((marker) =>
         new Marker({ color: colors.MINT })
           .setPopup(new Popup().setHTML(`<h3>${marker.alias}</h3>`))
@@ -49,16 +48,16 @@ const MainMap = ({ isHomepage, location, markers }) => {
           .addTo(currentMap)
       );
     }
-  }, [isHomepage, markers, currentMap]);
+  }, [markers, currentMap]);
 
   useEffect(() => {
-    if (center && Object.keys(currentMap).length && !isHomepage) {
+    if (center && Object.keys(currentMap).length) {
       currentMap?.flyTo({ zoom: 16, center });
     }
-  }, [center, currentMap, isHomepage]);
+  }, [center, currentMap]);
 
   useLayoutEffect(() => {
-    if (!isLoading && !isMapReady) {
+    if (!isLoading && !isAddressMapReady) {
       const map = new mapboxgl.Map({
         container: mapDiv.current, // container ID
         style: "mapbox://styles/mapbox/dark-v10", // style URL
@@ -66,35 +65,36 @@ const MainMap = ({ isHomepage, location, markers }) => {
         zoom: 16, // starting zoom
         projection: "globe", // display the map as a 3D globe
       });
+      new Marker({ color: colors.MINT }).setLngLat(userLocation).addTo(map);
       setCurrentMap(map);
     }
-  }, [isLoading, isMapReady, userLocation, isHomepage]);
+  }, [isLoading, isAddressMapReady, userLocation]);
 
   if (isLoading) {
     return (
-      <Box className={calculateStyle()}>
+      <Box className={styles.addresses_map}>
         <CircularProgress />
       </Box>
     );
   }
 
   return (
-    <div ref={mapDiv} className={calculateStyle()}>
+    <div ref={mapDiv} className={styles.addresses_map}>
       {userLocation?.join(",")}
     </div>
   );
 };
 
-MainMap.propTypes = {
+AddressMap.propTypes = {
   type: PropTypes.bool,
   location: PropTypes.array,
   markers: PropTypes.array,
 };
 
-MainMap.defaultProps = {
+AddressMap.defaultProps = {
   isHomepage: false,
   location: null,
   markers: [],
 };
 
-export default MainMap;
+export default AddressMap;

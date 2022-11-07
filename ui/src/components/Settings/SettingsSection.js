@@ -21,7 +21,7 @@ const getStylesFromTitle = (title) => {
     case sections.FAVORITES:
       return {
         backgroundColor: "rgb(179, 222, 215, 0.85)",
-        router: "/favoritos",
+        router: "/direcciones",
         img: "/mis_favoritos.png",
       };
     default:

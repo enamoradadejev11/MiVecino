@@ -9,6 +9,7 @@ import static com.mi.vecino.backendmodules.constant.FileConstant.USER_FOLDER;
 import static com.mi.vecino.backendmodules.constant.FileConstant.USER_IMAGE_PATH;
 import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 
+import com.mi.vecino.backendmodules.domain.Address;
 import com.mi.vecino.backendmodules.domain.Category;
 import com.mi.vecino.backendmodules.domain.Emprendimiento;
 import com.mi.vecino.backendmodules.domain.Favorite;
@@ -16,13 +17,16 @@ import com.mi.vecino.backendmodules.domain.User;
 import com.mi.vecino.backendmodules.domain.UserInformation;
 import com.mi.vecino.backendmodules.domain.UserPrincipal;
 import com.mi.vecino.backendmodules.domain.UserProfile;
+import com.mi.vecino.backendmodules.domain.command.AddressCommand;
 import com.mi.vecino.backendmodules.domain.command.UpdateUserProfileCommand;
 import com.mi.vecino.backendmodules.domain.command.UserCommand;
 import com.mi.vecino.backendmodules.domain.enumeration.Role;
+import com.mi.vecino.backendmodules.domain.exception.AddressNotFoundException;
 import com.mi.vecino.backendmodules.domain.exception.EmailExistException;
 import com.mi.vecino.backendmodules.domain.exception.EmailNotFoundException;
 import com.mi.vecino.backendmodules.domain.exception.UserNotFoundException;
 import com.mi.vecino.backendmodules.domain.exception.UsernameExistException;
+import com.mi.vecino.backendmodules.repository.AddressRepository;
 import com.mi.vecino.backendmodules.repository.EmprendimientoRepository;
 import com.mi.vecino.backendmodules.repository.UserRepository;
 import com.mi.vecino.backendmodules.service.UserService;
@@ -37,6 +41,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
+import javassist.NotFoundException;
 import javax.transaction.Transactional;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -63,13 +68,15 @@ public class UserServiceImpl implements UserService, UserDetailsService {
   public static final String USER_NOT_FOUND_BY_EMAIL = "User not found by email: ";
   private final Logger logger = LoggerFactory.getLogger(getClass());
   private final UserRepository userRepository;
+  private final AddressRepository addressRepository;
   private final EmprendimientoRepository emprendimientoRepository;
   private final BCryptPasswordEncoder passwordEncoder;
 
   @Autowired
-  public UserServiceImpl(UserRepository userRepository,
+  public UserServiceImpl(UserRepository userRepository, AddressRepository addressRepository,
       EmprendimientoRepository emprendimientoRepository, BCryptPasswordEncoder passwordEncoder) {
     this.userRepository = userRepository;
+    this.addressRepository = addressRepository;
     this.emprendimientoRepository = emprendimientoRepository;
     this.passwordEncoder = passwordEncoder;
   }
@@ -215,6 +222,43 @@ public class UserServiceImpl implements UserService, UserDetailsService {
       return userRepository.save(user).getFavoriteEmprendimientos();
     }
     return Collections.emptyList();
+  }
+
+  @Override
+  public List<AddressCommand> getAddressesByUser(String username) {
+    var addresses = addressRepository.findAllByUsername(username);
+    return addresses.stream().map(AddressCommand::new).collect(Collectors.toList());
+  }
+
+  @Override
+  public List<AddressCommand> saveAddress(String username, AddressCommand addressCommand) {
+    var newAddress = new Address(username, addressCommand);
+    addressRepository.save(newAddress);
+    return getAddressesByUser(username);
+  }
+
+  @Override
+  public AddressCommand updateAddress(String username, AddressCommand newAddress)
+      throws AddressNotFoundException {
+    var address = addressRepository.findById(newAddress.getId());
+    if (address.isPresent() && address.get().getUsername().equals(username)) {
+      logger.info("SAVE");
+      return new AddressCommand(addressRepository.save(address.get()));
+    }
+    if(address.isPresent()) {
+      return new AddressCommand(address.get());
+    }
+    throw new AddressNotFoundException("No se encontro la direccion");
+  }
+
+  @Override
+  public List<AddressCommand> deleteAddress(String username, long id) {
+    var address = addressRepository.findById(id);
+
+    if (address.isPresent() && address.get().getUsername().equals(username)) {
+      addressRepository.deleteById(id);
+    }
+    return getAddressesByUser(username);
   }
 
   private List<Category> calculateCategoriesFromFavorites(Emprendimiento emprendimiento,

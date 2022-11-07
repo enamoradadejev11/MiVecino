@@ -13,14 +13,17 @@ import com.mi.vecino.backendmodules.domain.User;
 import com.mi.vecino.backendmodules.domain.UserInformation;
 import com.mi.vecino.backendmodules.domain.UserPrincipal;
 import com.mi.vecino.backendmodules.domain.UserProfile;
+import com.mi.vecino.backendmodules.domain.command.AddressCommand;
 import com.mi.vecino.backendmodules.domain.command.UpdateUserProfileCommand;
 import com.mi.vecino.backendmodules.domain.command.UserCommand;
 import com.mi.vecino.backendmodules.domain.command.UserValidCommand;
+import com.mi.vecino.backendmodules.domain.exception.AddressNotFoundException;
 import com.mi.vecino.backendmodules.domain.exception.EmailExistException;
 import com.mi.vecino.backendmodules.domain.exception.EmailNotFoundException;
 import com.mi.vecino.backendmodules.domain.exception.ExceptionHandling;
 import com.mi.vecino.backendmodules.domain.exception.UserNotFoundException;
 import com.mi.vecino.backendmodules.domain.exception.UsernameExistException;
+import com.mi.vecino.backendmodules.service.AddressService;
 import com.mi.vecino.backendmodules.service.UserService;
 import com.mi.vecino.backendmodules.utility.JWTTokenProvider;
 import java.io.ByteArrayOutputStream;
@@ -31,6 +34,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
+import javax.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,15 +67,16 @@ public class UserResource extends ExceptionHandling {
   public static final String NEW_PASSWORD_WAS_SENT_TO = "An email with a new password was sent to: ";
   public static final String USER_DELETED_SUCCESSFULLY = "User deleted successfully";
   private final UserService userService;
+  private final AddressService addressService;
   private final AuthenticationManager authenticationManager;
   private final JWTTokenProvider jwtTokenProvider;
   private final Logger logger = LoggerFactory.getLogger(getClass());
 
   @Autowired
-  public UserResource(UserService userService,
-      AuthenticationManager authenticationManager,
-      JWTTokenProvider jwtTokenProvider) {
+  public UserResource(UserService userService, AddressService addressService,
+      AuthenticationManager authenticationManager, JWTTokenProvider jwtTokenProvider) {
     this.userService = userService;
+    this.addressService = addressService;
     this.authenticationManager = authenticationManager;
     this.jwtTokenProvider = jwtTokenProvider;
   }
@@ -138,6 +143,33 @@ public class UserResource extends ExceptionHandling {
       throws UsernameNotFoundException, EmailNotFoundException {
     userService.resetPassword(email);
     return response(HttpStatus.OK, NEW_PASSWORD_WAS_SENT_TO + email);
+  }
+
+  @GetMapping("/addresses")
+  public List<AddressCommand> getAddresses() throws UsernameNotFoundException {
+    var username = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    return addressService.getAddressesByUser(username);
+  }
+
+  @PostMapping("/address")
+  public List<AddressCommand> saveAddress(@Valid @RequestBody AddressCommand addressCommand)
+      throws UsernameNotFoundException, UserNotFoundException, EmailExistException, UsernameExistException {
+    var username = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    return userService.saveAddress(username, addressCommand);
+  }
+
+  @DeleteMapping("/{id}/address")
+  public List<AddressCommand> deleteAddress(@PathVariable("id") long id) {
+    var username = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    return userService.deleteAddress(username, id);
+  }
+
+  @PutMapping("/{id}/address")
+  public AddressCommand updateAddress(@PathVariable("id") long id,
+      @Valid @RequestBody AddressCommand addressCommand) throws AddressNotFoundException {
+    var username = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    addressCommand.setId(id);
+    return userService.updateAddress(username, addressCommand);
   }
 
   @DeleteMapping("/{id}")

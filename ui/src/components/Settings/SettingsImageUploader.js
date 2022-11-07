@@ -2,6 +2,7 @@ import { Box, Button, Typography } from "@material-ui/core";
 import React, { useEffect, useState } from "react";
 import ImageUploader from "../ImageUploader/ImageUploader";
 import Stack from "@mui/material/Stack";
+import PropTypes from "prop-types";
 
 const SettingsImageUploader = ({
   id,
@@ -47,9 +48,11 @@ const SettingsImageUploader = ({
           setAreUpdates(true);
         })
         .catch((e) => {
-          const { message } = e.response.data;
-          if (message.includes("UPLOAD SIZE EXCEEDED")) {
-            setErrorMessage("Tamaño de archivo muy grande");
+          if (e.response.data) {
+            const { message } = e.response.data;
+            if (message.includes("UPLOAD SIZE EXCEEDED")) {
+              setErrorMessage("Tamaño de archivo muy grande");
+            }
           }
           setCurrentImage(null);
           setCurrentUrl("");
@@ -73,6 +76,23 @@ const SettingsImageUploader = ({
       </Stack>
     </>
   );
+};
+
+SettingsImageUploader.propTypes = {
+  id: PropTypes.number.isRequired,
+  url: PropTypes.string,
+  callToUpload: PropTypes.func,
+  isReadOnly: PropTypes.bool,
+  uploaderAlign: PropTypes.string,
+  setAreUpdates: PropTypes.func,
+};
+
+SettingsImageUploader.defaultProps = {
+  url: '',
+  callToUpload: () => {},
+  isReadOnly: true,
+  uploaderAlign: "center",
+  setAreUpdates: () => {},
 };
 
 export default SettingsImageUploader;
