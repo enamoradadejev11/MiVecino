@@ -44,16 +44,9 @@ export const defaultValues = {
   description: "",
   categories: [],
   active: true,
-  address: {
-    street: "",
-    outdoorNumber: "",
-    interiorNumber: "",
-    colony: "",
-    town: "",
-    state: "",
-    zipCode: null,
-  },
-  addresses: [],
+  address: null,
+  latitude: 0,
+  longitude: 0,
   imageUrl: "",
 };
 

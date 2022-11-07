@@ -1,25 +1,24 @@
-import { Box, Button, FormControlLabel } from "@material-ui/core";
-import { Grid } from "@material-ui/core";
+import { Box, Button, FormControlLabel, Grid } from "@material-ui/core";
+import MenuItem from "@mui/material/MenuItem";
 import Switch from "@mui/material/Switch";
-import React, { useEffect, useState } from "react";
+import TextField from "@mui/material/TextField";
 import PropTypes from "prop-types";
+import React, { useEffect, useState } from "react";
 import {
   generalFormProps,
   handleMandatoryFields,
 } from "../../utils/stylesUtils";
-import {
-  defaultValues,
-  defaultFormErrorValues,
-  defaultFormHelperTextValues,
-  emprendimientosFormStyles,
-} from "./emprendimientosUtils";
-import MenuItem from "@mui/material/MenuItem";
 import MultipleSelectCategory from "./emprendimientosCategories";
-import TextField from "@mui/material/TextField";
 import {
   addEmprendimiento,
   updateEmprendimiento,
 } from "./emprendimientosServices";
+import {
+  defaultFormErrorValues,
+  defaultFormHelperTextValues,
+  defaultValues,
+  emprendimientosFormStyles,
+} from "./emprendimientosUtils";
 
 const emprendimientosTypes = [
   {
@@ -46,6 +45,7 @@ const emprendimientosTypes = [
 
 const EmprendimientoForm = ({
   emprendimiento,
+  addresses,
   isReadOnly,
   setIsReadOnly,
   setAreUpdates,
@@ -62,6 +62,27 @@ const EmprendimientoForm = ({
   );
   const [buttonType, setButtonType] = useState();
   const [emprendimientoType, setEmprendimientoType] = useState("Oficio");
+
+  useEffect(() => {
+    if (dataRefreshed) {
+      setButtonType("Editar");
+      setIsReadOnly(true);
+    }
+  }, [dataRefreshed, setButtonType, setIsReadOnly]);
+
+  useEffect(() => {
+    if (emprendimiento) {
+      setFormValues(emprendimiento);
+      setEmprendimientoType(emprendimiento.type);
+      if (emprendimiento.id === "") {
+        setIsReadOnly(false);
+        setButtonType("Agregar");
+      } else {
+        setIsReadOnly(true);
+        setButtonType("Editar");
+      }
+    }
+  }, [emprendimiento, setIsReadOnly]);
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -91,13 +112,6 @@ const EmprendimientoForm = ({
     }
   };
 
-  useEffect(() => {
-    if (dataRefreshed) {
-      setButtonType("Editar");
-      setIsReadOnly(true);
-    }
-  }, [dataRefreshed, setButtonType, setIsReadOnly]);
-
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     if (name === "active") {
@@ -126,27 +140,22 @@ const EmprendimientoForm = ({
     );
   };
 
-  useEffect(() => {
-    if (emprendimiento) {
-      setFormValues(emprendimiento);
-      setEmprendimientoType(emprendimiento.type);
-      if (emprendimiento.id === "") {
-        setIsReadOnly(false);
-        setButtonType("Agregar");
-      } else {
-        setIsReadOnly(true);
-        setButtonType("Editar");
-      }
-    }
-  }, [emprendimiento, setIsReadOnly]);
-
-  const handleChange = (event) => {
+  const handleTypeChange = (event) => {
     setEmprendimientoType(event.target.value);
     setFormValues({
       ...formValues,
       type: event.target.value,
     });
   };
+
+  const handleChange = (name, value) => {
+    setFormValues({
+      ...formValues,
+      [name]: value,
+    });
+  };
+
+  console.log("formValues", formValues);
 
   return (
     <>
@@ -180,7 +189,7 @@ const EmprendimientoForm = ({
               select
               label='Tipo'
               value={emprendimientoType}
-              onChange={handleChange}
+              onChange={handleTypeChange}
               variant='filled'
               margin='normal'
               size='small'
@@ -223,10 +232,29 @@ const EmprendimientoForm = ({
             />
           </Grid>
           <Grid item xs={12}>
+            <TextField
+              id='outlined-select-type'
+              select
+              label='Dirección'
+              value={formValues.address}
+              onChange={(e) => handleChange("address", e.target.value)}
+              variant='filled'
+              margin='normal'
+              size='small'
+              disabled={isReadOnly}
+              fullWidth
+            >
+              {addresses.map((address) => (
+                <MenuItem key={address.id} value={address}>
+                  {address.alias}
+                </MenuItem>
+              ))}
+            </TextField>
+          </Grid>
+          <Grid item xs={12}>
             <MultipleSelectCategory
-              categories={formValues.categories.map(
-                (category) => category.name
-              )}
+              categories={formValues.categories}
+              setCategories={(value) => handleChange("categories", value)}
               isReadOnly={isReadOnly}
             />
           </Grid>

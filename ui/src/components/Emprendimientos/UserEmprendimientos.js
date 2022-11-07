@@ -1,26 +1,28 @@
-import React, { useEffect, useState } from "react";
-import { Container, Grid } from "@mui/material";
 import { Box } from "@material-ui/core";
 import Typography from "@material-ui/core/Typography";
+import { Container, Grid } from "@mui/material";
+import React, { useEffect, useState } from "react";
+import { useLocation } from "wouter";
+import { getAddresses } from "../../services/userServices";
 import { typographyStyles } from "../../utils/stylesUtils";
+import { getUserWithExpiry, headerAccess } from "../../utils/utils";
+import Footer from "../Common/Footer/Footer";
+import Navbar from "../Common/Navbar/Navbar";
+import SettingsImageUploader from "../Settings/SettingsImageUploader";
 import EmprendimientoForm from "./EmprendimientoForm";
 import EmprendimientoSelector from "./EmprendimientoSelector";
-import { defaultValues } from "./emprendimientosUtils";
 import {
   getUserEmprendimientos,
   updateEmprendimientoImage,
 } from "./emprendimientosServices";
-import SettingsImageUploader from "../Settings/SettingsImageUploader";
-import Navbar from "../Common/Navbar/Navbar";
-import { getUserWithExpiry, headerAccess } from "../../utils/utils";
-import Footer from "../Common/Footer/Footer";
-import { useLocation } from "wouter";
+import { defaultValues } from "./emprendimientosUtils";
 
 const UserEmprendimientos = () => {
   const typography = typographyStyles();
   const [emprendimientoSelected, setEmprendimientoSelected] =
     useState(defaultValues);
   const [emprendimientos, setEmprendimientos] = useState([]);
+  const [addresses, setAddresses] = useState([]);
   const [isReadOnly, setIsReadOnly] = useState(false);
   const [areUpdates, setAreUpdates] = useState(false);
   const [, setLocation] = useLocation();
@@ -49,6 +51,10 @@ const UserEmprendimientos = () => {
       .catch((e) => {
         setEmprendimientos([]);
       });
+
+    getAddresses().then((response) => {
+      setAddresses(response);
+    });
   }, []);
 
   useEffect(() => {
@@ -94,18 +100,21 @@ const UserEmprendimientos = () => {
                 setEmprendimientoSelected={setEmprendimientoSelected}
                 defaultValues={defaultValues}
               />
-              <SettingsImageUploader
-                id={emprendimientoSelected.id}
-                url={emprendimientoSelected.imageUrl}
-                callToUpload={updateEmprendimientoImage}
-                isReadOnly={isReadOnly}
-                uploaderAlign='center'
-                setAreUpdates={setAreUpdates}
-              />
+              {emprendimientoSelected.id !== "" && (
+                <SettingsImageUploader
+                  id={emprendimientoSelected.id}
+                  url={emprendimientoSelected.imageUrl}
+                  callToUpload={updateEmprendimientoImage}
+                  isReadOnly={isReadOnly}
+                  uploaderAlign='center'
+                  setAreUpdates={setAreUpdates}
+                />
+              )}
             </Grid>
             <Grid item xs={12} md={6}>
               <EmprendimientoForm
                 emprendimiento={emprendimientoSelected}
+                addresses={addresses}
                 isReadOnly={isReadOnly}
                 setIsReadOnly={setIsReadOnly}
                 setAreUpdates={setAreUpdates}
@@ -115,7 +124,7 @@ const UserEmprendimientos = () => {
           </Grid>
         </Container>
       </Box>
-      <Footer fixed />
+      <Footer />
     </>
   );
 };

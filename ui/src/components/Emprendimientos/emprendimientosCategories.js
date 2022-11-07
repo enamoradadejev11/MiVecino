@@ -1,12 +1,12 @@
-import React, { useEffect, useState } from "react";
-import { useTheme } from "@mui/material/styles";
 import Box from "@mui/material/Box";
-import OutlinedInput from "@mui/material/OutlinedInput";
+import Chip from "@mui/material/Chip";
+import FormControl from "@mui/material/FormControl";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
-import FormControl from "@mui/material/FormControl";
+import OutlinedInput from "@mui/material/OutlinedInput";
 import Select from "@mui/material/Select";
-import Chip from "@mui/material/Chip";
+import { useTheme } from "@mui/material/styles";
+import React from "react";
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -41,22 +41,17 @@ function getStyles(name, categoryName, theme) {
   };
 }
 
-const MultipleSelectCategory = ({ categories, isReadOnly }) => {
+const MultipleSelectCategory = ({ categories, setCategories, isReadOnly }) => {
   const theme = useTheme();
-  const [categoryNames, setCategoryNames] = useState(categories);
 
   const handleChange = (event) => {
     const {
       target: { value },
     } = event;
-    setCategoryNames(typeof value === "string" ? value.split(",") : value);
+    console.log("event", event);
+    console.log("value", value);
+    setCategories(typeof value === "string" ? value.split(",") : value);
   };
-
-  useEffect(() => {
-    if (categories) {
-      setCategoryNames(categories);
-    }
-  }, [categories]);
 
   return (
     <div>
@@ -66,7 +61,7 @@ const MultipleSelectCategory = ({ categories, isReadOnly }) => {
           labelId='demo-multiple-chip-label'
           id='demo-multiple-chip'
           multiple
-          value={categoryNames}
+          value={categories}
           onChange={handleChange}
           input={<OutlinedInput id='select-multiple-chip' label='Chip' />}
           renderValue={(selected) => (
@@ -82,7 +77,7 @@ const MultipleSelectCategory = ({ categories, isReadOnly }) => {
             <MenuItem
               key={name}
               value={name}
-              style={getStyles(name, categoryNames, theme)}
+              style={getStyles(name, categories, theme)}
             >
               {name}
             </MenuItem>
