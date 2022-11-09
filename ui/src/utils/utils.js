@@ -16,8 +16,8 @@ export const theme = createTheme({
 });
 
 export const host = window.location.href.includes("localhost")
-  ? "http://localhost:5003"
-  : "http://ec2-3-89-225-92.compute-1.amazonaws.com:5003";
+  ? "http://localhost:5004"
+  : "http://ec2-3-89-225-92.compute-1.amazonaws.com:5004";
 
 export const getUser = () => {
   return JSON.parse(window.localStorage.getItem(USER_KEY));

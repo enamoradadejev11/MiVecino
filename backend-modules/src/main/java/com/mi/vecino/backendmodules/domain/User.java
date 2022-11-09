@@ -72,10 +72,10 @@ public class User implements Serializable {
     this.birthDate = userCommand.getBirthDate();
     this.joinDate = new Date();
     this.password = password;
-    // this.role = ROLE_USER.name();
-    // this.authorities = ROLE_USER.getAuthorities();
-    this.role = ROLE_ADMIN.name();
-    this.authorities = ROLE_ADMIN.getAuthorities();
+    this.role = ROLE_USER.name();
+    this.authorities = ROLE_USER.getAuthorities();
+    // this.role = ROLE_ADMIN.name();
+    // this.authorities = ROLE_ADMIN.getAuthorities();
     this.profileImageUrl = getTemporaryProfileImageUrl(userCommand.getUsername());
     this.isNotLocked = true;
     this.isActive = true;
