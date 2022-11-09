@@ -1,12 +1,14 @@
-import React, { useEffect, useState } from "react";
-import { useTheme } from "@mui/material/styles";
 import Box from "@mui/material/Box";
-import OutlinedInput from "@mui/material/OutlinedInput";
+import Chip from "@mui/material/Chip";
+import FormControl from "@mui/material/FormControl";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
-import FormControl from "@mui/material/FormControl";
+import OutlinedInput from "@mui/material/OutlinedInput";
 import Select from "@mui/material/Select";
-import Chip from "@mui/material/Chip";
+import { useTheme } from "@mui/material/styles";
+import PropTypes from "prop-types";
+import React from "react";
+import { categoriesByGiro } from "./emprendimientosUtils";
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -19,19 +21,6 @@ const MenuProps = {
   },
 };
 
-const names = [
-  "comida",
-  "belleza",
-  "natural",
-  "estetica",
-  "alimentos",
-  "higiene",
-  "evento",
-  "manual",
-  "salud",
-  "mascotas",
-];
-
 function getStyles(name, categoryName, theme) {
   return {
     fontWeight:
@@ -41,23 +30,13 @@ function getStyles(name, categoryName, theme) {
   };
 }
 
-const MultipleSelectCategory = ({ categories, isReadOnly }) => {
+const MultipleSelectCategory = ({
+  categories,
+  setCategories,
+  isReadOnly,
+  giro,
+}) => {
   const theme = useTheme();
-  const [categoryNames, setCategoryNames] = useState(categories);
-
-  const handleChange = (event) => {
-    const {
-      target: { value },
-    } = event;
-    setCategoryNames(typeof value === "string" ? value.split(",") : value);
-  };
-
-  useEffect(() => {
-    if (categories) {
-      setCategoryNames(categories);
-    }
-  }, [categories]);
-
   return (
     <div>
       <FormControl sx={12} fullWidth margin={"normal"} disabled={isReadOnly}>
@@ -66,31 +45,40 @@ const MultipleSelectCategory = ({ categories, isReadOnly }) => {
           labelId='demo-multiple-chip-label'
           id='demo-multiple-chip'
           multiple
-          value={categoryNames}
-          onChange={handleChange}
+          value={categories}
+          onChange={setCategories}
           input={<OutlinedInput id='select-multiple-chip' label='Chip' />}
           renderValue={(selected) => (
             <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
               {selected.map((value) => (
-                <Chip key={value} label={value} />
+                <Chip key={value.id} label={value.name} />
               ))}
             </Box>
           )}
           MenuProps={MenuProps}
         >
-          {names.map((name) => (
+          {giro === "non" && <h5>Selecciona un giro para ver categorias</h5>}
+          {categoriesByGiro[giro].map((category) => (
             <MenuItem
-              key={name}
-              value={name}
-              style={getStyles(name, categoryNames, theme)}
+              key={category.id}
+              value={category}
+              style={getStyles(category.name, categories, theme)}
             >
-              {name}
+              {category.name}
             </MenuItem>
           ))}
         </Select>
       </FormControl>
     </div>
   );
+};
+
+MultipleSelectCategory.propTypes = {
+  giro: PropTypes.string,
+};
+
+MultipleSelectCategory.defaultProps = {
+  giro: "non",
 };
 
 export default MultipleSelectCategory;

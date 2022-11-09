@@ -19,5 +19,9 @@ public class EmprendimientoCommand {
   private String type;
   private List<Telephone> telephones;
   private List<Category> categories;
+  private String longitude;
+  private String latitude;
+  private int addressId;
+  private String giro;
 
 }

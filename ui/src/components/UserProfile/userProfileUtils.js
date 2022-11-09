@@ -19,11 +19,17 @@ export const modalStyle = {
   p: 4,
 };
 
-export const userProfileDefaultValues = { username: "", email: "", gender: "" };
+export const userProfileDefaultValues = {
+  username: "",
+  email: "",
+  gender: "",
+  favorites: [],
+};
 
 export const addressDefaultValues = {
   alias: "",
   street: "",
+  extNumber: "",
   colony: "",
   state: "",
   country: "",
@@ -31,12 +37,16 @@ export const addressDefaultValues = {
   reference: "",
   city: "",
   telephone: "",
+  location: null,
 };
 
 export const mockAddress = [
   {
+    id: 1,
+    name: "Casa tia",
     alias: "Casa tia",
-    street: "Juan de ovalle 387",
+    street: "Juan de ovalle",
+    number: 234,
     colony: "Revolucion",
     state: "Jalisco",
     country: "Mexico",
@@ -44,10 +54,14 @@ export const mockAddress = [
     reference: "Junto al comex",
     city: "Guadalajara",
     telephone: "3376454567",
+    location: [-103.36606247624928, 20.667530177840987],
   },
   {
+    id: 2,
+    name: "Mi ksita",
     alias: "Mi ksita",
     street: "Adolfo Lopez Mateos mz 55 lt 23a",
+    number: 29,
     colony: "Valle de Anahiac",
     state: "Estado de Mexico",
     country: "Mexico",
@@ -55,6 +69,7 @@ export const mockAddress = [
     reference: "Entre Sor Juana y Leona Vicario",
     city: "Ecatepect de Morelogs",
     telephone: "3321653434",
+    location: [-103.36495764453535, 20.675381919144126],
   },
 ];
 
@@ -63,40 +78,54 @@ export const addressForm = [
     gridSize: 12,
     label: "Alias",
     name: "alias",
+    required: true,
   },
   {
-    gridSize: 12,
-    label: "Calle y numero",
+    gridSize: 8,
+    label: "Calle",
     name: "street",
+    required: true,
+  },
+  {
+    gridSize: 4,
+    label: "Numero ext",
+    name: "extNumber",
+    required: true,
   },
   {
     gridSize: 12,
     label: "Colonia",
     name: "colony",
+    required: false,
   },
   {
     gridSize: 6,
     label: "Estado",
     name: "state",
+    required: true,
   },
   {
     gridSize: 6,
     label: "Pais",
     name: "country",
+    required: true,
   },
   {
     gridSize: 6,
     label: "CP",
     name: "zipCode",
+    required: true,
   },
   {
     gridSize: 6,
     label: "Telefono",
     name: "telephone",
+    required: false,
   },
   {
     gridSize: 12,
     label: "Referencia",
     name: "reference",
+    required: false,
   },
 ];

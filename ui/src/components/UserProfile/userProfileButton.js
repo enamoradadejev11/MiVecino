@@ -1,10 +1,10 @@
-import React from "react";
-import Stack from "@mui/material/Stack";
-import Button from "@mui/material/Button";
-import InsertEmoticonIcon from "@material-ui/icons/InsertEmoticon";
-import HomeIcon from "@material-ui/icons/Home";
-import StarIcon from "@material-ui/icons/Star";
 import Typography from "@material-ui/core/Typography";
+import HomeIcon from "@material-ui/icons/Home";
+import InsertEmoticonIcon from "@material-ui/icons/InsertEmoticon";
+import StarIcon from "@material-ui/icons/Star";
+import Button from "@mui/material/Button";
+import Stack from "@mui/material/Stack";
+import React from "react";
 import { typographyStyles } from "../../utils/stylesUtils";
 
 const UserProfileButton = ({ id, option, handleOpen }) => {
@@ -31,7 +31,9 @@ const UserProfileButton = ({ id, option, handleOpen }) => {
           variant='outlined'
           startIcon={calculateIcon()}
           onClick={() => {
-            handleOpen(id);
+            if (id !== "address") {
+              handleOpen(id);
+            }
           }}
         >
           <Typography className={typography.section_title}>{label}</Typography>

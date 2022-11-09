@@ -19,6 +19,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -53,8 +54,29 @@ public class ReviewServiceImpl implements ReviewService {
   }
 
   @Override
-  public List<Review> getReviewsByEmprendimientoId(long emprendimientoId) {
-    return reviewRepository.findAllByEmprendimientoId(emprendimientoId);
+  public Map<String, List<Review>> getReviewsByEmprendimientoId(long emprendimientoId) {
+
+    List<Review> reviews = reviewRepository.findAllByEmprendimientoId(emprendimientoId);
+    List<Review> good = new ArrayList<>();
+    List<Review> bad = new ArrayList<>();
+
+    reviews.forEach(review -> {
+      if (review.getScore() >= 3) {
+        good.add(review);
+      } else {
+        bad.add(review);
+      }
+    });
+
+    Map<String, List<Review>> mapReviews = new HashMap<>();
+    mapReviews.put("good", good);
+    mapReviews.put("bad", bad);
+    return mapReviews;
+  }
+
+  @Override
+  public Review getUserReview(long emprendimientoId, String username) {
+    return reviewRepository.getUserReview(emprendimientoId, username);
   }
 
   @Override
@@ -83,6 +105,11 @@ public class ReviewServiceImpl implements ReviewService {
     Review dbReview = reviewRepository.save(review);
     saveImages(dbReview, multipartFiles);
     return review;
+  }
+
+  @Override
+  public float getEmprendimientoRating(long id) {
+    return reviewRepository.getEmprendimientoRating(id);
   }
 
   private void saveImages(Review review, MultipartFile[] multipartFiles)

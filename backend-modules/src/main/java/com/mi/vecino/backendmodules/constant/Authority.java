@@ -6,6 +6,6 @@ import java.util.List;
 public class Authority {
 
   public static final List<String> USER_AUTHORITIES = Arrays.asList("user:read", "user:update", "create:user");
-  public static final List<String> ADMIN_AUTHORITIES = Arrays.asList("user:read", "user:update", "user:delete");
+  public static final List<String> ADMIN_AUTHORITIES = Arrays.asList("user:read", "user:update", "user:delete", "user:approval");
 
 }

@@ -1,12 +1,14 @@
 import React, { useState } from "react";
+import { useLocation } from "wouter";
 import { getUser } from "../../services/userServices";
+import { headerAccess, setUserWithExpiry } from "../../utils/utils";
+import Navbar from "../Common/Navbar/Navbar";
 import LoginForm from "./LoginForm";
 import {
   defaultLoginErrorVaues,
   defaultLoginHelperTextVaues,
   defaultLoginValues,
 } from "./loginUtils";
-import { useLocation } from "wouter";
 
 const Login = () => {
   const [, setLocation] = useLocation();
@@ -62,7 +64,7 @@ const Login = () => {
     getUser(formValues)
       .then((response) => {
         setUser(response);
-        window.localStorage.setItem("user", JSON.stringify(response));
+        setUserWithExpiry("user", response, 432000000);
         setLocation("/");
       })
       .catch((e) => {
@@ -71,13 +73,16 @@ const Login = () => {
   };
 
   return (
-    <LoginForm
-      formValues={formValues}
-      formErrorValues={formErrorValues}
-      formHelperTextValues={formHelperTextValues}
-      handleSubmit={handleSubmit}
-      handleInputChange={handleInputChange}
-    />
+    <>
+      <Navbar types={[headerAccess.REGISTRO]} />
+      <LoginForm
+        formValues={formValues}
+        formErrorValues={formErrorValues}
+        formHelperTextValues={formHelperTextValues}
+        handleSubmit={handleSubmit}
+        handleInputChange={handleInputChange}
+      />
+    </>
   );
 };
 

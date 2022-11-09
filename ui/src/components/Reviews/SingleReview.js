@@ -11,7 +11,7 @@ const SingleReview = ({ review, isGood }) => {
   const typography = typographyStyles();
   const calculateAvatarColor = () => (isGood ? MINT : DARK_PINK);
 
-  const { username, comment, imagesUrl, score } = review;
+  const { username, imagesUrl, score } = review;
 
   return (
     <>
@@ -43,10 +43,11 @@ const SingleReview = ({ review, isGood }) => {
               readOnly
             />
             <Typography className={typography.light_regular_text}>
-              {comment}
+              {review.comment}
             </Typography>
-            {imagesUrl.map((url) => (
+            {imagesUrl?.map((url) => (
               <img
+                key={url}
                 src={url}
                 alt='avatar'
                 style={{

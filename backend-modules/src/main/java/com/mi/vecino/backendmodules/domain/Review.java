@@ -22,7 +22,7 @@ import org.hibernate.annotations.Type;
 @Getter
 @Setter
 @Entity
-@Table(name = "review", schema = "mi_vecino")
+@Table(name = "review", schema = "public")
 public class Review {
 
   @Id

@@ -34,7 +34,6 @@ export const registerGeneralParams = (
   margin: "normal",
   variant: "outlined",
   fullWidth: true,
-  autoFocus: true,
   required: true,
   error: formErrorVaues[name],
   helperText: formHelperTextValues[name],

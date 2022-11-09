@@ -20,6 +20,8 @@ repositories {
     mavenCentral()
 }
 
+apply plugin: 'java'
+
 dependencies {
     implementation group: 'io.jsonwebtoken', name: 'jjwt', version: '0.2'
     implementation 'org.springframework.boot:spring-boot-starter-web'

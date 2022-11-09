@@ -9,27 +9,39 @@ import static com.mi.vecino.backendmodules.constant.FileConstant.USER_FOLDER;
 import static com.mi.vecino.backendmodules.constant.FileConstant.USER_IMAGE_PATH;
 import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 
+import com.mi.vecino.backendmodules.domain.Address;
+import com.mi.vecino.backendmodules.domain.Category;
+import com.mi.vecino.backendmodules.domain.Emprendimiento;
+import com.mi.vecino.backendmodules.domain.Favorite;
 import com.mi.vecino.backendmodules.domain.User;
 import com.mi.vecino.backendmodules.domain.UserInformation;
 import com.mi.vecino.backendmodules.domain.UserPrincipal;
 import com.mi.vecino.backendmodules.domain.UserProfile;
+import com.mi.vecino.backendmodules.domain.command.AddressCommand;
 import com.mi.vecino.backendmodules.domain.command.UpdateUserProfileCommand;
 import com.mi.vecino.backendmodules.domain.command.UserCommand;
 import com.mi.vecino.backendmodules.domain.enumeration.Role;
+import com.mi.vecino.backendmodules.domain.exception.AddressNotFoundException;
 import com.mi.vecino.backendmodules.domain.exception.EmailExistException;
 import com.mi.vecino.backendmodules.domain.exception.EmailNotFoundException;
 import com.mi.vecino.backendmodules.domain.exception.UserNotFoundException;
 import com.mi.vecino.backendmodules.domain.exception.UsernameExistException;
+import com.mi.vecino.backendmodules.repository.AddressRepository;
+import com.mi.vecino.backendmodules.repository.EmprendimientoRepository;
 import com.mi.vecino.backendmodules.repository.UserRepository;
 import com.mi.vecino.backendmodules.service.UserService;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
+import javassist.NotFoundException;
 import javax.transaction.Transactional;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -50,17 +62,22 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 @Qualifier("userDetailsService")
 public class UserServiceImpl implements UserService, UserDetailsService {
 
-  public static final String USERNAME_ALREADY_EXIST = "Username already exist";
-  public static final String EMAIL_ALREADY_EXIST = "Email already exist";
-  public static final String USER_NOT_FOUND_BY_USERNAME = "User not found by username: ";
-  public static final String USER_NOT_FOUND_BY_EMAIL = "User not found by email: ";
+  public static final String USERNAME_ALREADY_EXIST = "Este username ya existe";
+  public static final String EMAIL_ALREADY_EXIST = "Este correo ya esta en uso";
+  public static final String USER_NOT_FOUND_BY_USERNAME = "Usuario no encontrado con username: ";
+  public static final String USER_NOT_FOUND_BY_EMAIL = "Usuario no encontrado por email: ";
   private final Logger logger = LoggerFactory.getLogger(getClass());
   private final UserRepository userRepository;
+  private final AddressRepository addressRepository;
+  private final EmprendimientoRepository emprendimientoRepository;
   private final BCryptPasswordEncoder passwordEncoder;
 
   @Autowired
-  public UserServiceImpl(UserRepository userRepository, BCryptPasswordEncoder passwordEncoder) {
+  public UserServiceImpl(UserRepository userRepository, AddressRepository addressRepository,
+      EmprendimientoRepository emprendimientoRepository, BCryptPasswordEncoder passwordEncoder) {
     this.userRepository = userRepository;
+    this.addressRepository = addressRepository;
+    this.emprendimientoRepository = emprendimientoRepository;
     this.passwordEncoder = passwordEncoder;
   }
 
@@ -85,9 +102,9 @@ public class UserServiceImpl implements UserService, UserDetailsService {
       throws EmailExistException, UsernameExistException, UserNotFoundException {
     validateNewUsernameAndEmail(StringUtils.EMPTY, userCommand.getUsername(),
         userCommand.getEmail());
-    String password = generatePassword();
-    logger.info("New user password: " + password);
-    User user = new User(userCommand, encodePassword(password));
+    // String password = generatePassword();
+    // logger.info("New user password: " + password);
+    User user = new User(userCommand, encodePassword(userCommand.getPassword()));
     userRepository.save(user);
     return user;
   }
@@ -107,7 +124,8 @@ public class UserServiceImpl implements UserService, UserDetailsService {
   public User getUserByUsername(String username)
       throws UserNotFoundException, EmailExistException, UsernameExistException {
     User user = validateNewUsernameAndEmail(username, null, null);
-    return Objects.nonNull(user) ? userRepository.findUserByUsername(user.getUsername()) : new User();
+    return Objects.nonNull(user) ? userRepository.findUserByUsername(user.getUsername())
+        : new User();
   }
 
   @Override
@@ -149,6 +167,113 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     User user = validateNewUsernameAndEmail(username, null, null);
     saveProfileImage(user, profileImage);
     return user;
+  }
+
+  @Override
+  public boolean isEmprendimientoFavorite(String username, long emprendimientoId)
+      throws UserNotFoundException, EmailExistException, UsernameExistException {
+    User user = validateNewUsernameAndEmail(username, null, null);
+    if (Objects.nonNull(user)) {
+      var favorite = user.getFavoriteEmprendimientos().stream()
+          .filter(fav -> emprendimientoId == fav.getId()).findAny().orElse(null);
+      return Objects.nonNull(favorite);
+    }
+    return false;
+  }
+
+  @Override
+  public List<Favorite> addFavorite(long emprendimientoId, String username)
+      throws UserNotFoundException, EmailExistException, UsernameExistException {
+    User user = validateNewUsernameAndEmail(username, null, null);
+    if (Objects.nonNull(user)) {
+      List<Favorite> currentFavorites = user.getFavoriteEmprendimientos();
+      List<Favorite> newFavorites =
+          Objects.nonNull(currentFavorites) ? currentFavorites : new ArrayList<>();
+      Emprendimiento emprendimiento = emprendimientoRepository.findById(emprendimientoId).get();
+      var favorite = currentFavorites.stream()
+          .filter(fav -> fav.getId() == emprendimientoId).findAny().orElse(null);
+      if (Objects.isNull(favorite)) {
+        Favorite newFavorite = new Favorite(emprendimiento);
+        newFavorites.add(newFavorite);
+        user.setFavoriteEmprendimientos(newFavorites);
+        user.setEmprendimientosCategories(
+            calculateCategoriesFromFavorites(emprendimiento, user.getEmprendimientosCategories()));
+        return userRepository.save(user).getFavoriteEmprendimientos();
+      }
+      return user.getFavoriteEmprendimientos();
+    }
+    return Collections.emptyList();
+  }
+
+  @Override
+  public List<Favorite> removeFavorite(long emprendimientoId, String username)
+      throws UserNotFoundException, EmailExistException, UsernameExistException {
+    User user = validateNewUsernameAndEmail(username, null, null);
+    if (Objects.nonNull(user)) {
+      List<Favorite> currentFavorites = user.getFavoriteEmprendimientos();
+      if (Objects.isNull(currentFavorites) || currentFavorites.isEmpty()) {
+        return Collections.emptyList();
+      }
+      Emprendimiento emprendimiento = emprendimientoRepository.findById(emprendimientoId).get();
+      currentFavorites.removeIf(favorite -> favorite.getId() == emprendimiento.getId());
+      user.setFavoriteEmprendimientos(currentFavorites);
+      user.setEmprendimientosCategories(
+          removeCategoriesFromFavorites(user.getFavoriteEmprendimientos()));
+      return userRepository.save(user).getFavoriteEmprendimientos();
+    }
+    return Collections.emptyList();
+  }
+
+  @Override
+  public List<AddressCommand> getAddressesByUser(String username) {
+    var addresses = addressRepository.findAllByUsername(username);
+    return addresses.stream().map(AddressCommand::new).collect(Collectors.toList());
+  }
+
+  @Override
+  public List<AddressCommand> saveAddress(String username, AddressCommand addressCommand) {
+    var newAddress = new Address(username, addressCommand);
+    addressRepository.save(newAddress);
+    return getAddressesByUser(username);
+  }
+
+  @Override
+  public AddressCommand updateAddress(String username, AddressCommand newAddress)
+      throws AddressNotFoundException {
+    var address = addressRepository.findById(newAddress.getId());
+    if (address.isPresent() && address.get().getUsername().equals(username)) {
+      logger.info("SAVE");
+      return new AddressCommand(addressRepository.save(address.get()));
+    }
+    if(address.isPresent()) {
+      return new AddressCommand(address.get());
+    }
+    throw new AddressNotFoundException("No se encontro la direccion");
+  }
+
+  @Override
+  public List<AddressCommand> deleteAddress(String username, long id) {
+    var address = addressRepository.findById(id);
+
+    if (address.isPresent() && address.get().getUsername().equals(username)) {
+      addressRepository.deleteById(id);
+    }
+    return getAddressesByUser(username);
+  }
+
+  private List<Category> calculateCategoriesFromFavorites(Emprendimiento emprendimiento,
+      List<Category> currentCategories) {
+    List<Category> newCategories =
+        Objects.nonNull(currentCategories) ? currentCategories : new ArrayList<>();
+    newCategories.addAll(emprendimiento.getCategories());
+    return newCategories;
+  }
+
+  private List<Category> removeCategoriesFromFavorites(List<Favorite> favorites) {
+    var emprendimientosIds = favorites.stream().map(Favorite::getId).collect(Collectors.toList());
+    var emprendimientos = emprendimientoRepository.findAllById(emprendimientosIds);
+    return emprendimientos.stream().map(Emprendimiento::getCategories).flatMap(List::stream)
+        .collect(Collectors.toList());
   }
 
   private void saveProfileImage(User user, MultipartFile profileImage) throws IOException {
@@ -195,6 +320,8 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     if (StringUtils.isNotBlank(currentUsername)) {
 
       User currentUser = findUserByUsername(currentUsername);
+
+      logger.info("currentUser {}", currentUser);
       if (Objects.isNull(currentUser)) {
         throw new UserNotFoundException("No user found by username " + currentUsername);
       }
@@ -216,6 +343,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     if (Objects.nonNull(userByNewEmail)) {
+      logger.info(EMAIL_ALREADY_EXIST);
       throw new EmailExistException(EMAIL_ALREADY_EXIST);
     }
 

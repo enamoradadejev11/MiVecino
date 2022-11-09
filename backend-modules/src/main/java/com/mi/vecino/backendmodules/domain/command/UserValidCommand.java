@@ -7,7 +7,9 @@ import lombok.Getter;
 @Getter
 public class UserValidCommand {
 
+  private String userId;
   private String username;
   private String token;
+  private String role;
 
 }

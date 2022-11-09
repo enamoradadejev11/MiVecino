@@ -1,8 +1,8 @@
 import axios from "axios";
-import { authHeader } from "../../utils/utils";
+import { authHeader, host } from "../../utils/utils";
 
-const emprendimientosApi = "http://localhost:8081/api/v1/emprendimiento";
-const reviewApi = "http://localhost:8081/api/v1/review";
+const emprendimientosApi = `${host}/api/v1/emprendimiento`;
+const reviewApi = `${host}/api/v1/review`;
 
 export const addNewEmprendimiento = async (emprendimiento) => {
   const response = await axios.post(
@@ -23,6 +23,11 @@ export const updateEmprendimiento = async (emprendimiento) => {
 
 export const getUserEmprendimientos = async () => {
   const response = await axios.get(`${emprendimientosApi}/all`, authHeader());
+  return response.data;
+};
+
+export const getEmprendimiento = async (id) => {
+  const response = await axios.get(`${emprendimientosApi}/${id}`, authHeader());
   return response.data;
 };
 
@@ -57,6 +62,11 @@ export const getReviewEmprendimientos = async (id) => {
   return response.data;
 };
 
+export const getUserReview = async (id) => {
+  const response = await axios.get(`${reviewApi}/${id}`, authHeader());
+  return response.data;
+};
+
 export const addReview = async (emprendimientoId, review) => {
   var formData = new FormData();
   formData.append("emprendimientoId", emprendimientoId);
@@ -64,5 +74,22 @@ export const addReview = async (emprendimientoId, review) => {
   formData.append("comment", review.comment);
   formData.append("images", review.images);
   const response = await axios.post(`${reviewApi}/add`, formData, authHeader());
+  return response.data;
+};
+
+export const getEmprendimientosForApproval = async () => {
+  const response = await axios.get(
+    `${emprendimientosApi}/approval`,
+    authHeader()
+  );
+  return response.data;
+};
+
+export const updateEmprendimientoApproval = async (id, approval) => {
+  const response = await axios.put(
+    `${emprendimientosApi}/${id}/approval`,
+    approval,
+    authHeader()
+  );
   return response.data;
 };

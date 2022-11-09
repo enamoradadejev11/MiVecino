@@ -19,10 +19,20 @@ export const typographyStyles = makeStyles((theme) => ({
     fontFamily: ['"Inconsolata"', "monospace"].join(","),
     fontSize: 16,
   },
+  large_section_title: {
+    color: "black",
+    fontFamily: ['"Inconsolata"', "monospace"].join(","),
+    fontSize: 20,
+  },
   section_title_light: {
     color: "#848484",
     fontFamily: ['"Inconsolata"', "monospace"].join(","),
     fontSize: 16,
+  },
+  large_section_title_light: {
+    color: "#848484",
+    fontFamily: ['"Inconsolata"', "monospace"].join(","),
+    fontSize: "40 !important",
   },
   text_error: {
     color: "#FF2222",

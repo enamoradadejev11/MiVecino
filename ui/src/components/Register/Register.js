@@ -1,12 +1,14 @@
+import axios from "axios";
 import React, { useState } from "react";
 import { useLocation } from "wouter";
+import { headerAccess, host } from "../../utils/utils";
+import Navbar from "../Common/Navbar/Navbar";
+import RegisterForm from "./RegisterForm";
 import {
   defaultFormErrorVaues,
   defaultFormHelperTextVaues,
   defaultValues,
 } from "./registerUtils";
-import RegisterForm from "./RegisterForm";
-import axios from "axios";
 
 const Register = () => {
   const [, setLocation] = useLocation();
@@ -15,6 +17,7 @@ const Register = () => {
   const [formHelperTextValues, setFormHelperTextValues] = useState(
     defaultFormHelperTextVaues
   );
+  const [errorMessage, setErrorMessage] = useState("");
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -74,19 +77,19 @@ const Register = () => {
   const handleSubmit = (event) => {
     event.preventDefault();
     axios
-      .post("http://localhost:8081/user/register", formValues)
+      .post(`${host}/user/register`, formValues)
       .then(function (response) {
         // show successful message
         setLocation("/");
       })
       .catch(function (error) {
-        // show error message
-        console.log(error);
+        setErrorMessage(error?.response?.data?.message);
       });
   };
 
   return (
     <>
+      <Navbar types={[headerAccess.LOGIN]} />
       <RegisterForm
         formValues={formValues}
         formErrorVaues={formErrorValues}
@@ -94,6 +97,7 @@ const Register = () => {
         handleSubmit={handleSubmit}
         handleInputChange={handleInputChange}
         handleDatePickerChange={handleDatePickerChange}
+        errorMessage={errorMessage}
       />
     </>
   );

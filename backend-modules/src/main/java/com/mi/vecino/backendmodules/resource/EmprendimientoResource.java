@@ -4,8 +4,12 @@ import static com.mi.vecino.backendmodules.constant.FileConstant.EMPRENDIMIENTO_
 import static com.mi.vecino.backendmodules.constant.FileConstant.FORWARD_SLASH;
 import static org.springframework.http.MediaType.IMAGE_JPEG_VALUE;
 
+import com.mi.vecino.backendmodules.domain.Approval;
 import com.mi.vecino.backendmodules.domain.Emprendimiento;
+import com.mi.vecino.backendmodules.domain.EmprendimientoApproval;
+import com.mi.vecino.backendmodules.domain.EmprendimientoData;
 import com.mi.vecino.backendmodules.domain.Schedule;
+import com.mi.vecino.backendmodules.domain.command.ApprovalCommand;
 import com.mi.vecino.backendmodules.domain.command.EmprendimientoCommand;
 import com.mi.vecino.backendmodules.domain.command.ScheduleCommand;
 import com.mi.vecino.backendmodules.service.EmprendimientoService;
@@ -16,6 +20,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -54,9 +59,8 @@ public class EmprendimientoResource {
   }
 
   @GetMapping("/{id}")
-  public Emprendimiento getEmprendimientoById(@PathVariable long id) {
-    var username = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-    return emprendimientoService.findEmprendimientoById(id);
+  public EmprendimientoData getEmprendimientoById(@PathVariable long id) {
+    return emprendimientoService.findEmprendimientoDataById(id);
   }
 
   @PutMapping("/{id}/update")
@@ -102,6 +106,21 @@ public class EmprendimientoResource {
   @GetMapping("{id}/schedule")
   public List<Schedule> retrieveSchedule(@PathVariable long id) {
     return emprendimientoService.retrieveSchedule(id);
+  }
+
+  @GetMapping("/approval")
+  @PreAuthorize("hasAnyAuthority('user:approval')")
+  public List<EmprendimientoApproval> getEmprendimientosForApproval() {
+    var username = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    return emprendimientoService.findEmprendimientosForApproval();
+  }
+
+  @PutMapping("{id}/approval")
+  @PreAuthorize("hasAnyAuthority('user:approval')")
+  public List<EmprendimientoApproval> updateEmprendimientoApproval(@PathVariable long id,
+      @RequestBody ApprovalCommand approvalCommand) {
+    var username = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    return emprendimientoService.updateApproval(id, approvalCommand);
   }
 
 }

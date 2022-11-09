@@ -1,15 +1,18 @@
-import React from "react";
+import { createTheme, ThemeProvider } from "@material-ui/core/styles";
+import React, { useEffect } from "react";
+import { useLocation } from "wouter";
 import "./App.css";
-import { Route } from "wouter";
-import { ThemeProvider, createTheme } from "@material-ui/core/styles";
-import Login from "./components/Login/Login";
-import Register from "./components/Register/Register";
-import HomePage from "./components/HomePage/HomePage";
+import "./components/Addresses/AddressSearchBar/addressSearchBar.css";
+import "./components/Emprendimientos/selector.css";
+import "./components/HomePage/HomePage.css";
+import "./components/ImagesSlider/ImagesSlider.css";
+import "./components/SearchBar/SearchBar.css";
+import { MapProvider } from "./context/map/MapProvider";
+import { PlacesProvider } from "./context/places/PlacesProvider";
 import StaticContext from "./context/StaticContext";
-import Settings from "./components/Settings/Settings";
-import UserEmprendimientos from "./components/Emprendimientos/UserEmprendimientos";
-import UserProfile from "./components/UserProfile";
-import ReviewSection from "./components/Reviews";
+import AdminRoutes from "./utils/AdminRoutes";
+import UserRoutes from "./utils/UserRoutes";
+import { getUserWithExpiry, hasAdminRole } from "./utils/utils";
 
 function App() {
   const theme = createTheme({
@@ -23,29 +26,34 @@ function App() {
     },
   });
 
+  const [, setLocation] = useLocation();
+
+  useEffect(() => {
+    if (!getUserWithExpiry() && !window.location.href.includes("registro")) {
+      setLocation("/login");
+    }
+  }, [setLocation]);
+
   return (
-    <StaticContext.Provider
-      value={{
-        user: window.localStorage.getItem("user"),
-      }}
-    >
-      <section>
-        <div className='App'>
-          <ThemeProvider theme={theme}>
+    <PlacesProvider>
+      <MapProvider>
+        <StaticContext.Provider
+          value={{
+            user: window.localStorage.getItem("user"),
+          }}
+        >
+          <section>
             <div className='App'>
-              <Route path='/registro' component={Register} />
-              <Route path='/login' component={Login} />
-              <Route path='/' component={HomePage} />
-              <Route path='/settings' component={Settings} />
-              <Route path='/emprendimientos' component={UserEmprendimientos} />
-              <Route path='/perfil' component={UserProfile} />
-              <Route path='/emprendimiento/:id' component={ReviewSection} />
-              <div></div>
+              <ThemeProvider theme={theme}>
+                <div className='App'>
+                  {hasAdminRole() ? <AdminRoutes /> : <UserRoutes />}
+                </div>
+              </ThemeProvider>
             </div>
-          </ThemeProvider>
-        </div>
-      </section>
-    </StaticContext.Provider>
+          </section>
+        </StaticContext.Provider>
+      </MapProvider>
+    </PlacesProvider>
   );
 }
 

@@ -1,51 +1,31 @@
-import { Box, Button, FormControlLabel } from "@material-ui/core";
-import { Grid } from "@material-ui/core";
+import { Box, Button, FormControlLabel, Grid } from "@material-ui/core";
+import MenuItem from "@mui/material/MenuItem";
 import Switch from "@mui/material/Switch";
-import React, { useEffect, useState } from "react";
+import TextField from "@mui/material/TextField";
 import PropTypes from "prop-types";
+import React, { useEffect, useState } from "react";
 import {
   generalFormProps,
   handleMandatoryFields,
 } from "../../utils/stylesUtils";
-import {
-  defaultValues,
-  defaultFormErrorValues,
-  defaultFormHelperTextValues,
-  emprendimientosFormStyles,
-} from "./emprendimientosUtils";
-import MenuItem from "@mui/material/MenuItem";
 import MultipleSelectCategory from "./emprendimientosCategories";
-import TextField from "@mui/material/TextField";
 import {
   addEmprendimiento,
   updateEmprendimiento,
 } from "./emprendimientosServices";
-
-const emprendimientosTypes = [
-  {
-    value: "Emprendimiento",
-    label: "Emprendimiento",
-  },
-  {
-    value: "Negocio",
-    label: "Negocio",
-  },
-  {
-    value: "Servicio",
-    label: "Servicio",
-  },
-  {
-    value: "Profesionista",
-    label: "Profesionista",
-  },
-  {
-    value: "Oficio",
-    label: "Oficio",
-  },
-];
+import {
+  defaultFormErrorValues,
+  defaultFormHelperTextValues,
+  defaultValues,
+  emprendimientosFormStyles,
+  emprendimientosTypes,
+  formValuesToEmprendimiento,
+  giros,
+} from "./emprendimientosUtils";
 
 const EmprendimientoForm = ({
   emprendimiento,
+  addresses,
   isReadOnly,
   setIsReadOnly,
   setAreUpdates,
@@ -61,7 +41,26 @@ const EmprendimientoForm = ({
     defaultFormHelperTextValues
   );
   const [buttonType, setButtonType] = useState();
-  const [emprendimientoType, setEmprendimientoType] = useState("Oficio");
+
+  useEffect(() => {
+    if (dataRefreshed) {
+      setButtonType("Editar");
+      setIsReadOnly(true);
+    }
+  }, [dataRefreshed, setButtonType, setIsReadOnly]);
+
+  useEffect(() => {
+    if (emprendimiento) {
+      setFormValues(emprendimiento);
+      if (emprendimiento.id === "") {
+        setIsReadOnly(false);
+        setButtonType("Agregar");
+      } else {
+        setIsReadOnly(true);
+        setButtonType("Editar");
+      }
+    }
+  }, [emprendimiento, setIsReadOnly]);
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -69,7 +68,7 @@ const EmprendimientoForm = ({
       setIsReadOnly(false);
       setButtonType("Guardar");
     } else if (buttonType === "Agregar") {
-      addEmprendimiento(formValues)
+      addEmprendimiento(formValuesToEmprendimiento(formValues))
         .then((response) => {
           setButtonType("Editar");
           setIsReadOnly(true);
@@ -79,7 +78,7 @@ const EmprendimientoForm = ({
           console.log(e);
         });
     } else if (buttonType === "Guardar") {
-      updateEmprendimiento(formValues)
+      updateEmprendimiento(formValuesToEmprendimiento(formValues))
         .then((response) => {
           setButtonType("Editar");
           setIsReadOnly(true);
@@ -90,13 +89,6 @@ const EmprendimientoForm = ({
         });
     }
   };
-
-  useEffect(() => {
-    if (dataRefreshed) {
-      setButtonType("Editar");
-      setIsReadOnly(true);
-    }
-  }, [dataRefreshed, setButtonType, setIsReadOnly]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -126,25 +118,10 @@ const EmprendimientoForm = ({
     );
   };
 
-  useEffect(() => {
-    if (emprendimiento) {
-      setFormValues(emprendimiento);
-      setEmprendimientoType(emprendimiento.type);
-      if (emprendimiento.id === "") {
-        setIsReadOnly(false);
-        setButtonType("Agregar");
-      } else {
-        setIsReadOnly(true);
-        setButtonType("Editar");
-      }
-    }
-  }, [emprendimiento, setIsReadOnly]);
-
-  const handleChange = (event) => {
-    setEmprendimientoType(event.target.value);
+  const handleChange = (name, e) => {
     setFormValues({
       ...formValues,
-      type: event.target.value,
+      [name]: e.target.value,
     });
   };
 
@@ -179,12 +156,13 @@ const EmprendimientoForm = ({
               id='outlined-select-type'
               select
               label='Tipo'
-              value={emprendimientoType}
-              onChange={handleChange}
+              value={formValues.type}
+              onChange={(e) => handleChange("type", e)}
               variant='filled'
               margin='normal'
               size='small'
               disabled={isReadOnly}
+              required
               fullWidth
             >
               {emprendimientosTypes.map((option) => (
@@ -195,6 +173,27 @@ const EmprendimientoForm = ({
             </TextField>
           </Grid>
           <Grid item xs={6}>
+            <TextField
+              id='outlined-select-type'
+              label='Giro'
+              value={formValues.giro}
+              onChange={(e) => handleChange("giro", e)}
+              variant='filled'
+              margin='normal'
+              size='small'
+              disabled={isReadOnly}
+              select
+              required
+              fullWidth
+            >
+              {giros.map((option) => (
+                <MenuItem key={option.value} value={option.value}>
+                  {option.label}
+                </MenuItem>
+              ))}
+            </TextField>
+          </Grid>
+          <Grid item xs={12}>
             <TextField
               label='Numero Telefonico'
               value={formValues?.telephones[0].number}
@@ -223,11 +222,33 @@ const EmprendimientoForm = ({
             />
           </Grid>
           <Grid item xs={12}>
+            <TextField
+              id='outlined-select-type'
+              select
+              label='Dirección'
+              value={formValues.address}
+              onChange={(e) => handleChange("address", e)}
+              variant='filled'
+              margin='normal'
+              size='small'
+              disabled={isReadOnly}
+              required
+              fullWidth
+            >
+              {addresses.map((address) => (
+                <MenuItem key={address.id} value={address}>
+                  {address.alias}
+                </MenuItem>
+              ))}
+            </TextField>
+          </Grid>
+          <Grid item xs={12}>
             <MultipleSelectCategory
-              categories={formValues.categories.map(
-                (category) => category.name
-              )}
+              categories={formValues.categories}
+              setCategories={(e) => handleChange("categories", e)}
               isReadOnly={isReadOnly}
+              giro={formValues.giro}
+              required
             />
           </Grid>
           <Grid item xs={12}>
@@ -243,6 +264,7 @@ const EmprendimientoForm = ({
               label={formValues.active ? "Activo" : "Desactivo"}
             />
           </Grid>
+          <Grid item xs={12}></Grid>
         </Grid>
 
         <Box pt={5} display='flex' justifyContent='flex-end'>

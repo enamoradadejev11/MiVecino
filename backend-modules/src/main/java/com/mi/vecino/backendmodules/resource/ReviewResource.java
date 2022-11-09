@@ -38,8 +38,14 @@ public class ReviewResource {
   }
 
   @GetMapping("/{emprendimientoId}/all")
-  public List<Review> getReviewsByEmprendimiento(@PathVariable long emprendimientoId) {
+  public Map<String,List<Review>> getReviewsByEmprendimiento(@PathVariable long emprendimientoId) {
     return reviewService.getReviewsByEmprendimientoId(emprendimientoId);
+  }
+
+  @GetMapping("/{emprendimientoId}")
+  public Review getUserReview(@PathVariable long emprendimientoId) {
+    var username = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    return reviewService.getUserReview(emprendimientoId, username);
   }
 
   @DeleteMapping("/{id}")

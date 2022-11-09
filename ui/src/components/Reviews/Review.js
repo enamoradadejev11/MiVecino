@@ -39,24 +39,19 @@ const Review = ({ emprendimientoId, userReview }) => {
     }
   }, [review]);
 
-  console.log("review", review);
-  console.log("isvalid", isValidReview);
-
   const handleSubmit = (e) => {
-    console.log("e", e);
     addReview(emprendimientoId, review)
       .then((response) => {
         setIsReadOnly(true);
+        setReview(response);
       })
-      .catch((e) => {
-        console.log("e", e);
-      });
+      .catch((e) => {});
   };
 
   return (
     <>
       <Box p={5} sx={{ width: "50%" }}>
-        <Box p={2}>
+        <Box p={2} id='review'>
           <Typography className={typography.dark_title}>
             {isReadOnly ? "Gracias por tu reseña!" : "Dejanos tu reseña"}
           </Typography>
@@ -75,7 +70,7 @@ const Review = ({ emprendimientoId, userReview }) => {
           >
             <Avatar
               sx={{ bgcolor: "red", width: 56, height: 56 }}
-              alt={"karen"}
+              alt={review.username}
               src='/broken-image.jpg'
             />
             <Rating

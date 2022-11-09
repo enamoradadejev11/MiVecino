@@ -1,13 +1,17 @@
 import { FormControl, MenuItem, Select } from "@material-ui/core";
 import { Grid } from "@mui/material";
-import React from "react";
-import { defaultValues } from "./emprendimientosUtils";
+import PropTypes from "prop-types";
+import React, { useEffect } from "react";
 
 const EmprendimientoSelector = ({
   emprendimientos,
   emprendimientoSelected,
   setEmprendimientoSelected,
+  defaultValues,
+  isAddressForm,
 }) => {
+  useEffect(() => {}, [emprendimientos]);
+
   return (
     <>
       <Grid container spacing={2} justifyContent='center'>
@@ -28,7 +32,7 @@ const EmprendimientoSelector = ({
               </MenuItem>
               {emprendimientos.map((emprendimiento) => (
                 <MenuItem value={emprendimiento}>
-                  {emprendimiento.name}
+                  {isAddressForm ? emprendimiento.alias : emprendimiento.name}
                 </MenuItem>
               ))}
             </Select>
@@ -37,6 +41,14 @@ const EmprendimientoSelector = ({
       </Grid>
     </>
   );
+};
+
+EmprendimientoSelector.propTypes = {
+  isAddressForm: PropTypes.bool,
+};
+
+EmprendimientoSelector.defaultProps = {
+  isAddressForm: false,
 };
 
 export default EmprendimientoSelector;

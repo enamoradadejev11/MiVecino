@@ -2,22 +2,21 @@ import React, { useEffect, useState } from "react";
 import EmprendimientoReviews from "./EmprendimientoReviews";
 import Review from "./Review";
 import { Grid } from "@mui/material";
-import { getReviewEmprendimientos } from "../Emprendimientos/emprendimientosServices";
-import { useLocation } from "wouter";
+import {
+  getEmprendimiento,
+  getReviewEmprendimientos,
+} from "../Emprendimientos/emprendimientosServices";
 import { getUser } from "../../utils/utils";
+import Business from "../Business/Business";
+import { Footer } from "../Common/Footer/Footer";
+import EmprendimientoMap from "../Map/EmprendimientoMap";
 
 const ReviewSection = ({ params }) => {
   const { id } = params;
+  const [emprendimiento, setEmprendimiento] = useState();
   const [reviews, setReviews] = useState([]);
   const [userReview, setUserReview] = useState({ score: 0, comment: "" });
   const [, setErrorMessage] = useState("");
-  const [, setLocation] = useLocation();
-
-  useEffect(() => {
-    if (!window.localStorage.getItem("user")) {
-      setLocation("/login");
-    }
-  }, [setLocation]);
 
   useEffect(() => {
     getReviewEmprendimientos(id)
@@ -27,22 +26,23 @@ const ReviewSection = ({ params }) => {
       .catch((e) => {
         setErrorMessage(e.message);
       });
+    getEmprendimiento(id)
+      .then((response) => setEmprendimiento(response))
+      .catch((e) => setErrorMessage(e.message));
   }, [id, setReviews, setErrorMessage]);
 
   useEffect(() => {
     if (reviews) {
-      const user = getUser();
-      console.log("user", user);
+      const user = getUser().value;
       setUserReview(
         reviews.find((review) => review.username === user.username)
       );
     }
   }, [reviews]);
 
-  console.log("reviews", reviews);
-
   return (
     <>
+      <Business data={emprendimiento} />
       <Grid
         container
         spacing={0}
@@ -54,6 +54,8 @@ const ReviewSection = ({ params }) => {
         <EmprendimientoReviews reviews={reviews} />
         <Review emprendimientoId={id} userReview={userReview} />
       </Grid>
+      <EmprendimientoMap location={[-103.3907956, 20.6414121]} />
+      <Footer />
     </>
   );
 };
