@@ -1,16 +1,23 @@
 import React, { useContext, useEffect, useState } from "react";
-import PlacesContext from "../../context/places/PlacesContext";
-import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import ImagesSlider from "../ImagesSlider/ImagesSlider";
-import MainMap from "../Map/MainMap";
-import BtnMyLocation from "../Map/BtnMyLocation";
-import Footer from "../Common/Footer/Footer";
-import SearchBar from "../SearchBar/SearchBar";
-import { getUserWithExpiry, HOME_PAGE_TYPE } from "../../utils/utils";
+import "slick-carousel/slick/slick.css";
 import { useLocation } from "wouter";
 import MapContext from "../../context/map/MapContext";
+import PlacesContext from "../../context/places/PlacesContext";
+import { getRecommendations } from "../../services/recommendationApi";
+import {
+  getUserWithExpiry,
+  headerAccess,
+  HOME_PAGE_TYPE,
+} from "../../utils/utils";
+import Footer from "../Common/Footer/Footer";
+import Navbar from "../Common/Navbar/Navbar";
+import ImagesSlider from "../ImagesSlider/ImagesSlider";
+import BtnMyLocation from "../Map/BtnMyLocation";
+import MainMap from "../Map/MainMap";
+import SearchBar from "../SearchBar/SearchBar";
 
+/*
 const recomendations = [
   {
     tittle: "Algo cerca de ti...",
@@ -19,8 +26,8 @@ const recomendations = [
         id: 16,
         name: "Banderillas Coreanas",
         imageUrl: "/rosticeria.jpeg",
-        latitude: 20.64146512389774,
-        longitude: -103.39109344032457,
+        latitude: "20.64146512389774",
+        longitude: "-103.39109344032457",
       },
       {
         id: 17,
@@ -103,12 +110,22 @@ const recomendations = [
     ],
   },
 ];
+*/
 
 const HomePage = () => {
   const { userLocation, showPlaceSelected } = useContext(PlacesContext);
   const { getRouteBetweenPoints, cleanMap } = useContext(MapContext);
   const [, setLocation] = useLocation();
+  const [recommendations, setRecommendations] = useState([]);
   const [selected, setSelected] = useState({ isActive: false, id: "" });
+
+  useEffect(() => {
+    getRecommendations().then((resp) => {
+      setRecommendations(
+        resp.filter((recommendation) => recommendation.Items.length)
+      );
+    });
+  }, []);
 
   useEffect(() => {
     if (selected.isActive) {
@@ -134,16 +151,17 @@ const HomePage = () => {
 
   return (
     <>
+      <Navbar types={[headerAccess.SETTINGS]} />
       <SearchBar />
       <div className='home-page-map-section'>
         <MainMap isHomepage />
         <BtnMyLocation location={userLocation} />
       </div>
       <div className='home-page-recomendation-section'>
-        {recomendations.map((recomendation) => (
+        {recommendations.map((recomendation) => (
           <div className='slider-section' key={recomendation.tittle}>
             <ImagesSlider
-              items={recomendation.items}
+              items={recomendation.Items}
               sectionTittle={recomendation.tittle}
               type={HOME_PAGE_TYPE}
               selected={selected}

@@ -1,8 +1,8 @@
-import React from "react";
-import { navbarStyles } from "./navbarUtils";
-import { Button, AppBar, Toolbar, Typography } from "@material-ui/core";
+import { AppBar, Button, Toolbar, Typography } from "@material-ui/core";
 import MeetingRoomIcon from "@material-ui/icons/MeetingRoom";
+import React from "react";
 import { useNavigate } from "react-router-dom";
+import { navbarStyles } from "./navbarUtils";
 
 const Navbar = ({ types }) => {
   const classes = navbarStyles();
@@ -23,7 +23,7 @@ const Navbar = ({ types }) => {
             <Typography variant='h6'>Mi Vecino App</Typography>
           </div>
 
-          {types.map((type) => (
+          {types?.map((type) => (
             <Button
               variant='h6'
               color='default'

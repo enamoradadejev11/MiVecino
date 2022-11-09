@@ -62,10 +62,10 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 @Qualifier("userDetailsService")
 public class UserServiceImpl implements UserService, UserDetailsService {
 
-  public static final String USERNAME_ALREADY_EXIST = "Username already exist";
-  public static final String EMAIL_ALREADY_EXIST = "Email already exist";
-  public static final String USER_NOT_FOUND_BY_USERNAME = "User not found by username: ";
-  public static final String USER_NOT_FOUND_BY_EMAIL = "User not found by email: ";
+  public static final String USERNAME_ALREADY_EXIST = "Este username ya existe";
+  public static final String EMAIL_ALREADY_EXIST = "Este correo ya esta en uso";
+  public static final String USER_NOT_FOUND_BY_USERNAME = "Usuario no encontrado con username: ";
+  public static final String USER_NOT_FOUND_BY_EMAIL = "Usuario no encontrado por email: ";
   private final Logger logger = LoggerFactory.getLogger(getClass());
   private final UserRepository userRepository;
   private final AddressRepository addressRepository;
@@ -102,9 +102,9 @@ public class UserServiceImpl implements UserService, UserDetailsService {
       throws EmailExistException, UsernameExistException, UserNotFoundException {
     validateNewUsernameAndEmail(StringUtils.EMPTY, userCommand.getUsername(),
         userCommand.getEmail());
-    String password = generatePassword();
-    logger.info("New user password: " + password);
-    User user = new User(userCommand, encodePassword(password));
+    // String password = generatePassword();
+    // logger.info("New user password: " + password);
+    User user = new User(userCommand, encodePassword(userCommand.getPassword()));
     userRepository.save(user);
     return user;
   }
@@ -320,6 +320,8 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     if (StringUtils.isNotBlank(currentUsername)) {
 
       User currentUser = findUserByUsername(currentUsername);
+
+      logger.info("currentUser {}", currentUser);
       if (Objects.isNull(currentUser)) {
         throw new UserNotFoundException("No user found by username " + currentUsername);
       }
@@ -341,6 +343,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     if (Objects.nonNull(userByNewEmail)) {
+      logger.info(EMAIL_ALREADY_EXIST);
       throw new EmailExistException(EMAIL_ALREADY_EXIST);
     }
 

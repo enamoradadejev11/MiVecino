@@ -1,14 +1,14 @@
+import axios from "axios";
 import React, { useState } from "react";
 import { useLocation } from "wouter";
+import { headerAccess, host } from "../../utils/utils";
+import Navbar from "../Common/Navbar/Navbar";
+import RegisterForm from "./RegisterForm";
 import {
   defaultFormErrorVaues,
   defaultFormHelperTextVaues,
   defaultValues,
 } from "./registerUtils";
-import RegisterForm from "./RegisterForm";
-import axios from "axios";
-import Navbar from "../Common/Navbar/Navbar";
-import { headerAccess, host } from "../../utils/utils";
 
 const Register = () => {
   const [, setLocation] = useLocation();
@@ -17,6 +17,7 @@ const Register = () => {
   const [formHelperTextValues, setFormHelperTextValues] = useState(
     defaultFormHelperTextVaues
   );
+  const [errorMessage, setErrorMessage] = useState("");
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -82,8 +83,7 @@ const Register = () => {
         setLocation("/");
       })
       .catch(function (error) {
-        // show error message
-        console.log(error);
+        setErrorMessage(error?.response?.data?.message);
       });
   };
 
@@ -97,6 +97,7 @@ const Register = () => {
         handleSubmit={handleSubmit}
         handleInputChange={handleInputChange}
         handleDatePickerChange={handleDatePickerChange}
+        errorMessage={errorMessage}
       />
     </>
   );

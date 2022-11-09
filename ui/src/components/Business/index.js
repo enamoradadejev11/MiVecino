@@ -1,25 +1,25 @@
-import React, { useEffect, useState } from "react";
-import { Box, Grid } from "@mui/material";
 import { Typography } from "@material-ui/core";
-import {
-  getEmprendimiento,
-  getReviewEmprendimientos,
-  getUserReview,
-} from "../Emprendimientos/emprendimientosServices";
-import Business from "../Business/Business";
-import EmprendimientoMap from "../Map/EmprendimientoMap";
-import More from "./Images/More";
-import EmprendimientoReviews from "../Reviews/EmprendimientoReviews";
-import Review from "../Reviews/Review";
-import { typographyStyles } from "../../utils/stylesUtils";
+import { Box, Grid } from "@mui/material";
+import React, { useEffect, useState } from "react";
+import { useLocation } from "wouter";
 import {
   deleteFavorite,
   getIsFavorite,
   saveFavorite,
 } from "../../services/userServices";
-import Footer from "../Common/Footer/Footer";
-import { useLocation } from "wouter";
+import { typographyStyles } from "../../utils/stylesUtils";
 import { getUserWithExpiry } from "../../utils/utils";
+import Business from "../Business/Business";
+import Footer from "../Common/Footer/Footer";
+import {
+  getEmprendimiento,
+  getReviewEmprendimientos,
+  getUserReview,
+} from "../Emprendimientos/emprendimientosServices";
+import EmprendimientoMap from "../Map/EmprendimientoMap";
+import EmprendimientoReviews from "../Reviews/EmprendimientoReviews";
+import Review from "../Reviews/Review";
+import More from "./Images/More";
 
 const EmprendimientoDetail = ({ params }) => {
   const { id } = params;

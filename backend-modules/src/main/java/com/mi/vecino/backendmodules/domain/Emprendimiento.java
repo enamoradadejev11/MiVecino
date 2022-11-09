@@ -23,7 +23,7 @@ import org.hibernate.annotations.TypeDef;
 @Setter
 @Getter
 @Entity
-@Table(name = "emprendimiento", schema = "mi_vecino")
+@Table(name = "emprendimiento", schema = "public")
 @TypeDef(name = "jsonb", typeClass = JsonBinaryType.class)
 public class Emprendimiento implements Serializable {
 
@@ -44,8 +44,13 @@ public class Emprendimiento implements Serializable {
   @Type(type = "jsonb")
   private List<Category> categories; // carpinteria, muebles, decoracion
   private boolean active;
-  private float longitude;
-  private float latitude;
+  private String longitude;
+  private String latitude;
+  private int addressId;
+  @Column(columnDefinition = "jsonb")
+  @Type(type = "jsonb")
+  private Approval approval;
+  private String giro;
 
 
   public Emprendimiento(EmprendimientoCommand emprendimientoCommand) {
@@ -66,9 +71,12 @@ public class Emprendimiento implements Serializable {
     this.joinDate = new Date();
     this.imageUrl = "";
     this.categories = emprendimientoCommand.getCategories();
-    this.active = true;
+    this.giro = emprendimientoCommand.getGiro();
+    this.active = false;
     this.longitude = emprendimientoCommand.getLongitude();
     this.latitude = emprendimientoCommand.getLatitude();
+    this.addressId = emprendimientoCommand.getAddressId();
+    this.approval = new Approval("Pending", "En espera de aprobacion...", false);
   }
 
 }

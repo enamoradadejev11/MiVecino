@@ -22,9 +22,15 @@ export const PlacesProvider = ({ children }) => {
 
   useEffect(() => {
     if (state.isLoading) {
-      getUserLocation().then((location) =>
-        dispatch(placesActions.setUserLocation(location))
-      );
+      getUserLocation()
+        .then((location) => dispatch(placesActions.setUserLocation(location)))
+        .catch(() =>
+          dispatch(
+            placesActions.setUserLocation([
+              -103.32543897332002, 20.654891203865056,
+            ])
+          )
+        );
     }
   }, [state.isLoading]);
 

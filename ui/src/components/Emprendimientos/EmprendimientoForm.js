@@ -18,30 +18,10 @@ import {
   defaultFormHelperTextValues,
   defaultValues,
   emprendimientosFormStyles,
+  emprendimientosTypes,
+  formValuesToEmprendimiento,
+  giros,
 } from "./emprendimientosUtils";
-
-const emprendimientosTypes = [
-  {
-    value: "Emprendimiento",
-    label: "Emprendimiento",
-  },
-  {
-    value: "Negocio",
-    label: "Negocio",
-  },
-  {
-    value: "Servicio",
-    label: "Servicio",
-  },
-  {
-    value: "Profesionista",
-    label: "Profesionista",
-  },
-  {
-    value: "Oficio",
-    label: "Oficio",
-  },
-];
 
 const EmprendimientoForm = ({
   emprendimiento,
@@ -61,7 +41,6 @@ const EmprendimientoForm = ({
     defaultFormHelperTextValues
   );
   const [buttonType, setButtonType] = useState();
-  const [emprendimientoType, setEmprendimientoType] = useState("Oficio");
 
   useEffect(() => {
     if (dataRefreshed) {
@@ -73,7 +52,6 @@ const EmprendimientoForm = ({
   useEffect(() => {
     if (emprendimiento) {
       setFormValues(emprendimiento);
-      setEmprendimientoType(emprendimiento.type);
       if (emprendimiento.id === "") {
         setIsReadOnly(false);
         setButtonType("Agregar");
@@ -90,7 +68,7 @@ const EmprendimientoForm = ({
       setIsReadOnly(false);
       setButtonType("Guardar");
     } else if (buttonType === "Agregar") {
-      addEmprendimiento(formValues)
+      addEmprendimiento(formValuesToEmprendimiento(formValues))
         .then((response) => {
           setButtonType("Editar");
           setIsReadOnly(true);
@@ -100,7 +78,7 @@ const EmprendimientoForm = ({
           console.log(e);
         });
     } else if (buttonType === "Guardar") {
-      updateEmprendimiento(formValues)
+      updateEmprendimiento(formValuesToEmprendimiento(formValues))
         .then((response) => {
           setButtonType("Editar");
           setIsReadOnly(true);
@@ -140,22 +118,12 @@ const EmprendimientoForm = ({
     );
   };
 
-  const handleTypeChange = (event) => {
-    setEmprendimientoType(event.target.value);
+  const handleChange = (name, e) => {
     setFormValues({
       ...formValues,
-      type: event.target.value,
+      [name]: e.target.value,
     });
   };
-
-  const handleChange = (name, value) => {
-    setFormValues({
-      ...formValues,
-      [name]: value,
-    });
-  };
-
-  console.log("formValues", formValues);
 
   return (
     <>
@@ -188,12 +156,13 @@ const EmprendimientoForm = ({
               id='outlined-select-type'
               select
               label='Tipo'
-              value={emprendimientoType}
-              onChange={handleTypeChange}
+              value={formValues.type}
+              onChange={(e) => handleChange("type", e)}
               variant='filled'
               margin='normal'
               size='small'
               disabled={isReadOnly}
+              required
               fullWidth
             >
               {emprendimientosTypes.map((option) => (
@@ -204,6 +173,27 @@ const EmprendimientoForm = ({
             </TextField>
           </Grid>
           <Grid item xs={6}>
+            <TextField
+              id='outlined-select-type'
+              label='Giro'
+              value={formValues.giro}
+              onChange={(e) => handleChange("giro", e)}
+              variant='filled'
+              margin='normal'
+              size='small'
+              disabled={isReadOnly}
+              select
+              required
+              fullWidth
+            >
+              {giros.map((option) => (
+                <MenuItem key={option.value} value={option.value}>
+                  {option.label}
+                </MenuItem>
+              ))}
+            </TextField>
+          </Grid>
+          <Grid item xs={12}>
             <TextField
               label='Numero Telefonico'
               value={formValues?.telephones[0].number}
@@ -237,11 +227,12 @@ const EmprendimientoForm = ({
               select
               label='Dirección'
               value={formValues.address}
-              onChange={(e) => handleChange("address", e.target.value)}
+              onChange={(e) => handleChange("address", e)}
               variant='filled'
               margin='normal'
               size='small'
               disabled={isReadOnly}
+              required
               fullWidth
             >
               {addresses.map((address) => (
@@ -254,8 +245,10 @@ const EmprendimientoForm = ({
           <Grid item xs={12}>
             <MultipleSelectCategory
               categories={formValues.categories}
-              setCategories={(value) => handleChange("categories", value)}
+              setCategories={(e) => handleChange("categories", e)}
               isReadOnly={isReadOnly}
+              giro={formValues.giro}
+              required
             />
           </Grid>
           <Grid item xs={12}>

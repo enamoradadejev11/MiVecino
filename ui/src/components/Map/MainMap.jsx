@@ -1,14 +1,18 @@
-import React, { useContext, useEffect, useLayoutEffect, useState } from "react";
-import PlacesContext from "../../context/places/PlacesContext";
-import CircularProgress from "@mui/material/CircularProgress";
-import Box from "@mui/material/Box";
-import { homePageStyles } from "../HomePage/homePageUtils";
-import mapboxgl from "mapbox-gl";
-import { useRef } from "react";
-import MapContext from "../../context/map/MapContext";
-import PropTypes from "prop-types";
-import { Marker, Popup } from "mapbox-gl";
 import { colors } from "@material-ui/core";
+import Box from "@mui/material/Box";
+import CircularProgress from "@mui/material/CircularProgress";
+import mapboxgl, { Marker, Popup } from "mapbox-gl";
+import PropTypes from "prop-types";
+import React, {
+  useContext,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from "react";
+import MapContext from "../../context/map/MapContext";
+import PlacesContext from "../../context/places/PlacesContext";
+import { homePageStyles } from "../HomePage/homePageUtils";
 
 mapboxgl.accessToken =
   "pk.eyJ1IjoiZW5hbW9yYWRhZGVqZXYiLCJhIjoiY2wzdjF0eGtzMHBwYTNqcDR1a2V3cHc5MiJ9.B908wvKiF6shWfLEyGI_lg";
@@ -61,8 +65,8 @@ const MainMap = ({ isHomepage, location, markers }) => {
     if (!isLoading && !isMapReady) {
       const map = new mapboxgl.Map({
         container: mapDiv.current, // container ID
-        style: "mapbox://styles/mapbox/dark-v10", // style URL
-        center: userLocation, // starting position [lng, lat]
+        style: "mapbox://styles/mapbox/streets-v11", // style URL
+        center: [-103.32621144946562, 20.657561609720005], // starting position [lng, lat]
         zoom: 16, // starting zoom
         projection: "globe", // display the map as a 3D globe
       });

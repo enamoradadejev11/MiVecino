@@ -109,8 +109,8 @@ public class UserResource extends ExceptionHandling {
     authenticate(userCommand.getUsername(), userCommand.getPassword());
     User loginUser = userService.findUserByUsername(userCommand.getUsername());
     UserPrincipal userPrincipal = new UserPrincipal(loginUser);
-    UserValidCommand userValidCommand = new UserValidCommand(userPrincipal.getUsername(),
-        getJwtToken(userPrincipal));
+    UserValidCommand userValidCommand = new UserValidCommand(loginUser.getUserId(),
+        userPrincipal.getUsername(), getJwtToken(userPrincipal), loginUser.getRole());
     return new ResponseEntity<>(userValidCommand, HttpStatus.OK);
   }
 

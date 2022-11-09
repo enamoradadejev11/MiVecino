@@ -18,7 +18,7 @@ const BtnMyLocation = ({ location }) => {
       variant='contained'
       className={styles.boton}
       onClick={onClick}
-      style={{ position: "fixed", top: "20px", right: "20px", zIndex: 999 }}
+      style={{ position: "fixed", top: "100px", right: "20px", zIndex: 999 }}
     >
       Mi ubicacion
     </Button>

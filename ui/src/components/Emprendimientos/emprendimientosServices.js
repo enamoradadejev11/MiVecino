@@ -76,3 +76,20 @@ export const addReview = async (emprendimientoId, review) => {
   const response = await axios.post(`${reviewApi}/add`, formData, authHeader());
   return response.data;
 };
+
+export const getEmprendimientosForApproval = async () => {
+  const response = await axios.get(
+    `${emprendimientosApi}/approval`,
+    authHeader()
+  );
+  return response.data;
+};
+
+export const updateEmprendimientoApproval = async (id, approval) => {
+  const response = await axios.put(
+    `${emprendimientosApi}/${id}/approval`,
+    approval,
+    authHeader()
+  );
+  return response.data;
+};

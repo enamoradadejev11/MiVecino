@@ -2,6 +2,7 @@ import { createTheme } from "@mui/material/styles";
 
 const USER_KEY = "user";
 export const HOME_PAGE_TYPE = "homepage";
+export const APPROVALS_ROUTE = "/approvals";
 
 export const theme = createTheme({
   palette: {
@@ -15,8 +16,8 @@ export const theme = createTheme({
 });
 
 export const host = window.location.href.includes("localhost")
-  ? "http://localhost:5002"
-  : "http://ec2-3-89-225-92.compute-1.amazonaws.com:5002";
+  ? "http://localhost:5003"
+  : "http://ec2-3-89-225-92.compute-1.amazonaws.com:5003";
 
 export const getUser = () => {
   return JSON.parse(window.localStorage.getItem(USER_KEY));
@@ -34,6 +35,15 @@ export const getUserWithExpiry = () => {
     return item.value;
   }
   return null;
+};
+
+export const hasAdminRole = () => {
+  const user = window.localStorage.getItem(USER_KEY);
+  if (user) {
+    const item = JSON.parse(user);
+    return item.value.role === "ROLE_ADMIN";
+  }
+  return false;
 };
 
 export const setUserWithExpiry = (key, value, ttl) => {
@@ -64,8 +74,8 @@ export const getUserLocation = async () => {
         resolve([coords.longitude, coords.latitude]);
       },
       (err) => {
-        alert("no se pudo obtener la geolocation");
-        console.log(err);
+        //alert("no se pudo obtener la geolocation");
+        //console.log(err);
         reject();
       }
     );

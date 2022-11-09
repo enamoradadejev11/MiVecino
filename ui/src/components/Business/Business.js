@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from "react";
-import { Grid } from "@mui/material";
-import { businessStyles } from "./businessUtils";
 import { Typography } from "@material-ui/core";
-import Calification from "./Calification/Calification";
-import BusinessLinks from "./BusinessLinks";
+import { Grid } from "@mui/material";
+import React, { useEffect, useState } from "react";
 import { useLocation } from "wouter";
 import { getUserWithExpiry } from "../../utils/utils";
+import BusinessLinks from "./BusinessLinks";
+import { businessStyles } from "./businessUtils";
+import Calification from "./Calification/Calification";
 
 const Business = ({ data, isFavorite, addFavorite, removeFavorite }) => {
   const classes = businessStyles();

@@ -1,11 +1,13 @@
 package com.mi.vecino.backendmodules.domain;
 
 import static com.mi.vecino.backendmodules.constant.FileConstant.DEFAULT_USER_IMAGE_PATH;
+import static com.mi.vecino.backendmodules.domain.enumeration.Role.ROLE_ADMIN;
 import static com.mi.vecino.backendmodules.domain.enumeration.Role.ROLE_USER;
 
 import com.mi.vecino.backendmodules.domain.command.UpdateUserProfileCommand;
 import com.mi.vecino.backendmodules.domain.command.UserCommand;
 import java.io.Serializable;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import javax.persistence.Column;
@@ -28,7 +30,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "user", schema = "mi_vecino")
+@Table(name = "user", schema = "public")
 public class User implements Serializable {
 
   @Id
@@ -55,11 +57,11 @@ public class User implements Serializable {
 
   @Column(columnDefinition = "jsonb")
   @Type(type = "jsonb")
-  private List<Favorite> favoriteEmprendimientos;
+  private List<Favorite> favoriteEmprendimientos = Collections.emptyList();
 
   @Column(columnDefinition = "jsonb")
   @Type(type = "jsonb")
-  private List<Category> emprendimientosCategories;
+  private List<Category> emprendimientosCategories = Collections.emptyList();
 
   public User(UserCommand userCommand, String password) {
     this.userId = generateUserId();
@@ -70,11 +72,15 @@ public class User implements Serializable {
     this.birthDate = userCommand.getBirthDate();
     this.joinDate = new Date();
     this.password = password;
-    this.role = ROLE_USER.name();
-    this.authorities = ROLE_USER.getAuthorities();
+    // this.role = ROLE_USER.name();
+    // this.authorities = ROLE_USER.getAuthorities();
+    this.role = ROLE_ADMIN.name();
+    this.authorities = ROLE_ADMIN.getAuthorities();
     this.profileImageUrl = getTemporaryProfileImageUrl(userCommand.getUsername());
     this.isNotLocked = true;
     this.isActive = true;
+    this.favoriteEmprendimientos = Collections.emptyList();
+    this.emprendimientosCategories = Collections.emptyList();
   }
 
   public void updateUserInfo(UpdateUserProfileCommand updateUserProfileCommand) {

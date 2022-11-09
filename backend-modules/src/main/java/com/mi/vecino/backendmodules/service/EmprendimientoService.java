@@ -1,8 +1,11 @@
 package com.mi.vecino.backendmodules.service;
 
+import com.mi.vecino.backendmodules.domain.Approval;
 import com.mi.vecino.backendmodules.domain.Emprendimiento;
+import com.mi.vecino.backendmodules.domain.EmprendimientoApproval;
 import com.mi.vecino.backendmodules.domain.EmprendimientoData;
 import com.mi.vecino.backendmodules.domain.Schedule;
+import com.mi.vecino.backendmodules.domain.command.ApprovalCommand;
 import com.mi.vecino.backendmodules.domain.command.EmprendimientoCommand;
 import com.mi.vecino.backendmodules.domain.command.ScheduleCommand;
 import java.io.IOException;
@@ -31,5 +34,9 @@ public interface EmprendimientoService {
   List<Schedule> addSchedule(long emprendimientoId, String username, List<ScheduleCommand> command);
 
   List<Schedule> retrieveSchedule(long id);
+
+  List<EmprendimientoApproval> findEmprendimientosForApproval();
+
+  List<EmprendimientoApproval> updateApproval(long id, ApprovalCommand approval);
 
 }

@@ -91,7 +91,7 @@ const AddressForm = ({
                 InputLabelProps={{ shrink: true }}
                 size='small'
                 disabled={isStored()}
-                required
+                required={field.required}
                 fullWidth
               />
             </Grid>

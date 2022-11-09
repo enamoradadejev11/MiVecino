@@ -1,14 +1,14 @@
-import React from "react";
-import Typography from "@material-ui/core/Typography";
-import { typographyStyles } from "../../utils/stylesUtils";
-import { Container, Grid } from "@mui/material";
 import { Box } from "@material-ui/core";
-import { sections } from "./settingsUtils";
-import SettingsSection from "./SettingsSection";
-import Navbar from "../Common/Navbar/Navbar";
-import Footer from "../Common/Footer/Footer";
-import { getUserWithExpiry, headerAccess } from "../../utils/utils";
+import Typography from "@material-ui/core/Typography";
+import { Container, Grid } from "@mui/material";
+import React from "react";
 import { useLocation } from "wouter";
+import { typographyStyles } from "../../utils/stylesUtils";
+import { getUserWithExpiry, headerAccess } from "../../utils/utils";
+import Footer from "../Common/Footer/Footer";
+import Navbar from "../Common/Navbar/Navbar";
+import SettingsSection from "./SettingsSection";
+import { sections } from "./settingsUtils";
 
 const Settings = () => {
   const typography = typographyStyles();

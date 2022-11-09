@@ -1,15 +1,16 @@
-import React from "react";
+import { MenuItem } from "@material-ui/core";
 import Button from "@material-ui/core/Button";
 import CssBaseline from "@material-ui/core/CssBaseline";
-import TextField from "@material-ui/core/TextField";
-import Paper from "@material-ui/core/Paper";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import Grid from "@material-ui/core/Grid";
+import Paper from "@material-ui/core/Paper";
+import TextField from "@material-ui/core/TextField";
 import Typography from "@material-ui/core/Typography";
-import { DatePicker } from "@mui/x-date-pickers";
 import { FormControl, InputLabel, Select } from "@mui/material";
-import { MenuItem } from "@material-ui/core";
+import { DatePicker } from "@mui/x-date-pickers";
+import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import PropTypes from "prop-types";
+import React from "react";
 import { registerGeneralParams, registerStyles } from "./registerUtils";
 
 const RegisterForm = ({
@@ -19,6 +20,7 @@ const RegisterForm = ({
   handleSubmit,
   handleInputChange,
   handleDatePickerChange,
+  errorMessage,
 }) => {
   const classes = registerStyles();
 
@@ -115,6 +117,7 @@ const RegisterForm = ({
                 />
               </LocalizationProvider>
             </Grid>
+            <Grid xs={12}>{errorMessage}</Grid>
             <Grid xs={12}>
               <Button
                 variant='contained'
@@ -129,6 +132,14 @@ const RegisterForm = ({
       </Grid>
     </Grid>
   );
+};
+
+RegisterForm.propTypes = {
+  errorMessage: PropTypes.bool,
+};
+
+RegisterForm.defaultProps = {
+  errorMessage: "",
 };
 
 export default RegisterForm;

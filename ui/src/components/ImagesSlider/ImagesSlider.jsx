@@ -1,14 +1,14 @@
-import React from "react";
-import Slider from "react-slick";
-import "slick-carousel/slick/slick.css";
-import "slick-carousel/slick/slick-theme.css";
 import { Typography } from "@material-ui/core";
-import { typographyStyles } from "../../utils/stylesUtils";
-import PropTypes from "prop-types";
-import { Link } from "wouter";
-import { HOME_PAGE_TYPE, theme } from "../../utils/utils";
 import { Button } from "@mui/material";
 import { ThemeProvider } from "@mui/material/styles";
+import PropTypes from "prop-types";
+import React from "react";
+import Slider from "react-slick";
+import "slick-carousel/slick/slick-theme.css";
+import "slick-carousel/slick/slick.css";
+import { Link } from "wouter";
+import { typographyStyles } from "../../utils/stylesUtils";
+import { HOME_PAGE_TYPE, theme } from "../../utils/utils";
 
 const settings = {
   dots: false,
@@ -91,7 +91,7 @@ const ImagesSlider = ({
             </div>
           )}
           <Slider {...settings}>
-            {items.map((emprendimiento) => (
+            {items?.map((emprendimiento) => (
               <div className='container' key={emprendimiento.id}>
                 <div className={calculateClassname(emprendimiento.id)}>
                   <div onClick={() => onSelection(emprendimiento)}>

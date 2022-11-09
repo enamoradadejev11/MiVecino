@@ -2,14 +2,14 @@ package com.mi.vecino.backendmodules.domain.command;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.Setter;
 
 @AllArgsConstructor
 @Getter
-public class UserValidCommand {
+@Setter
+public class ApprovalCommand {
 
-  private String userId;
-  private String username;
-  private String token;
-  private String role;
+  private String status;
+  private String message;
 
 }

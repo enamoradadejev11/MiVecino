@@ -9,9 +9,12 @@ import static com.mi.vecino.backendmodules.constant.FileConstant.FORWARD_SLASH;
 import static com.mi.vecino.backendmodules.constant.FileConstant.JPG_EXTENSION;
 import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 
+import com.mi.vecino.backendmodules.domain.Approval;
 import com.mi.vecino.backendmodules.domain.Emprendimiento;
+import com.mi.vecino.backendmodules.domain.EmprendimientoApproval;
 import com.mi.vecino.backendmodules.domain.EmprendimientoData;
 import com.mi.vecino.backendmodules.domain.Schedule;
+import com.mi.vecino.backendmodules.domain.command.ApprovalCommand;
 import com.mi.vecino.backendmodules.domain.command.EmprendimientoCommand;
 import com.mi.vecino.backendmodules.domain.command.ScheduleCommand;
 import com.mi.vecino.backendmodules.repository.EmprendimientoRepository;
@@ -23,6 +26,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.ParseException;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -43,6 +47,7 @@ public class EmprendimientoServiceImpl implements EmprendimientoService {
   private final EmprendimientoRepository emprendimientoRepository;
   private final ScheduleRepository scheduleRepository;
   private final ReviewService reviewService;
+  private final List<String> APPROVAL_STATES = Arrays.asList("Pending", "Approved", "Rejected");
 
   @Autowired
   EmprendimientoServiceImpl(EmprendimientoRepository emprendimientoRepository,
@@ -123,7 +128,8 @@ public class EmprendimientoServiceImpl implements EmprendimientoService {
   }
 
   @Override
-  public List<Schedule> addSchedule(long emprendimientoId, String username, List<ScheduleCommand> command) {
+  public List<Schedule> addSchedule(long emprendimientoId, String username,
+      List<ScheduleCommand> command) {
     if (isValidUser(emprendimientoId, username)) {
       return command.stream().map(scheduleCommand -> {
         try {
@@ -144,6 +150,33 @@ public class EmprendimientoServiceImpl implements EmprendimientoService {
     return scheduleRepository.findScheduleByEmprendimientoId(emprendimientoId);
   }
 
+  @Override
+  public List<EmprendimientoApproval> findEmprendimientosForApproval() {
+    var emprendimientos = emprendimientoRepository.findAll();
+    return emprendimientos.stream().filter(emprendimiento -> {
+      var approval = emprendimiento.getApproval();
+      return approval.getStatus().equals("Pending");
+    }).map(EmprendimientoApproval::new).collect(Collectors.toList());
+  }
+
+  @Override
+  public List<EmprendimientoApproval> updateApproval(long id, ApprovalCommand approvalCommand) {
+    if (isValidStatus(approvalCommand)) {
+      var emprendimiento = findEmprendimientoById(id);
+      var approval = new Approval(approvalCommand);
+      if (approvalCommand.getStatus().equals("Approved")) {
+        emprendimiento.setActive(true);
+      }
+      emprendimiento.setApproval(approval);
+      emprendimientoRepository.save(emprendimiento);
+    }
+    return findEmprendimientosForApproval();
+  }
+
+  private boolean isValidStatus(ApprovalCommand approval) {
+    return APPROVAL_STATES.contains(approval.getStatus());
+  }
+
   private boolean isValidUser(long emprendimientoId, String username) {
     var emprendimiento = findEmprendimientoById(emprendimientoId);
     return username.equals(emprendimiento.getUsername());
@@ -153,7 +186,8 @@ public class EmprendimientoServiceImpl implements EmprendimientoService {
     return username.equals(dbEmprendimiento.getUsername());
   }
 
-  private void saveEmprendimientoImage(Emprendimiento emprendimiento, MultipartFile emprendimientoImage) throws IOException {
+  private void saveEmprendimientoImage(Emprendimiento emprendimiento,
+      MultipartFile emprendimientoImage) throws IOException {
 
     var id = Long.toString(emprendimiento.getId());
     var folder = EMPRENDIMIENTO_FOLDER + id;
@@ -165,7 +199,8 @@ public class EmprendimientoServiceImpl implements EmprendimientoService {
         logger.info(DIRECTORY_CREATED + emprendimientoFolder);
       }
       Files.deleteIfExists(Paths.get(folder + DOT + JPG_EXTENSION));
-      Files.copy(emprendimientoImage.getInputStream(), emprendimientoFolder.resolve(id + DOT + JPG_EXTENSION), REPLACE_EXISTING);
+      Files.copy(emprendimientoImage.getInputStream(),
+          emprendimientoFolder.resolve(id + DOT + JPG_EXTENSION), REPLACE_EXISTING);
       emprendimiento.setImageUrl(setProfileImageUrl(id));
       emprendimientoRepository.save(emprendimiento);
       logger.info(FILE_SAVED_IN_FILE_SYSTEM + emprendimientoImage.getOriginalFilename());

@@ -21,7 +21,7 @@ import org.hibernate.annotations.TypeDef;
 @Setter
 @Getter
 @Entity
-@Table(name = "address", schema = "mi_vecino")
+@Table(name = "address", schema = "public")
 public class Address {
 
   @Id

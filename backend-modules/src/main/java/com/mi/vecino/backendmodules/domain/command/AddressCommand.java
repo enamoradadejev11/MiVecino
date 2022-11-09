@@ -29,7 +29,6 @@ public class AddressCommand {
   private String state;
   @NotEmpty(message = "El pais es un campo requerido")
   private String country;
-  @NotEmpty(message = "El codigo postal es un campo requerido")
   private String zipCode;
   private String reference;
   @NotEmpty(message = "La ciudad es un campo requerido")

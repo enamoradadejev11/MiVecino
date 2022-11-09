@@ -6,7 +6,9 @@ import MenuItem from "@mui/material/MenuItem";
 import OutlinedInput from "@mui/material/OutlinedInput";
 import Select from "@mui/material/Select";
 import { useTheme } from "@mui/material/styles";
+import PropTypes from "prop-types";
 import React from "react";
+import { categoriesByGiro } from "./emprendimientosUtils";
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -19,19 +21,6 @@ const MenuProps = {
   },
 };
 
-const names = [
-  "comida",
-  "belleza",
-  "natural",
-  "estetica",
-  "alimentos",
-  "higiene",
-  "evento",
-  "manual",
-  "salud",
-  "mascotas",
-];
-
 function getStyles(name, categoryName, theme) {
   return {
     fontWeight:
@@ -41,18 +30,13 @@ function getStyles(name, categoryName, theme) {
   };
 }
 
-const MultipleSelectCategory = ({ categories, setCategories, isReadOnly }) => {
+const MultipleSelectCategory = ({
+  categories,
+  setCategories,
+  isReadOnly,
+  giro,
+}) => {
   const theme = useTheme();
-
-  const handleChange = (event) => {
-    const {
-      target: { value },
-    } = event;
-    console.log("event", event);
-    console.log("value", value);
-    setCategories(typeof value === "string" ? value.split(",") : value);
-  };
-
   return (
     <div>
       <FormControl sx={12} fullWidth margin={"normal"} disabled={isReadOnly}>
@@ -62,30 +46,39 @@ const MultipleSelectCategory = ({ categories, setCategories, isReadOnly }) => {
           id='demo-multiple-chip'
           multiple
           value={categories}
-          onChange={handleChange}
+          onChange={setCategories}
           input={<OutlinedInput id='select-multiple-chip' label='Chip' />}
           renderValue={(selected) => (
             <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
               {selected.map((value) => (
-                <Chip key={value} label={value} />
+                <Chip key={value.id} label={value.name} />
               ))}
             </Box>
           )}
           MenuProps={MenuProps}
         >
-          {names.map((name) => (
+          {giro === "non" && <h5>Selecciona un giro para ver categorias</h5>}
+          {categoriesByGiro[giro].map((category) => (
             <MenuItem
-              key={name}
-              value={name}
-              style={getStyles(name, categories, theme)}
+              key={category.id}
+              value={category}
+              style={getStyles(category.name, categories, theme)}
             >
-              {name}
+              {category.name}
             </MenuItem>
           ))}
         </Select>
       </FormControl>
     </div>
   );
+};
+
+MultipleSelectCategory.propTypes = {
+  giro: PropTypes.string,
+};
+
+MultipleSelectCategory.defaultProps = {
+  giro: "non",
 };
 
 export default MultipleSelectCategory;
