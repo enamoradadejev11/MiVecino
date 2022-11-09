@@ -1,6 +1,7 @@
 import { Box, Typography } from "@material-ui/core";
 import React, { useEffect, useState } from "react";
 import { typographyStyles } from "../../utils/stylesUtils";
+import { headerAccess } from "../../utils/utils";
 import Footer from "../Common/Footer/Footer";
 import Navbar from "../Common/Navbar/Navbar";
 import { getEmprendimientosForApproval } from "../Emprendimientos/emprendimientosServices";
@@ -16,7 +17,7 @@ const Approvals = () => {
 
   return (
     <>
-      <Navbar />
+      <Navbar types={[headerAccess.LOGIN]} />
       <Box p={5}>
         <Box pb={3}>
           <Typography className={typography.dark_title}>
